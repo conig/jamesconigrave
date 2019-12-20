@@ -15,9 +15,9 @@ pubs = scholar::get_publications(id) %>%
   filter(journal != "ACU Research Bank") %>% 
   arrange(desc(year), desc(cites))
 
-title = pubs$title %>% as.character %>% tolower %>% tools::toTitleCase()
+title = pubs$title %>% as.character %>% tolower %>% stringr::str_to_title()
 title = gsub("Audit-c", "AUDIT-C", title)
-journal = pubs$journal %>% as.character %>%  tools::toTitleCase()
+journal = pubs$journal %>% as.character %>%  stringr::str_to_title()
 year = pubs$year
 authors = pubs$author %>% 
   gsub("J Conigrave", "JH Conigrave",.) %>% 
