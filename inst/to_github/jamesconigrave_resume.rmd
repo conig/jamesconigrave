@@ -1,0 +1,320 @@
+---
+title: "James Conigrave's resume"
+author: James Conigrave
+date: "`r Sys.Date()`"
+output:
+  pagedown::html_resume:
+    # set it to true for a self-contained HTML page but it'll take longer to render
+    self_contained: true
+---
+```{r data-load, message=FALSE, warning=FALSE, echo=FALSE}
+library(dplyr); library(ggplot2)
+
+id = "m0d4TKcAAAAJ&hl"
+pubs = scholar::get_publications(id) %>%
+  filter(journal != "ACU Research Bank") %>% 
+  arrange(desc(year), desc(cites))
+
+title = pubs$title %>% as.character %>% tolower %>% tools::toTitleCase()
+title = gsub("Audit-c", "AUDIT-C", title)
+journal = pubs$journal %>% as.character %>%  tools::toTitleCase()
+year = pubs$year
+authors = pubs$author %>% 
+  gsub("J Conigrave", "JH Conigrave",.) %>% 
+  gsub("JH Conigrave","**JH Conigrave**",.)
+
+res = glue::glue("### {title}
+
+{journal}
+
+N/A
+
+{year}
+
+{authors}
+
+
+")
+
+ citations = scholar::get_citation_history(id)
+ h_index = scholar::predict_h_index(id)[1,2]
+# cit_plot = ggplot(citations, aes(year, cites)) +
+#   geom_bar(stat= "identity") + theme_classic() +
+#   labs(y = "Citations",
+#        x = "") +
+#   scale_y_continuous(labels = scales::number_format(accuracy = 1)) +
+#   theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+CRAN_downloads = cranlogs::cran_downloads(c("corx","Conigrave"), from = "2015-01-01", to = lubridate::today()) %>% 
+  group_by(package) %>% 
+  summarise(dls = sum(count))
+
+```
+
+Aside
+================================================================================
+
+
+<!-- ![James](james_smaller.png){width=100%} -->
+
+
+Contact Info {#contact}
+--------------------------------------------------------------------------------
+
+- <i class="fa fa-envelope"></i> james.conigrave@gmail.com
+- <i class="fa fa-github"></i> [github.com/JConigrave](https://github.com/JConigrave)
+- <i class="fa fa-phone"></i> +61 431 975 610
+- For more information, please contact me via email.
+
+
+Skills {#skills}
+--------------------------------------------------------------------------------
+
+- Statistical analysis, data-manipulation, dashboards, writing, public speaking
+
+- Programming: R, Julia, Python
+
+- Document creation: LaTeX, Markdown, HTML, CSS
+
+- Adobe suite: Indesign, Photoshop, After effects 
+
+Academic metrics {#skills}
+--------------------------------------------------------------------------------
+
+- Citations: `r sum(citations$cites)`
+
+- h-index: `r h_index`
+
+Disclaimer {#disclaimer}
+--------------------------------------------------------------------------------
+
+This CV was created in R Markdown using the 'pagedown' library. My publication list and academic stats is generated from google scholar using the 'scholar' library. Check out the code: https://github.com/JConigrave/resume
+
+Last updated on `r Sys.Date()`.
+
+
+Main
+================================================================================
+
+James Conigrave {#title}
+--------------------------------------------------------------------------------
+
+### Researcher --- Motivation, substance use and public health
+
+I am a researcher and data-scientist in the field of addiction medicine. My interests include motivation, data-feedback, automation, and community empowerment.
+
+
+Education {data-icon=graduation-cap data-concise=true}
+--------------------------------------------------------------------------------
+
+### PhD, Psychology
+
+Institute for Positive Psychology and Education,<br/> Australian Catholic University
+
+North Sydney, NSW
+
+2018 - 2015
+
+<!-- Thesis: The Benefits of Believing You Can Change: Implicit Malleability Theories Moderate the Relationship Between Low self-esteem and Negative Outcomes -->
+
+### Masters of Public Health
+
+The University of Sydney
+
+Camperdown, NSW
+
+2011
+
+Research Experience {data-icon=laptop}
+--------------------------------------------------------------------------------
+
+### Research Associate
+
+Centre of Research Excellence: Indigenous Health + Alcohol, <br/>The University of Sydney
+
+Camperdown, NSW
+
+Present - 2018
+
+<!--
+### Research Associate, Honorary 
+
+Justice Health and Forensic Mental Health Network
+
+Malabar, NSW
+
+Present - 2019
+
+- Developed algorithms to extract health data from prisoner reports-->
+
+### Research Assistant
+
+Institute for Positive Psychology and Education, <br/> Australian Catholic University
+
+North Sydney, NSW
+
+2017 - 2015
+
+Professional Experience {data-icon=suitcase}
+--------------------------------------------------------------------------------
+
+### Health Promotion Officer
+
+Sydney North Shore and Beaches Medicare Local
+
+North Sydney, NSW
+
+2014
+
+<!-- - Managed GPs in school program -->
+
+### Mental Health Coordinator
+
+SNSB Medicare Local
+
+Frenchs Forest, NSW
+
+2014 - 2013
+
+<!-- - Managed the Access To Allied Psychological Services (ATAPS) program -->
+
+
+Teaching Experience {data-icon=chalkboard-teacher}
+--------------------------------------------------------------------------------
+
+### Introductory statistics workshop
+
+Centre of Research Excellence: Indigenous Health + Alcohol, <br/>The University of Sydney
+
+Camperdown, Sydney
+
+2018
+
+### Heart Rate Variability (HRV) workshop
+
+Australian Catholic University
+
+Strathfield, NSW
+
+2016
+
+Supervision {data-icon=users}
+--------------------------------------------------------------------------------
+
+### Teagan Weatherall 
+
+Masters Student - Auxillary Supervisor
+
+N/A
+
+Present - 2019 
+
+### Gemma Khodr
+
+Masters student - Auxillary Supervisor
+
+N/A
+
+Present - 2018
+
+Committees {data-icon=comments}
+--------------------------------------------------------------------------------
+
+### Australasian Professional Society of Alcohol and Other Drugs (APSAD)
+
+Early-Mid Career Researchers (EMCR) Subcomittee
+
+N/A
+
+2019
+
+
+R packages {data-icon=keyboard}
+--------------------------------------------------------------------------------
+
+### corx: Create and Format Correlation Matrices
+
+CRAN, https://jconigrave.github.io/corx/
+
+N/A
+
+2019
+
+**JH Conigrave** - `r CRAN_downloads$dls[2] %>% format(big.mark = ",")` downloads
+
+
+### msemtools: Routines, tables, and figures for metaSEM analyses
+
+Github - https://github.com/JConigrave/msemtools
+
+N/A
+
+2019
+
+**JH Conigrave**
+
+### papertools: Useful Tools For Writing Papers in Rmarkdown
+
+Github - https://github.com/JConigrave/papertools
+
+N/A
+
+2019
+
+**JH Conigrave**
+
+### Conigrave: Flexible Tools for Multiple Imputation
+
+CRAN - https://CRAN.R-project.org/package=Conigrave
+
+N/A
+
+2017
+
+**JH Conigrave** - `r CRAN_downloads$dls[1] %>% format(big.mark = ",")` downloads
+
+
+
+
+Publications {data-icon=file}
+--------------------------------------------------------------------------------
+
+```{r results = "asis", echo = FALSE, message = FALSE }
+
+
+res
+
+```
+
+Grants {data-icon=file-invoice-dollar}
+--------------------------------------------------------------------------------
+
+### Early intervention for unhealthy alcohol use among older Aboriginal and Torres Strait Islander peoples: using the Grog Survey App
+
+National Drug and Alcohol Research Centre
+
+N/A
+
+2019
+
+S Farnbach, KSK Lee, A Eades, C Foley, **JH Conigrave**, S Wilson, K Conigrave, S Shakeshaft
+
+### Better data on methamphetamines and other drugs among Indigenous Australians to inform policy and practice
+
+National Health and Medical Research Council
+
+N/A
+
+2019
+
+KSK Lee, S Wilson, K Conigrave, T Chikritzhs, N Hayman, A Dawson, R Ali, **JH Conigrave**, M Fitts
+
+
+<!-- Citations {data-icon=chart-line} -->
+<!-- -------------------------------------------------------------------------------- -->
+
+<!-- ```{r citation-plot,fig.height=4, fig.width=3, fig.align="center", echo = FALSE} -->
+<!-- cit_plot -->
+<!-- ``` -->
+
+
