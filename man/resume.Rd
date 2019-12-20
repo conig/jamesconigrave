@@ -4,7 +4,10 @@
 \alias{resume}
 \title{resume}
 \usage{
-resume()
+resume(path = NULL)
+}
+\arguments{
+\item{path}{If provided, the resume is copied to that destination. In this instance, the file is not opened}
 }
 \description{
 open resume

@@ -3,10 +3,18 @@
 #' resume
 #'
 #' open resume
+#' @param path If provided, the resume is copied to that destination. In this instance, the file is not opened
 #' @export resume
 
-resume = function(){
-shell.exec(system.file("to_github/jamesconigrave_resume.pdf", package = "jamesconigrave"))
+resume = function(path = NULL){
+
+  location = system.file("to_github/jamesconigrave_resume.pdf", package = "jamesconigrave")
+
+  if(!is.null(path)){
+    file.copy(from = location, to = path, overwrite = T)
+  }else{
+  shell.exec(location)
+  }
 }
 
 #' update_resume
