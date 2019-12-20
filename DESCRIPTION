@@ -1,14 +1,14 @@
 Package: jamesconigrave
-Title: What the Package Does (One Line, Title Case)
-Version: 0.0.0.9000
+Title: Contains and updates James Conigrave's resume
+Version: 0.1.0
 Authors@R: 
-    person(given = "First",
-           family = "Last",
+    person(given = "James",
+           family = "Conigrave",
            role = c("aut", "cre"),
-           email = "first.last@example.com",
-           comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
-License: What license it uses
+           email = "james.conigrave@example.com",
+           comment = c(ORCID = "0000-0002-8816-6229"))
+Description: Stores a resume within and keeps it updated on github and github pages.
+License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Imports: 
@@ -17,4 +17,6 @@ Imports:
     scholar,
     pagedown,
     glue,
-    cranlogs
+    cranlogs,
+    rmarkdown
+RoxygenNote: 7.0.2
