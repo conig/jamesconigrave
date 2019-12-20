@@ -90,7 +90,9 @@ Disclaimer {#disclaimer}
 
 This CV was created in R Markdown using the 'pagedown' library. My publication list and academic stats is generated from google scholar using the 'scholar' library. Check out the code: https://github.com/JConigrave/resume
 
-Automatically updated on `r Sys.time()`.
+Automatically updated:
+
+`r Sys.time()` AEDT
 
 Main
 ================================================================================
