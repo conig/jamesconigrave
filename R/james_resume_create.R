@@ -17,6 +17,15 @@ resume = function(path = NULL){
   }
 }
 
+#' website
+#'
+#' open resume
+#' @export website
+
+website = function(){
+    shell.exec("https://jconigrave.github.io/")
+}
+
 #' update_resume
 #'
 #' update resume on github
