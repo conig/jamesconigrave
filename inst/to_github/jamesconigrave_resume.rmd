@@ -10,14 +10,15 @@ output:
 ```{r data-load, message=FALSE, warning=FALSE, echo=FALSE}
 library(dplyr); library(ggplot2)
 
+
 id = "m0d4TKcAAAAJ&hl"
 pubs = scholar::get_publications(id) %>%
   filter(journal != "ACU Research Bank") %>% 
   arrange(desc(year), desc(cites))
 
-title = pubs$title %>% as.character %>% tolower %>% stringr::str_to_sentence()
+title = pubs$title %>% as.character %>% tolower %>% stringr::str_to_sentence() %>% fix_case()
 title = gsub("Audit-c", "AUDIT-C", title)
-journal = pubs$journal %>% as.character %>%  stringr::str_to_sentence()
+journal = pubs$journal %>% as.character %>% stringr::str_to_sentence()
 year = pubs$year
 authors = pubs$author %>% 
   gsub("J Conigrave", "JH Conigrave",.) %>% 
@@ -137,8 +138,7 @@ Camperdown, NSW
 
 Present - 2018
 
-<!--
-### Research Associate, Honorary 
+### Research Associate, Honorary
 
 Justice Health and Forensic Mental Health Network
 
@@ -146,7 +146,7 @@ Malabar, NSW
 
 Present - 2019
 
-- Developed algorithms to extract health data from prisoner reports-->
+<!-- - Developed algorithms to extract health data from prisoner reports -->
 
 ### Research Assistant
 

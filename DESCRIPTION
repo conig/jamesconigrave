@@ -5,7 +5,7 @@ Authors@R:
     person(given = "James",
            family = "Conigrave",
            role = c("aut", "cre"),
-           email = "james.conigrave@example.com",
+           email = "james.conigrave@gmail.com",
            comment = c(ORCID = "0000-0002-8816-6229"))
 Description: Stores a resume within and keeps it updated on github and github pages.
 License: MIT + file LICENSE

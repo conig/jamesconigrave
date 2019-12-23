@@ -36,8 +36,14 @@ update_resume = function(){
   gh = system.file("to_github", package = "jamesconigrave")
 
 
-  rmarkdown::render(md, output_file = system.file("to_github/docs/index.html", package = "jamesconigrave"))
-  pagedown::chrome_print(md)
+
+  rmarkdown::render(md,
+                    output_file = system.file("to_github/docs/index.html", package = "jamesconigrave"))
+  pagedown::chrome_print(
+    input = system.file("to_github/docs/index.html", package = "jamesconigrave"),
+    output =
+      system.file("to_github/jamesconigrave_resume.pdf", package = "jamesconigrave")
+  )
 
   if(!dir.exists(paste0(gh,"/.git"))){
     message("git dir doesn't exist, initialising... ",glue::glue("{gh}"))
@@ -52,4 +58,28 @@ update_resume = function(){
               "git add .",
               'git commit -m "automatic resume update"',
               'git push -f origin master',sep = "&"))
+}
+
+
+
+
+
+fix_case = function(string,
+                    words = c(
+                      "aboriginal",
+                      "torres",
+                      "strait",
+                      "islander",
+                      "australian",
+                      "australia",
+                      "australian's"
+                    )) {
+  words2 = stringr::str_to_title(words)
+
+  for (i in seq_along(words)) {
+    string = gsub(words[i], words2[i], string)
+  }
+
+  return(string)
+
 }
