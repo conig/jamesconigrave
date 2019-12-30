@@ -64,6 +64,7 @@ Contact Info {#contact}
 
 - <i class="fa fa-envelope"></i> james.conigrave@gmail.com
 - <i class="fa fa-github"></i> [github.com/JConigrave](https://github.com/JConigrave)
+- <i class="fa fa-globe-asia"></i> [conigrave.com](https://conigrave.com)
 - <i class="fa fa-phone"></i> +61 431 975 610
 - For more information, please contact me via email.
 
@@ -125,7 +126,15 @@ The University of Sydney
 
 Camperdown, NSW
 
-2011
+2012 - 2011
+
+### BA Psychology & B Health
+
+Macquarie University
+
+Macquarie, NSW
+
+2010 - 2007
 
 Research Experience {data-icon=laptop}
 --------------------------------------------------------------------------------
