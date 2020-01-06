@@ -65,7 +65,7 @@ Contact Info {#contact}
 - <i class="fa fa-envelope"></i> james.conigrave@gmail.com
 - <i class="fa fa-github"></i> [github.com/JConigrave](https://github.com/JConigrave)
 - <i class="fa fa-globe-asia"></i> [conigrave.com](https://conigrave.com)
-- <i class="fa fa-phone"></i> +61 431 975 610
+#- <i class="fa fa-phone"></i> +61 *** *** *10
 - For more information, please contact me via email.
 
 
