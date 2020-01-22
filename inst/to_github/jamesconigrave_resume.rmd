@@ -16,9 +16,8 @@ pubs = scholar::get_publications(id) %>%
   filter(journal != "ACU Research Bank") %>% 
   arrange(desc(year), desc(cites))
 
-title = pubs$title %>% as.character %>% tolower %>% stringr::str_to_sentence() %>% fix_case()
-title = gsub("Audit-c", "AUDIT-C", title)
-journal = pubs$journal %>% as.character %>% stringr::str_to_sentence()
+title = pubs$title %>% as.character
+journal = pubs$journal %>% as.character
 year = pubs$year
 authors = pubs$author %>% 
   gsub("J Conigrave", "JH Conigrave",.) %>% 
@@ -98,7 +97,7 @@ Automatically updated:
 Main
 ================================================================================
 
-James Conigrave {#title}
+James Conigrave, PhD {#title}
 --------------------------------------------------------------------------------
 
 ### Researcher --- Motivation, substance use and public health
@@ -294,6 +293,71 @@ Publications {data-icon=file}
 res
 
 ```
+
+Conference contributions {data-icon=globe-asia}
+--------------------------------------------------------------------------------
+
+### Supporting Aboriginal Community Controlled Health Services to reduce the harms from alcohol
+
+The Australasian Professional Society on Alcohol & other Drugs (APSAD)
+
+Hobart, Australia
+
+2019
+
+**JH Conigrave**, KS Lee, K Harrison, T Dobbins, N Hayman, S Wilson, ...
+
+### Re-thinking how we ask Indigenous Australia to describe their drinking
+
+The Australasian Professional Society on Alcohol & other Drugs (APSAD)
+
+Hobart, Australia
+
+2019
+
+KS Lee, S Wilson, **JH Conigrave**, J Perry, S Callinan, N Hayman, R Room, ...
+
+
+### Evidence based models of care for the treatment of alcohol use disorder in primary health care settings: A systematic review and meta-analysis
+
+The Australasian Professional Society on Alcohol & other Drugs (APSAD)
+
+Hobart, Australia
+
+2019
+
+S Rombouts, K Morley, **JH Conigrave**, E Louie, PS Haber
+
+
+### Approaches for improving practice in detection and treatment of unhealthy alcohol use in primary health care: Where are the gaps?
+
+The Australasian Professional Society on Alcohol & other Drugs (APSAD)
+
+Hobart, Australia
+
+2019
+
+M Dzidowska, KS Lee, C Wylie, J Bailie, N Hayman, **JH Conigrave**, ...
+
+### The benefits of believing you can change: Growth mindset weakens the links between self-esteem and negative outcomes
+
+Contextual Behavioral Science Conference
+
+Seville, Spain
+
+2017
+
+**JH Conigrave**, BK Sahdra, J Ciarrochi
+
+### The benefits of believing you can change: Incremental theories weaken the links between self-esteem and negative outcomes
+
+Self Conference
+
+Melbourne, Australia
+
+2017
+
+**JH Conigrave**, BK Sahdra, J Ciarrochi
 
 Grants {data-icon=file-invoice-dollar}
 --------------------------------------------------------------------------------
