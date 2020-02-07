@@ -18,3 +18,12 @@ body {
 h3 {
     font-weight: normal;
 }
+
+.date{
+    padding-top: calc(var(--row-blocks-padding-top) + 0.04rem)!important;
+    font-size: .8rem;
+}
+
+. details{
+    padding-top: calc(var(--row-blocks-padding-top) - 0.1rem)!important;v
+}
