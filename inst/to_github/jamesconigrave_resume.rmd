@@ -4,37 +4,63 @@ author: James Conigrave
 date: "`r Sys.Date()`"
 output:
   pagedown::html_resume:
-    # set it to true for a self-contained HTML page but it'll take longer to render
     self_contained: true
+    css: ["style-rules.css", "resume"]
 ---
+
 ```{r data-load, message=FALSE, warning=FALSE, echo=FALSE}
 library(dplyr); library(ggplot2)
-
 
 id = "m0d4TKcAAAAJ&hl"
 pubs = scholar::get_publications(id) %>%
   filter(journal != "ACU Research Bank") %>% 
   arrange(desc(year), desc(cites))
 
-title = pubs$title %>% as.character
-journal = pubs$journal %>% as.character
-year = pubs$year
-authors = pubs$author %>% 
+pubs = pubs %>% dplyr::mutate_if(is.factor, as.character)
+ 
+pubs$journal = ifelse(nchar(pubs$journal) > 0, paste0("*",pubs$journal,"*"), pubs$journal)
+pubs$number = ifelse(nchar(pubs$number) > 0, paste0("*",pubs$number,"*"), pubs$number)
+
+pubs$author = pubs$author %>% 
   gsub("J Conigrave", "JH Conigrave",.) %>% 
-  gsub("JH Conigrave","**JH Conigrave**",.)
+  gsub("JH Conigrave","<u>JH Conigrave<\\/u>",.) %>% 
+  gsub("KS Lee","KSK Lee",.)
 
-res = glue::glue("### {title}
+pre_prints = pubs[pubs$journal == "*PsyArXiv*",]
+pubs =  pubs[pubs$journal != "*PsyArXiv*",]
 
-{journal}
+# pattern = "### {title}
+# 
+# {journal}, {number} --- {cites} citations
+# 
+# N/A
+# 
+# {year}
+# 
+# {author}
+# 
+# "
+
+pattern = "### {author} ({year}). {title}. {journal} {number}
+
+{cites} citations
 
 N/A
 
 {year}
 
-{authors}
+
+"
+
+fix_grammar = function(x) gsub("\\.\\.","\\.",x) %>% gsub("\\?\\.","\\?",.)
 
 
-")
+publications = glue::glue(pattern, .envir = as.environment(pubs)) %>% 
+   fix_grammar
+  
+  
+pre_prints = glue::glue(pattern, .envir = as.environment(pre_prints)) %>% 
+   fix_grammar
 
  citations = scholar::get_citation_history(id)
  h_index = scholar::predict_h_index(id)[1,2]
@@ -100,7 +126,7 @@ Main
 James Conigrave, PhD {#title}
 --------------------------------------------------------------------------------
 
-### Researcher --- Motivation, substance use and public health
+### **Researcher --- Motivation, substance use and public health**
 
 I am a researcher and data-scientist in the field of addiction medicine. My interests include motivation, data-feedback, automation, and community empowerment.
 
@@ -108,7 +134,7 @@ I am a researcher and data-scientist in the field of addiction medicine. My inte
 Education {data-icon=graduation-cap data-concise=true}
 --------------------------------------------------------------------------------
 
-### PhD, Psychology
+### **PhD, Psychology**
 
 Institute for Positive Psychology and Education,<br/> Australian Catholic University
 
@@ -118,7 +144,7 @@ North Sydney, NSW
 
 <!-- Thesis: The Benefits of Believing You Can Change: Implicit Malleability Theories Moderate the Relationship Between Low self-esteem and Negative Outcomes -->
 
-### Masters of Public Health
+### **Masters of Public Health**
 
 The University of Sydney
 
@@ -126,7 +152,7 @@ Camperdown, NSW
 
 2012 - 2011
 
-### BA Psychology & B Health
+### **BA Psychology & B Health**
 
 Macquarie University
 
@@ -137,7 +163,7 @@ Macquarie, NSW
 Research Experience {data-icon=laptop}
 --------------------------------------------------------------------------------
 
-### Research Associate
+### **Research Associate**
 
 Centre of Research Excellence: Indigenous Health + Alcohol, <br/>The University of Sydney
 
@@ -145,7 +171,7 @@ Camperdown, NSW
 
 Present - 2018
 
-### Research Associate, Honorary
+### **Research Associate, Honorary**
 
 Justice Health and Forensic Mental Health Network
 
@@ -155,7 +181,7 @@ Present - 2019
 
 <!-- - Developed algorithms to extract health data from prisoner reports -->
 
-### Research Assistant
+### **Research Assistant**
 
 Institute for Positive Psychology and Education, <br/> Australian Catholic University
 
@@ -166,7 +192,7 @@ North Sydney, NSW
 Professional Experience {data-icon=suitcase}
 --------------------------------------------------------------------------------
 
-### Health Promotion Officer
+### **Health Promotion Officer**
 
 Sydney North Shore and Beaches Medicare Local
 
@@ -176,7 +202,7 @@ North Sydney, NSW
 
 <!-- - Managed GPs in school program -->
 
-### Mental Health Coordinator
+### **Mental Health Coordinator**
 
 SNSB Medicare Local
 
@@ -190,7 +216,7 @@ Frenchs Forest, NSW
 Teaching Experience {data-icon=chalkboard-teacher}
 --------------------------------------------------------------------------------
 
-### Introductory statistics workshop
+### **Introductory statistics workshop**
 
 Centre of Research Excellence: Indigenous Health + Alcohol, <br/>The University of Sydney
 
@@ -198,7 +224,7 @@ Camperdown, Sydney
 
 2018
 
-### Heart Rate Variability (HRV) workshop
+### **Heart Rate Variability (HRV) workshop**
 
 Australian Catholic University
 
@@ -209,7 +235,7 @@ Strathfield, NSW
 Supervision {data-icon=users}
 --------------------------------------------------------------------------------
 
-### Teagan Weatherall 
+### **Teagan Weatherall** 
 
 Masters Student - Auxillary Supervisor
 
@@ -217,7 +243,7 @@ N/A
 
 Present - 2019 
 
-### Gemma Khodr
+### **Gemma Khodr**
 
 Masters student - Auxillary Supervisor
 
@@ -228,59 +254,63 @@ Present - 2018
 Committees {data-icon=comments}
 --------------------------------------------------------------------------------
 
-### Australasian Professional Society of Alcohol and Other Drugs (APSAD)
+### **Australasian Professional Society of Alcohol and Other Drugs (APSAD)**
 
 Early-Mid Career Researchers (EMCR) Subcomittee
 
 N/A
 
-2019
+Present - 2019
+
+ - Chair in 2020
 
 
 R packages {data-icon=keyboard}
 --------------------------------------------------------------------------------
 
-### corx: Create and Format Correlation Matrices
+### <u>JH Conigrave</u>. (2019) corx: Create and Format Correlation Matrices. *CRAN*. https://conigrave.com/corx
 
-CRAN, https://conigrave.com/corx
+`r CRAN_downloads$dls[2] %>% format(big.mark = ",")` downloads
+
+2019
+
+
+### <u>JH Conigrave</u> (2019). msemtools: Routines, tables, and figures for metaSEM analyses. *GitHub*. https://github.com/JConigrave/msemtools
+
+N/A
 
 N/A
 
 2019
 
-**JH Conigrave** - `r CRAN_downloads$dls[2] %>% format(big.mark = ",")` downloads
+### <u>JH Conigrave</u> (2019). papertools: Useful Tools For Writing Papers in Rmarkdown. *GitHub*. https://github.com/JConigrave/papertools
 
-
-### msemtools: Routines, tables, and figures for metaSEM analyses
-
-Github - https://github.com/JConigrave/msemtools
+N/A
 
 N/A
 
 2019
 
-**JH Conigrave**
 
-### papertools: Useful Tools For Writing Papers in Rmarkdown
+### <u>JH Conigrave</u> (2017). Conigrave: Flexible Tools for Multiple Imputation. *CRAN*. https://CRAN.R-project.org/package=Conigrave
 
-Github - https://github.com/JConigrave/papertools
-
-N/A
-
-2019
-
-**JH Conigrave**
-
-### Conigrave: Flexible Tools for Multiple Imputation
-
-CRAN - https://CRAN.R-project.org/package=Conigrave
+`r CRAN_downloads$dls[1] %>% format(big.mark = ",")` downloads
 
 N/A
 
 2017
 
-**JH Conigrave** - `r CRAN_downloads$dls[1] %>% format(big.mark = ",")` downloads
 
+Accepted publications {data-icon=file}
+--------------------------------------------------------------------------------
+
+### <u>JH Conigrave</u>, KSK Lee, C Zheng, S Wilson, J Perry, T Chikritzhs, T Slade, K Morley, R Room, S Callinan, N Hayman, KM Conigrave (2020) Drinking risk varies within and between Australian Aboriginal and Torres Strait Islander samples: A meta-analysis to identify sources of heterogeneity. *Addiction (Accepted 6 February 2020)*
+
+N/A
+
+N/A
+
+2020
 
 
 
@@ -289,75 +319,79 @@ Publications {data-icon=file}
 
 ```{r results = "asis", echo = FALSE, message = FALSE }
 
-
-res
+publications
 
 ```
+
+Pre-prints {data-icon=file}
+--------------------------------------------------------------------------------
+
+```{r results = "asis", echo = FALSE, message = FALSE }
+
+pre_prints
+
+```
+
 
 Conference contributions {data-icon=globe-asia}
 --------------------------------------------------------------------------------
 
-### Supporting Aboriginal Community Controlled Health Services to reduce the harms from alcohol
+### <u>JH Conigrave</u>, KS Lee, K Harrison, T Dobbins, N Hayman, S Wilson, ... (2019). Supporting Aboriginal Community Controlled Health Services to reduce the harms from alcohol. *The Australasian Professional Society on Alcohol & other Drugs (APSAD)*
 
-The Australasian Professional Society on Alcohol & other Drugs (APSAD)
-
-Hobart, Australia
-
-2019
-
-**JH Conigrave**, KS Lee, K Harrison, T Dobbins, N Hayman, S Wilson, ...
-
-### Re-thinking how we ask Indigenous Australia to describe their drinking
-
-The Australasian Professional Society on Alcohol & other Drugs (APSAD)
+N/A
 
 Hobart, Australia
 
 2019
 
-KS Lee, S Wilson, **JH Conigrave**, J Perry, S Callinan, N Hayman, R Room, ...
 
 
-### Evidence based models of care for the treatment of alcohol use disorder in primary health care settings: A systematic review and meta-analysis
+### KS Lee, S Wilson, <u>JH Conigrave</u>, J Perry, S Callinan, N Hayman, R Room, ... (2019). Re-thinking how we ask Indigenous Australia to describe their drinking. *The Australasian Professional Society on Alcohol & other Drugs (APSAD)*
 
-The Australasian Professional Society on Alcohol & other Drugs (APSAD)
-
-Hobart, Australia
-
-2019
-
-S Rombouts, K Morley, **JH Conigrave**, E Louie, PS Haber
-
-
-### Approaches for improving practice in detection and treatment of unhealthy alcohol use in primary health care: Where are the gaps?
-
-The Australasian Professional Society on Alcohol & other Drugs (APSAD)
+N/A
 
 Hobart, Australia
 
 2019
 
-M Dzidowska, KS Lee, C Wylie, J Bailie, N Hayman, **JH Conigrave**, ...
 
-### The benefits of believing you can change: Growth mindset weakens the links between self-esteem and negative outcomes
 
-Contextual Behavioral Science Conference
+
+### S Rombouts, K Morley, <u>JH Conigrave</u>, E Louie, PS Haber (2019). Evidence based models of care for the treatment of alcohol use disorder in primary health care settings: A systematic review and meta-analysis. *The Australasian Professional Society on Alcohol & other Drugs (APSAD)*
+
+N/A
+
+Hobart, Australia
+
+2019
+
+
+### M Dzidowska, KS Lee, C Wylie, J Bailie, N Hayman, <u>JH Conigrave</u>, ... (2019). Approaches for improving practice in detection and treatment of unhealthy alcohol use in primary health care: Where are the gaps? *The Australasian Professional Society on Alcohol & other Drugs (APSAD)*
+
+N/A
+
+Hobart, Australia
+
+2019
+
+
+### <u>JH Conigrave</u>, BK Sahdra, J Ciarrochi (2017). The benefits of believing you can change: Growth mindset weakens the links between self-esteem and negative outcomes. *Contextual Behavioral Science Conference*
+
+N/A
 
 Seville, Spain
 
 2017
 
-**JH Conigrave**, BK Sahdra, J Ciarrochi
 
-### The benefits of believing you can change: Incremental theories weaken the links between self-esteem and negative outcomes
+### <u>JH Conigrave</u>, BK Sahdra, J Ciarrochi (2017). The benefits of believing you can change: Incremental theories weaken the links between self-esteem and negative outcomes. *Self Conference*
 
-Self Conference
+N/A
 
 Melbourne, Australia
 
 2017
 
-**JH Conigrave**, BK Sahdra, J Ciarrochi
 
 Grants {data-icon=file-invoice-dollar}
 --------------------------------------------------------------------------------
@@ -370,7 +404,7 @@ N/A
 
 2019
 
-S Farnbach, KSK Lee, A Eades, C Foley, **JH Conigrave**, S Wilson, K Conigrave, S Shakeshaft
+S Farnbach, KSK Lee, A Eades, C Foley, <u>JH Conigrave</u>, S Wilson, K Conigrave, S Shakeshaft
 
 ### Better data on methamphetamines and other drugs among Indigenous Australians to inform policy and practice
 
@@ -380,7 +414,7 @@ N/A
 
 2019
 
-KSK Lee, S Wilson, K Conigrave, T Chikritzhs, N Hayman, A Dawson, R Ali, **JH Conigrave**, M Fitts
+KSK Lee, S Wilson, K Conigrave, T Chikritzhs, N Hayman, A Dawson, R Ali, <u>JH Conigrave</u>, M Fitts
 
 
 <!-- Citations {data-icon=chart-line} -->

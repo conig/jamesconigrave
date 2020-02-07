@@ -48,16 +48,16 @@ update_resume = function(){
   if(!dir.exists(paste0(gh,"/.git"))){
     message("git dir doesn't exist, initialising... ",glue::glue("{gh}"))
 
-    system(paste(glue::glue("cd {gh}"),
+    shell(paste(glue::glue("cd {gh}"),
           "git init",
           "git remote add origin https://github.com/JConigrave/resume.git",
           sep = "&"))
   }
 
-  system(paste(glue::glue("cd {gh}"),
+  shell(paste(glue::glue("cd {gh}"),
               "git add .",
               'git commit -m "automatic resume update"',
-              'git push -f origin master',sep = "&"))
+              'git push --force origin master',sep = "&"))
 }
 
 
