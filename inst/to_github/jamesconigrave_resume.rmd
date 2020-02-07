@@ -272,6 +272,8 @@ R packages {data-icon=keyboard}
 
 `r CRAN_downloads$dls[2] %>% format(big.mark = ",")` downloads
 
+N/A
+
 2019
 
 
