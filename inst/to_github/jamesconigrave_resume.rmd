@@ -5,8 +5,10 @@ date: "`r Sys.Date()`"
 output:
   pagedown::html_resume:
     self_contained: true
+    yml_toc: true
     css: ["style-rules.css", "resume"]
 ---
+
 
 ```{r data-load, message=FALSE, warning=FALSE, echo=FALSE}
 library(dplyr); library(ggplot2)
@@ -28,7 +30,7 @@ pubs$cites = ifelse(pubs$cites == 0, "N/A", paste("---",pubs$cites))
 pubs$author = pubs$author %>% 
   gsub("J Conigrave", "JH Conigrave",.) %>% 
   gsub("JH Conigrave","<u>JH Conigrave<\\/u>",.) %>% 
-  gsub("KS Lee","KSK Lee",.)
+  gsub("KSK Lee","KSK Lee",.)
 
 pre_prints = pubs[pubs$journal == "*PsyArXiv*",]
 pubs =  pubs[pubs$journal != "*PsyArXiv*",]
@@ -56,8 +58,8 @@ N/A
 
 "
 
-fix_grammar = function(x) gsub("\\.\\.","\\.",x) %>% gsub("\\?\\.","\\?",.)
-
+fix_grammar = function(x) gsub("(?<!\\.)\\.\\.(?!\\.)","\\.",x, perl = T) %>% gsub("\\?\\.","\\?",.)
+# regex interpretation. Match two dots and replace with one, if there's not an extra dot before, or after the two (three dots is a row).
 
 publications = glue::glue(pattern, .envir = as.environment(pubs)) %>% 
    fix_grammar
@@ -66,7 +68,8 @@ publications = glue::glue(pattern, .envir = as.environment(pubs)) %>%
 pre_prints = glue::glue(pattern, .envir = as.environment(pre_prints)) %>% 
    fix_grammar
 
- citations = scholar::get_citation_history(id)
+total_citations = scholar::get_profile(id)$total_cites
+ 
  h_index = scholar::predict_h_index(id)[1,2]
 # cit_plot = ggplot(citations, aes(year, cites)) +
 #   geom_bar(stat= "identity") + theme_classic() +
@@ -113,7 +116,7 @@ Academic metrics {#skills}
 
 - Publications: `r nrow(pubs) + 1`
 
-- Citations: `r sum(citations$cites)`
+- Citations: `r total_citations`
 
 - h-index: `r h_index`
 
@@ -268,7 +271,7 @@ N/A
 
 Present - 2019
 
- - Chair in 2020
+--- Chair in 2020
 
 
 R packages {data-icon=keyboard}
@@ -276,7 +279,7 @@ R packages {data-icon=keyboard}
 
 ### <u>JH Conigrave</u> (2019) corx: Create and Format Correlation Matrices. *CRAN*. https://conigrave.com/corx
 
-`r CRAN_downloads$dls[2] %>% format(big.mark = ",")` downloads
+--- `r CRAN_downloads$dls[2] %>% format(big.mark = ",")` downloads
 
 N/A
 
@@ -302,7 +305,7 @@ N/A
 
 ### <u>JH Conigrave</u> (2017). Conigrave: Flexible Tools for Multiple Imputation. *CRAN*. https://CRAN.R-project.org/package=Conigrave
 
-`r CRAN_downloads$dls[1] %>% format(big.mark = ",")` downloads
+--- `r CRAN_downloads$dls[1] %>% format(big.mark = ",")` downloads
 
 N/A
 
@@ -344,7 +347,7 @@ pre_prints
 Conference contributions {data-icon=globe-asia}
 --------------------------------------------------------------------------------
 
-### <u>JH Conigrave</u>, KS Lee, K Harrison, T Dobbins, N Hayman, S Wilson, ... (2019). Supporting Aboriginal Community Controlled Health Services to reduce the harms from alcohol. *The Australasian Professional Society on Alcohol & other Drugs (APSAD)*
+### <u>JH Conigrave</u>, KSK Lee, K Harrison, T Dobbins, N Hayman, S Wilson, ... (2019). Supporting Aboriginal Community Controlled Health Services to reduce the harms from alcohol. *The Australasian Professional Society on Alcohol & other Drugs (APSAD)*
 
 N/A
 
@@ -354,7 +357,7 @@ Hobart, Australia
 
 
 
-### KS Lee, S Wilson, <u>JH Conigrave</u>, J Perry, S Callinan, N Hayman, R Room, ... (2019). Re-thinking how we ask Indigenous Australia to describe their drinking. *The Australasian Professional Society on Alcohol & other Drugs (APSAD)*
+### KSK Lee, S Wilson, <u>JH Conigrave</u>, J Perry, S Callinan, N Hayman, R Room, ... (2019). Re-thinking how we ask Indigenous Australia to describe their drinking. *The Australasian Professional Society on Alcohol & other Drugs (APSAD)*
 
 N/A
 
@@ -374,7 +377,7 @@ Hobart, Australia
 2019
 
 
-### M Dzidowska, KS Lee, C Wylie, J Bailie, N Hayman, <u>JH Conigrave</u>, ... (2019). Approaches for improving practice in detection and treatment of unhealthy alcohol use in primary health care: Where are the gaps? *The Australasian Professional Society on Alcohol & other Drugs (APSAD)*
+### M Dzidowska, KSK Lee, C Wylie, J Bailie, N Hayman, <u>JH Conigrave</u>, ... (2019). Approaches for improving practice in detection and treatment of unhealthy alcohol use in primary health care: Where are the gaps? *The Australasian Professional Society on Alcohol & other Drugs (APSAD)*
 
 N/A
 
@@ -414,6 +417,8 @@ N/A
 
 S Farnbach, KSK Lee, A Eades, C Foley, <u>JH Conigrave</u>, S Wilson, K Conigrave, S Shakeshaft
 
+--- \$40,000
+
 ### Better data on methamphetamines and other drugs among Indigenous Australians to inform policy and practice
 
 National Health and Medical Research Council
@@ -424,12 +429,5 @@ N/A
 
 KSK Lee, S Wilson, K Conigrave, T Chikritzhs, N Hayman, A Dawson, R Ali, <u>JH Conigrave</u>, M Fitts
 
-
-<!-- Citations {data-icon=chart-line} -->
-<!-- -------------------------------------------------------------------------------- -->
-
-<!-- ```{r citation-plot,fig.height=4, fig.width=3, fig.align="center", echo = FALSE} -->
-<!-- cit_plot -->
-<!-- ``` -->
-
+--- \$1,800,000
 
