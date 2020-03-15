@@ -9,7 +9,6 @@ output:
     css: ["style-rules.css", "resume"]
 ---
 
-
 ```{r data-load, message=FALSE, warning=FALSE, echo=FALSE}
 library(dplyr); library(ggplot2)
 
@@ -252,14 +251,6 @@ N/A
 
 Present - 2019 
 
-### **Gemma Khodr**
-
-Masters student - Auxillary Supervisor
-
-N/A
-
-Present - 2018
-
 Committees {data-icon=comments}
 --------------------------------------------------------------------------------
 
@@ -277,7 +268,7 @@ Present - 2019
 R packages {data-icon=keyboard}
 --------------------------------------------------------------------------------
 
-### <u>JH Conigrave</u> (2019) corx: Create and Format Correlation Matrices. *CRAN*. https://conigrave.com/corx
+### <u>JH Conigrave</u> (2019). corx: Create and Format Correlation Matrices. *CRAN*. https://conigrave.com/corx
 
 --- `r CRAN_downloads$dls[2] %>% format(big.mark = ",")` downloads
 
@@ -407,6 +398,18 @@ Melbourne, Australia
 Grants {data-icon=file-invoice-dollar}
 --------------------------------------------------------------------------------
 
+### Better data on methamphetamines and other drugs among Indigenous Australians to inform policy and practice
+
+National Health and Medical Research Council
+
+N/A
+
+2019
+
+KSK Lee, S Wilson, K Conigrave, T Chikritzhs, N Hayman, A Dawson, R Ali, <u>JH Conigrave</u>, M Fitts
+
+--- \$2,630,000
+
 ### Early intervention for unhealthy alcohol use among older Aboriginal and Torres Strait Islander peoples: using the Grog Survey App
 
 National Drug and Alcohol Research Centre
@@ -419,15 +422,5 @@ S Farnbach, KSK Lee, A Eades, C Foley, <u>JH Conigrave</u>, S Wilson, K Conigrav
 
 --- \$40,000
 
-### Better data on methamphetamines and other drugs among Indigenous Australians to inform policy and practice
 
-National Health and Medical Research Council
-
-N/A
-
-2019
-
-KSK Lee, S Wilson, K Conigrave, T Chikritzhs, N Hayman, A Dawson, R Ali, <u>JH Conigrave</u>, M Fitts
-
---- \$1,800,000
 
