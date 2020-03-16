@@ -320,7 +320,7 @@ pre_prints
 
 ```
 
-Peer review {data-icon=file}
+Peer review {data-icon=user-friends}
 -------------------------------------------------------------------------------
 
 ### Applied Psychology: Health and Well-Being
