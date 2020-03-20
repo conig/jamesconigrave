@@ -9,13 +9,20 @@ output:
     css: ["style-rules.css", "resume"]
 ---
 
-```{r data-load, message=FALSE, warning=FALSE, echo=FALSE}
+```{r data-load, message=FALSE, warning=FALSE, echo=FALSE, include = FALSE}
 library(dplyr); library(ggplot2)
 
-id = "m0d4TKcAAAAJ&hl"
+id = "m0d4TKcAAAAJ"
+
+#get pubs from google scholar
 pubs = scholar::get_publications(id) %>%
-  filter(journal != "ACU Research Bank") %>% 
-  arrange(desc(year), desc(cites))
+  filter(journal != "ACU Research Bank") %>%
+  mutate(author_last = gsub("^\\w{1,} *","",author)) %>% 
+  arrange(desc(year), author_last)
+
+# if there are any authors containing "..." get the full authorlist and format
+
+pubs$author = scholar::get_complete_authors(id, pubs$pubid)
 
 pubs = pubs %>% dplyr::mutate_if(is.factor, as.character)
 
@@ -113,7 +120,7 @@ Skills {#skills}
 Academic metrics {#skills}
 --------------------------------------------------------------------------------
 
-- Publications: `r nrow(pubs) + 1`
+- Publications: `r nrow(pubs)`
 
 - Citations: `r total_citations`
 
@@ -347,8 +354,6 @@ N/A
 
 2019
 
-
-
 Conference contributions {data-icon=globe-asia}
 --------------------------------------------------------------------------------
 
@@ -420,7 +425,7 @@ N/A
 
 2019
 
-KSK Lee, S Wilson, K Conigrave, T Chikritzhs, N Hayman, A Dawson, R Ali, <u>JH Conigrave</u>, M Fitts
+KSK Lee, S Wilson, K Conigrave, T Chikritzhs, N Hayman, A Dawson, R Ali, <u>JH Conigrave</u> (CIH), M Fitts
 
 --- \$2,630,000
 
@@ -432,9 +437,8 @@ N/A
 
 2019
 
-S Farnbach, KSK Lee, A Eades, C Foley, <u>JH Conigrave</u>, S Wilson, K Conigrave, S Shakeshaft
+S Farnbach, KSK Lee, A Eades, C Foley, <u>JH Conigrave</u> (CIE), S Wilson, K Conigrave, S Shakeshaft
 
 --- \$40,000
-
 
 
