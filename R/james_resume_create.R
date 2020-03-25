@@ -48,7 +48,7 @@ update_resume = function(){
   if(!dir.exists(paste0(gh,"/.git"))){
     message("git dir doesn't exist, initialising... ",glue::glue("{gh}"))
 
-    pass = shell("git config user.password", intern = TRUE)
+    pass = shell("git config --global user.password", intern = TRUE)
 
     shell(paste(glue::glue("cd {gh}"),
           "git init",
