@@ -10,7 +10,7 @@ output:
 knit: pagedown::chrome_print
 ---
 
-```{r data-load, message=FALSE, warning=FALSE, echo=FALSE}
+```{r data-load, message=FALSE, warning=FALSE, echo=FALSE, include = FALSE}
 library(dplyr); library(ggplot2)
 
 id = "m0d4TKcAAAAJ"
@@ -19,13 +19,7 @@ pubs = scholar::get_publications(id) %>%
   mutate(author_last = gsub("^\\w{1,} *","",author)) %>% 
   arrange(desc(year), author_last)
 
-pubs$author = lapply(seq_along(pubs[,"author"]), function(r){
-  if(!grepl("\\.\\.\\.",pubs$author[r])) return(as.character(pubs$author[r]))
-
-  authors = capture.output(cat(scholar::get_complete_authors(id, as.character(pubs$pubid[r]))))[2]
-  Sys.sleep(sample(seq(1,2,by = 0.001),1)) # try to make pauses non-robotic
-  jamesconigrave:::format_authors(authors)
-  })
+pubs$author = scholar::get_complete_authors(id, pubs$pubid)
 
 pubs = pubs %>% dplyr::mutate_if(is.factor, as.character)
 

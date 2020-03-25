@@ -252,11 +252,13 @@ Supervision {data-icon=users}
 
 ### **Teagan Weatherall** 
 
-Masters Student - Auxillary Supervisor
+PhD Student - Auxillary Supervisor
 
 N/A
 
 Present - 2019 
+
+--- Primary supervisor is Prof. Kylie Lee
 
 Committees {data-icon=comments}
 --------------------------------------------------------------------------------
@@ -330,6 +332,14 @@ pre_prints
 Peer review {data-icon=user-friends}
 -------------------------------------------------------------------------------
 
+### Journal of Health Science and Medical Research
+
+N/A
+
+N/A
+
+2020
+
 ### Applied Psychology: Health and Well-Being
 
 N/A
@@ -357,7 +367,7 @@ N/A
 Conference contributions {data-icon=globe-asia}
 --------------------------------------------------------------------------------
 
-### <u>JH Conigrave</u>, KSK Lee, K Harrison, T Dobbins, N Hayman, S Wilson, ... (2019). Supporting Aboriginal Community Controlled Health Services to reduce the harms from alcohol. *The Australasian Professional Society on Alcohol & other Drugs (APSAD)*
+### <u>JH Conigrave</u>, KS Lee, K Harrison, T Dobbins, N Hayman, S Wilson, R Ivers, PS Haber, B Hummerston, D Johnson, D Gray, KM Conigrave (2019). Supporting Aboriginal Community Controlled Health Services to reduce the harms from alcohol. *The Australasian Professional Society on Alcohol & other Drugs (APSAD)*
 
 N/A
 
@@ -367,7 +377,7 @@ Hobart, Australia
 
 
 
-### KSK Lee, S Wilson, <u>JH Conigrave</u>, J Perry, S Callinan, N Hayman, R Room, ... (2019). Re-thinking how we ask Indigenous Australia to describe their drinking. *The Australasian Professional Society on Alcohol & other Drugs (APSAD)*
+### KSK Lee, S Wilson, <u>JH Conigrave</u>, J Perry, S Callinan, N Hayman, R Room, T Chikritzhs, D Gray, T Slade, KM Conigrave (2019). Re-thinking how we ask Indigenous Australia to describe their drinking. *The Australasian Professional Society on Alcohol & other Drugs (APSAD)*
 
 N/A
 
@@ -387,7 +397,7 @@ Hobart, Australia
 2019
 
 
-### M Dzidowska, KSK Lee, C Wylie, J Bailie, N Hayman, <u>JH Conigrave</u>, ... (2019). Approaches for improving practice in detection and treatment of unhealthy alcohol use in primary health care: Where are the gaps? *The Australasian Professional Society on Alcohol & other Drugs (APSAD)*
+### M Dzidowska, KSK Lee, C Wylie, J Bailie, N Hayman, <u>JH Conigrave</u>, N Percival, KM Conigrave (2019). Approaches for improving practice in detection and treatment of unhealthy alcohol use in primary health care: Where are the gaps? *The Australasian Professional Society on Alcohol & other Drugs (APSAD)*
 
 N/A
 
