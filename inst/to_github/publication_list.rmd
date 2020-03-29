@@ -14,7 +14,7 @@ knit: pagedown::chrome_print
 library(dplyr); library(ggplot2)
 
 id = "m0d4TKcAAAAJ"
-pubs = scholar::get_publications(id) %>%
+pubs = scholar::get_publications(id, flush = TRUE) %>%
   filter(journal != "ACU Research Bank") %>%
   mutate(author_last = gsub("^\\w{1,} *","",author)) %>% 
   arrange(desc(year), author_last)

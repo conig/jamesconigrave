@@ -15,7 +15,7 @@ library(dplyr); library(ggplot2)
 id = "m0d4TKcAAAAJ"
 
 #get pubs from google scholar
-pubs = scholar::get_publications(id) %>%
+pubs = scholar::get_publications(id, flush = TRUE) %>%
   filter(journal != "ACU Research Bank") %>%
   mutate(author_last = gsub("^\\w{1,} *","",author)) %>% 
   arrange(desc(year), author_last)
@@ -258,20 +258,20 @@ N/A
 
 Present - 2019 
 
---- Primary supervisor is Prof. Kylie Lee
+--- Primary supervisor is A/Prof. Kylie Lee
 
 Committees {data-icon=comments}
 --------------------------------------------------------------------------------
 
 ### **Australasian Professional Society of Alcohol and Other Drugs (APSAD)**
 
-Early-Mid Career Researchers (EMCR) Subcomittee
+Early-Mid Career Researchers Subcomittee
 
 N/A
 
 Present - 2019
 
---- Chair in 2020
+--- Elected Chair in 2020
 
 
 R packages {data-icon=keyboard}
@@ -294,14 +294,13 @@ N/A
 
 2019
 
-### <u>JH Conigrave</u> (2019). papertools: Useful Tools For Writing Papers in Rmarkdown. *GitHub*. https://github.com/JConigrave/papertools
+### <u>JH Conigrave</u> (2019). papyr: Tools for writing academic papers with rmarkdown. *GitHub*. https://github.com/JConigrave/papyr
 
 N/A
 
 N/A
 
 2019
-
 
 ### <u>JH Conigrave</u> (2017). Conigrave: Flexible Tools for Multiple Imputation. *CRAN*. https://CRAN.R-project.org/package=Conigrave
 

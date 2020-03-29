@@ -1,6 +1,6 @@
 Package: jamesconigrave
 Title: Contains and updates James Conigrave's resume
-Version: 0.2.0
+Version: 0.3.0
 Authors@R: 
     person(given = "James",
            family = "Conigrave",
