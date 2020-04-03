@@ -143,7 +143,7 @@ James Conigrave, PhD {#title}
 
 ### **Researcher --- Motivation, substance use and public health**
 
-I am a researcher and data-scientist in the field of addiction medicine. My interests include motivation, data-feedback, automation, and community empowerment.
+James is a Research Associate from the Centre for Research Excellence: Indigenous Health and Alcohol, at the University of Sydney. His research focuses using self-determination theory to understand alcohol consumption and dependence.
 
 
 Education {data-icon=graduation-cap data-concise=true}

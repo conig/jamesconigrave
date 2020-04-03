@@ -60,13 +60,10 @@ update_resume = function(){
 
   shell(paste(glue::glue("cd {gh}"),
               "git add .",
-              glue::glue("git config user.password"),
+            #  glue::glue("git config user.password"),
               'git commit -m "automatic resume update"',
               'git push --force origin master',sep = "&"))
 }
-
-
-
 
 
 fix_case = function(string,
