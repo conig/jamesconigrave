@@ -45,10 +45,10 @@ update_resume = function(){
       system.file("to_github/jamesconigrave_resume.pdf", package = "jamesconigrave")
   )
 
+      pass = shell("git config --global user.password", intern = TRUE)
+
   if(!dir.exists(paste0(gh,"/.git"))){
     message("git dir doesn't exist, initialising... ",glue::glue("{gh}"))
-
-    pass = shell("git config --global user.password", intern = TRUE)
 
     shell(paste(glue::glue("cd {gh}"),
           "git init",
@@ -60,6 +60,7 @@ update_resume = function(){
 
   shell(paste(glue::glue("cd {gh}"),
               "git add .",
+              glue::glue("git config user.password {pass}"),
             #  glue::glue("git config user.password"),
               'git commit -m "automatic resume update"',
               'git push --force origin master',sep = "&"))
