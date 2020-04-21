@@ -77,6 +77,8 @@ pre_prints = glue::glue(pattern, .envir = as.environment(pre_prints)) %>%
 comm = read.csv(system.file("db/commentaries.csv", package = "jamesconigrave"), stringsAsFactors = F)
 comm$cite_word = ""
 comm$cites = "N/A"
+comm$number = ""
+comm$journal =  ifelse(nchar(comm$journal) > 0, paste0("*",comm$journal,"*"), comm$journal)
 
 commentaries_other = glue::glue(pattern, .envir = as.environment(comm)) %>% 
   fix_grammar()
