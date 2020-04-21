@@ -74,6 +74,13 @@ publications = glue::glue(pattern, .envir = as.environment(pubs)) %>%
 pre_prints = glue::glue(pattern, .envir = as.environment(pre_prints)) %>% 
    fix_grammar
 
+comm = read.csv(system.file("db/commentaries.csv", package = "jamesconigrave"), stringsAsFactors = F)
+comm$cite_word = ""
+comm$cites = "N/A"
+
+commentaries_other = glue::glue(pattern, .envir = as.environment(comm)) %>% 
+  fix_grammar()
+
 total_citations = scholar::get_profile(id)$total_cites
  
  h_index = scholar::predict_h_index(id)[1,2]
@@ -318,6 +325,16 @@ Publications {data-icon=file}
 publications
 
 ```
+
+Commentaries on work {data-icon=quote-left}
+--------------------------------------------------------------------------------
+
+```{r results = "asis", echo = FALSE, message = FALSE }
+
+commentaries_other
+
+```
+
 
 Pre-prints {data-icon=file}
 --------------------------------------------------------------------------------
