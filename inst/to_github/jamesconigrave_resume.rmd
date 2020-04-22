@@ -18,16 +18,18 @@ id = "m0d4TKcAAAAJ"
 pubs = scholar::get_publications(id, flush = TRUE) %>%
   filter(journal != "ACU Research Bank") %>%
   mutate(author_last = gsub("^\\w{1,} *","",author)) %>% 
+  mutate_if(is.factor, as.character) %>% 
   arrange(desc(year), author_last)
+
+pubs$doi = get_doi(pubs)
+pubs$doi = ifelse(!is.na(pubs$doi), paste0("https://doi.org/", pubs$doi), "")
 
 # if there are any authors containing "..." get the full authorlist and format
 
 pubs$author = scholar::get_complete_authors(id, pubs$pubid)
 
-pubs = pubs %>% dplyr::mutate_if(is.factor, as.character)
-
 pubs$journal = ifelse(nchar(pubs$journal) > 0, paste0("*",pubs$journal,"*"), pubs$journal)
-pubs$number = ifelse(nchar(pubs$number) > 0, paste0("*",pubs$number,"*"), pubs$number)
+pubs$number = ifelse(nchar(pubs$number) > 0, paste0(" *",pubs$number,"*"), pubs$number)
 
 pubs$cite_word = ifelse(pubs$cites == 1, "citation","citations")
 pubs$cite_word = ifelse(pubs$cites == 0, "",pubs$cite_word)
@@ -53,7 +55,7 @@ pubs =  pubs[pubs$journal != "*PsyArXiv*",]
 # 
 # "
 
-pattern = "### {author} ({year}). {title}. {journal} {number}
+pattern = "### {author} ({year}). {title}. {journal}{number}. {doi}
 
 {cites} {cite_word}
 
@@ -78,6 +80,7 @@ comm = read.csv(system.file("db/commentaries.csv", package = "jamesconigrave"), 
 comm$cite_word = ""
 comm$cites = "N/A"
 comm$number = ""
+comm$doi = ""
 comm$journal =  ifelse(nchar(comm$journal) > 0, paste0("*",comm$journal,"*"), comm$journal)
 
 commentaries_other = glue::glue(pattern, .envir = as.environment(comm)) %>% 

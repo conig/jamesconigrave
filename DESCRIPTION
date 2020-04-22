@@ -20,5 +20,8 @@ Imports:
     cranlogs,
     rmarkdown,
     stringr,
-    magrittr
+    magrittr,
+    stringdist,
+    rcrossref,
+    cli
 RoxygenNote: 7.1.0

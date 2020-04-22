@@ -25,3 +25,29 @@ format_author = function(author){
   trimws(paste(first, lastname))
 
 }
+
+#' get_doi
+#'
+#' Finds dois for scholar pubs
+#' @param pubs scholar::get_publications output
+#' @export
+
+get_doi = function(pubs) {
+  sp <- cli::make_spinner("star", template = "Searching for DOIs {spin}")
+  results = lapply(seq_along(pubs[, 1]), function(i)
+  {
+    qry <- rcrossref::cr_works(query = paste(pubs$title[i], pubs$journal[i], sep = ","),
+                               limit = 1)$data[1,]
+    sp$spin()
+    if (stringdist::stringdist(tolower(qry$title), tolower(pubs$title[i])) > 2) {
+      return(NA)
+    }
+
+    qry$doi
+
+  })
+  sp$finish()
+  results <- unlist(results)
+  results
+}
+
