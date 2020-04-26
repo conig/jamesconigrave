@@ -37,7 +37,8 @@ get_doi = function(pubs) {
   results = lapply(seq_along(pubs[, 1]), function(i)
   {
     qry <- rcrossref::cr_works(query = paste(pubs$title[i], pubs$journal[i], sep = ","),
-                               limit = 1)$data[1,]
+                               limit = 5)$data
+    qry <- qry[!grepl("supp",qry$doi),][1,]
     sp$spin()
     if (stringdist::stringdist(tolower(qry$title), tolower(pubs$title[i])) > 2) {
       return(NA)
