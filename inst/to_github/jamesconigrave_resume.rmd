@@ -115,7 +115,7 @@ Contact Info {#contact}
 - <i class="fa fa-github"></i> [github.com/conig](https://github.com/JConigrave)
 - <i class="fa fa-envelope"></i> james@conigrave.com
 - <i class="fa fa-globe-asia"></i> [conigrave.com](https://conigrave.com)
-- <i class="fa fa-phone"></i> +61 9515 9767
+<!-- - <i class="fa fa-phone"></i> +61 9515 9767 -->
 
 
 Skills {#skills}

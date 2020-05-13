@@ -65,7 +65,7 @@ update_resume = function(){
               glue::glue("git config user.password {pass}"),
               glue::glue("git config user.password"),
               'git commit -m "automatic resume update"',
-              'git push --force https://github.com/JConigrave/resume.git',sep = "&"))
+              glue::glue('git push --force https://{username}:{pass}@github.com/conig/resume.git'),sep = "&"))
 }
 
 
