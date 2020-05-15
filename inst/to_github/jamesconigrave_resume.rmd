@@ -21,7 +21,7 @@ pubs = scholar::get_publications(id, flush = TRUE) %>%
   mutate_if(is.factor, as.character) %>% 
   arrange(desc(year), author_last)
 
-pubs$doi = get_doi(pubs)
+pubs$doi = jamesconigrave::get_doi(pubs)
 pubs$doi = ifelse(!is.na(pubs$doi), paste0("https://doi.org/", pubs$doi), "")
 
 # if there are any authors containing "..." get the full authorlist and format
@@ -38,7 +38,7 @@ pubs$cites = ifelse(pubs$cites == 0, "N/A", paste("---",pubs$cites))
 pubs$author = pubs$author %>% 
   gsub("J Conigrave", "JH Conigrave",.) %>% 
   gsub("JH Conigrave","<u>JH Conigrave<\\/u>",.) %>% 
-  gsub("KSK Lee","KSK Lee",.)
+  gsub("KS Lee","KSK Lee",.)
 
 pre_prints = pubs[pubs$journal == "*PsyArXiv*",]
 pubs =  pubs[pubs$journal != "*PsyArXiv*",]
@@ -112,11 +112,10 @@ Aside
 Contact Info {#contact}
 --------------------------------------------------------------------------------
 
-- <i class="fa fa-github"></i> [github.com/conig](https://github.com/JConigrave)
 - <i class="fa fa-envelope"></i> james@conigrave.com
+- <i class="fa fa-github"></i> [github.com/conig](https://github.com/JConigrave)
 - <i class="fa fa-globe-asia"></i> [conigrave.com](https://conigrave.com)
 <!-- - <i class="fa fa-phone"></i> +61 9515 9767 -->
-
 
 Skills {#skills}
 --------------------------------------------------------------------------------
@@ -141,11 +140,11 @@ Academic metrics {#skills}
 Disclaimer {#disclaimer}
 --------------------------------------------------------------------------------
 
-This CV is an HTML document created using the 'pagedown' library in R. The publication list and academic metrics are procedurally generated from google scholar using the 'scholar' library. Check out the code: https://github.com/conig/resume. This document updates automatically daily, get the latest version: https://conigrave.com/resume.
+This HTML document was created using 'pagedown' in R. Publications are generated from Google Scholar using the 'scholar' library. [Check out the code on GitHub](https://github.com/conig/resume/blob/master/jamesconigrave_resume.rmd).
 
-Last updated:
+This document updates daily, get the latest version: [conigrave.com/resume](https://conigrave.com/resume).
 
-`r Sys.time()` AEDT
+Last updated: `r Sys.time()` AEDT
 
 Main
 ================================================================================
