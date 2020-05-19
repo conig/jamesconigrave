@@ -37,7 +37,7 @@ extra_info = function(row){
     info <- pubs[row, c("cites","tweets","media")]
     info[is.na(info)] = 0
     names(info) = c("citation","tweet","mainstream media outlet")
-    names(info)[info > 0] = paste0(names(info)[info > 0],"s")
+    names(info)[info > 1] = paste0(names(info)[info > 1],"s")
     info = subset(info, select = info > 0)
     plain_text <- paste(paste(info, names(info)), collapse = ", ")
     
