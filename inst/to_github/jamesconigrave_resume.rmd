@@ -23,6 +23,9 @@ pubs = scholar::get_publications(id, flush = TRUE) %>%
 
 pubs$doi = jamesconigrave::get_doi(pubs)
 pubs$doi = ifelse(!is.na(pubs$doi), paste0("https://doi.org/", pubs$doi), "")
+pubs = lapply(pubs$doi, jamesconigrave::altmetric) %>% do.call(rbind,.) %>% 
+  cbind(pubs, .)
+
 
 # if there are any authors containing "..." get the full authorlist and format
 
@@ -31,9 +34,23 @@ pubs$author = scholar::get_complete_authors(id, pubs$pubid)
 pubs$journal = ifelse(nchar(pubs$journal) > 0, paste0("*",pubs$journal,"*"), pubs$journal)
 pubs$number = ifelse(nchar(pubs$number) > 0, paste0(" *",pubs$number,"*"), pubs$number)
 
-pubs$cite_word = ifelse(pubs$cites == 1, "citation","citations")
-pubs$cite_word = ifelse(pubs$cites == 0, "",pubs$cite_word)
-pubs$cites = ifelse(pubs$cites == 0, "N/A", paste("---",pubs$cites))
+# pubs$cite_word = ifelse(pubs$cites == 1, "citation","citations")
+# pubs$cite_word = ifelse(pubs$cites == 0, "",pubs$cite_word)
+# start_stats = ifelse(pubs$cites == 0, "N/A", paste("---",pubs$cites))
+
+extra_info = function(row){
+    info <- pubs[row, c("cites","tweets","media")]
+    info[is.na(info)] = 0
+    names(info) = c("citation","tweet","mainstream media outlet")
+    names(info)[info > 0] = paste0(names(info)[info > 1],"s")
+    info = subset(info, select = info > 1)
+    plain_text <- paste(paste(info, names(info)), collapse = ", ")
+    
+    ifelse(nchar(plain_text) >0, paste0("--- ", plain_text), "N/A")
+  }
+
+pubs$extra_info = sapply(seq_along(pubs$doi), extra_info)
+
 
 pubs$author = pubs$author %>% 
   gsub("J Conigrave", "JH Conigrave",.) %>% 
@@ -57,7 +74,7 @@ pubs =  pubs[pubs$journal != "*PsyArXiv*",]
 
 pattern = "### {author} ({year}). {title}. {journal}{number}. {doi}
 
-{cites} {cite_word}
+{extra_info}
 
 N/A
 
@@ -77,8 +94,7 @@ pre_prints = glue::glue(pattern, .envir = as.environment(pre_prints)) %>%
    fix_grammar
 
 comm = read.csv(system.file("db/commentaries.csv", package = "jamesconigrave"), stringsAsFactors = F)
-comm$cite_word = ""
-comm$cites = "N/A"
+comm$extra_info = "N/A"
 comm$number = ""
 comm$doi = ""
 comm$journal =  ifelse(nchar(comm$journal) > 0, paste0("*",comm$journal,"*"), comm$journal)
@@ -105,9 +121,7 @@ CRAN_downloads = cranlogs::cran_downloads(c("corx","Conigrave"), from = "2015-01
 Aside
 ================================================================================
 
-
 <!-- ![James](james_smaller.png){width=100%} -->
-
 
 Contact Info {#contact}
 --------------------------------------------------------------------------------

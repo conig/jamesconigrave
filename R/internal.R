@@ -59,9 +59,20 @@ get_doi = function(pubs) {
 #' @export altmetric
 
 altmetric = function(doi){
-  doi = gsub(r"(^(.*?)doi.org\/)","", doi)
+  safe_get = function(x) ifelse(is.null(x), 0, x)
+
+  doi = gsub("^(.*?)doi.org\\/","", doi)
   doi = gsub("^/","",doi)
-  out <- suppressWarnings(readLines(glue::glue("https://api.altmetric.com/v1/doi/{doi}")))
+  out <- tryCatch(suppressWarnings(readLines(glue::glue("https://api.altmetric.com/v1/doi/{doi}"))),
+                  error = function(e){
+                  data.frame(tweets = NA,
+                             fb = NA,
+                             blogs = NA,
+                             score = NA,
+                             media = NA)
+                  })
+  if("data.frame" %in% class(out)) return(out)
+
   stats = jsonlite::fromJSON(out)
 
   data.frame(tweets = safe_get(stats$cited_by_tweeters_count),
@@ -71,5 +82,4 @@ altmetric = function(doi){
              media = safe_get(stats$cited_by_msm_count))
 }
 
-safe_get = function(x) ifelse(is.null(x), 0, x)
 
