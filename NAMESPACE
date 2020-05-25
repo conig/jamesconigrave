@@ -2,6 +2,7 @@
 
 export("%>%")
 export(altmetric)
+export(bio)
 export(get_doi)
 export(pubs)
 export(resume)

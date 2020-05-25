@@ -23,5 +23,6 @@ Imports:
     magrittr,
     stringdist,
     rcrossref,
-    cli
+    cli,
+    jsonlite
 RoxygenNote: 7.1.0

@@ -55,7 +55,7 @@ get_doi = function(pubs) {
 #' altmetric
 #'
 #' Finds altmetric statistics
-#' @param doi
+#' @param doi a doi
 #' @export altmetric
 
 altmetric = function(doi){

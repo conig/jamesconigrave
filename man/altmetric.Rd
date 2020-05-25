@@ -6,6 +6,9 @@
 \usage{
 altmetric(doi)
 }
+\arguments{
+\item{doi}{a doi}
+}
 \description{
 Finds altmetric statistics
 }
