@@ -121,7 +121,7 @@ Contact Info {#contact}
 --------------------------------------------------------------------------------
 
 - <i class="fa fa-envelope"></i> james@conigrave.com
-- <i class="fa fa-github"></i> [github.com/conig](https://github.com/JConigrave)
+- <i class="fa fa-github"></i> [github.com/conig](https://github.com/conig)
 - <i class="fa fa-globe-asia"></i> [conigrave.com](https://conigrave.com)
 <!-- - <i class="fa fa-phone"></i> +61 9515 9767 -->
 
@@ -305,7 +305,7 @@ N/A
 2019
 
 
-### <u>JH Conigrave</u> (2019). msemtools: Routines, tables, and figures for metaSEM analyses. *GitHub*. https://github.com/JConigrave/msemtools
+### <u>JH Conigrave</u> (2019). msemtools: Routines, tables, and figures for metaSEM analyses. *GitHub*. https://github.com/conig/msemtools
 
 N/A
 
@@ -313,7 +313,7 @@ N/A
 
 2019
 
-### <u>JH Conigrave</u> (2019). papyr: Tools for writing academic papers with rmarkdown. *GitHub*. https://github.com/JConigrave/papyr
+### <u>JH Conigrave</u> (2019). papyr: Tools for writing academic papers with rmarkdown. *GitHub*. https://github.com/conig/papyr
 
 N/A
 
