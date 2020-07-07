@@ -5,7 +5,6 @@ date: "`r Sys.Date()`"
 output:
   pagedown::html_resume:
     self_contained: true
-    yml_toc: true
     css: ["style-rules.css", "resume"]
 ---
 
@@ -120,10 +119,11 @@ Aside
 Contact Info {#contact}
 --------------------------------------------------------------------------------
 
-- <i class="fa fa-envelope"></i> james@conigrave.com
-- <i class="fa fa-github"></i> [github.com/conig](https://github.com/conig)
 - <i class="fa fa-globe-asia"></i> [conigrave.com](https://conigrave.com)
-<!-- - <i class="fa fa-phone"></i> +61 9515 9767 -->
+- <i class="fa fa-google"></i> [google scholar](https://scholar.google.com/citations?user=m0d4TKcAAAAJ&hl=en)
+- <i class="fa fa-github"></i> [github.com/conig](https://github.com/conig)
+- <i class="fa fa-envelope"></i> james@conigrave.com
+
 
 Skills {#skills}
 --------------------------------------------------------------------------------
@@ -148,7 +148,7 @@ Academic metrics {#skills}
 Disclaimer {#disclaimer}
 --------------------------------------------------------------------------------
 
-This HTML document was created using 'pagedown' in R. Publications are generated from Google Scholar using the 'scholar' library. [Check out the code on GitHub](https://github.com/conig/resume/blob/master/jamesconigrave_resume.rmd).
+This HTML document was created using [pagedown](https://github.com/rstudio/pagedown) in R. Publications are generated from Google Scholar using the [scholar](https://github.com/jkeirstead/scholar) library. [Check out the code on GitHub](https://github.com/conig/resume/blob/master/jamesconigrave_resume.rmd).
 
 This document updates daily, get the latest version: [conigrave.com/resume](https://conigrave.com/resume).
 
