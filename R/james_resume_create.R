@@ -35,8 +35,6 @@ update_resume = function(){
   md = system.file("to_github/jamesconigrave_resume.rmd", package = "jamesconigrave")
   gh = system.file("to_github", package = "jamesconigrave")
 
-
-
   rmarkdown::render(md,
                     output_file = system.file("to_github/docs/index.html", package = "jamesconigrave"))
   pagedown::chrome_print(
@@ -47,6 +45,7 @@ update_resume = function(){
 
       pass = shell("git config --global user.password", intern = TRUE)
       username = shell("git config --global user.name", intern = TRUE)
+
   if(!dir.exists(paste0(gh,"/.git"))){
     message("git dir doesn't exist, initialising... ",glue::glue("{gh}"))
 

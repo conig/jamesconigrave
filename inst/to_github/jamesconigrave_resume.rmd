@@ -162,8 +162,9 @@ James Conigrave, PhD {#title}
 
 ### **Researcher --- Motivation, substance use and public health**
 
-James is a Research Associate from the Centre for Research Excellence: Indigenous Health and Alcohol, at the University of Sydney. His research focuses using self-determination theory to understand alcohol consumption and dependence.
-
+```{r echo=FALSE, results = "asis"}
+cat(jamesconigrave::bio())
+```
 
 Education {data-icon=graduation-cap data-concise=true}
 --------------------------------------------------------------------------------
@@ -238,7 +239,7 @@ North Sydney, NSW
 
 ### **Mental Health Coordinator**
 
-SNSB Medicare Local
+Sydney North Shore and Beaches Medicare Local
 
 Frenchs Forest, NSW
 
@@ -247,10 +248,10 @@ Frenchs Forest, NSW
 <!-- - Managed the Access To Allied Psychological Services (ATAPS) program -->
 
 
-Teaching Experience {data-icon=chalkboard-teacher}
+Workshops {data-icon=chalkboard-teacher}
 --------------------------------------------------------------------------------
 
-### **Introductory statistics workshop**
+### **Introductory statistics**
 
 Centre of Research Excellence: Indigenous Health + Alcohol, <br/>The University of Sydney
 
@@ -258,7 +259,7 @@ Camperdown, Sydney
 
 2018
 
-### **Heart Rate Variability (HRV) workshop**
+### **Heart Rate Variability (HRV)**
 
 Australian Catholic University
 
@@ -455,28 +456,29 @@ Melbourne, Australia
 Grants {data-icon=file-invoice-dollar}
 --------------------------------------------------------------------------------
 
-### Better data on methamphetamines and other drugs among Indigenous Australians to inform policy and practice
+```{r results = "asis", echo = FALSE, message = FALSE}
+grants = readr::read_csv(system.file("db/grants.csv",package = "jamesconigrave")) %>% 
+  dplyr::arrange(desc(year))
+grants$author = grants$author %>% 
+  gsub("J Conigrave", "JH Conigrave",.) %>% 
+  gsub("JH Conigrave","<u>JH Conigrave<\\/u>",.) %>% 
+  gsub("KS Lee","KSK Lee",.)
+grants$amount = trimws(format(as.numeric(grants$amount), big.mark = ","))
 
-National Health and Medical Research Council
+grant_pattern = "### {author} ({year}). {title}. *{organisation}*
 
-N/A
-
-2019
-
-KSK Lee, S Wilson, K Conigrave, T Chikritzhs, N Hayman, A Dawson, R Ali, <u>JH Conigrave</u> (CIH), M Fitts
-
---- \$2,630,000
-
-### Early intervention for unhealthy alcohol use among older Aboriginal and Torres Strait Islander peoples: using the Grog Survey App
-
-National Drug and Alcohol Research Centre
+--- ${amount}
 
 N/A
 
-2019
+{year}
 
-S Farnbach, KSK Lee, A Eades, C Foley, <u>JH Conigrave</u> (CIE), S Wilson, K Conigrave, S Shakeshaft
 
---- \$40,000
+"
+
+glue::glue_data(grants, grant_pattern)
+
+```
+
 
 
