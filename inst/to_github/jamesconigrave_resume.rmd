@@ -480,5 +480,21 @@ glue::glue_data(grants, grant_pattern)
 
 ```
 
+<!-- Scholarships {data-icon=medal} -->
+<!-- -------------------------------------------------------------------------------- -->
 
+<!-- ### Australian Postgraduate Award (APA) -->
 
+<!-- Institute for Positive Psychology and Education, Australian Catholic University -->
+
+<!-- N/A -->
+
+<!-- 2018 -->
+
+<!-- ### Mindfulness Compassion and Action -->
+
+<!-- Institute for Positive Psychology and Education, Australian Catholic University -->
+
+<!-- N/A -->
+
+<!-- 2016 -->
