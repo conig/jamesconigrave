@@ -65,7 +65,7 @@ pubs =  pubs[pubs$journal != "*PsyArXiv*",]
 # 
 # "
 
-pattern = "### {author} ({year}). {title}. {journal}{number}. {doi}
+pattern = "### {author} ({year}). {title}. {journal}, {number}. {doi}
 
 {extra_info}
 
@@ -76,8 +76,10 @@ N/A
 
 "
 
-fix_grammar = function(x) gsub("(?<!\\.)\\.\\.(?!\\.)","\\.",x, perl = T) %>% gsub("\\?\\.","\\?",.)
-# regex interpretation. Match two dots and replace with one, if there's not an extra dot before, or after the two (three dots is a row).
+fix_grammar = function(x) gsub("(?<!\\.)\\.\\.(?!\\.)","\\.",x, perl = T) %>% 
+  gsub("\\?\\.","\\?",.) %>% 
+  gsub(r"(\,\s\.)",".",.)
+# regex interpretation. Match two dots and replace with one, if there's not an extra dot before, or after the two (three dots in a row).
 
 publications = glue::glue(pattern, .envir = as.environment(pubs)) %>% 
    fix_grammar
