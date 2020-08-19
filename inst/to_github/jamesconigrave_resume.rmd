@@ -416,7 +416,7 @@ N/A
 
 "
 
-glue::glue_data(conf, conf_pattern)
+fix_grammar(glue::glue_data(conf, conf_pattern))
 ```
 
 
