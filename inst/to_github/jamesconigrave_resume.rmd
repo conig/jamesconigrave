@@ -397,62 +397,27 @@ N/A
 
 Conference contributions {data-icon=globe-asia}
 --------------------------------------------------------------------------------
+```{r conf, results = "asis", echo = FALSE, message = FALSE}
+conf = readr::read_csv(system.file("db/conference.csv",package = "jamesconigrave")) %>% 
+  dplyr::arrange(desc(year))
+conf$author = conf$author %>% 
+  gsub("J Conigrave", "JH Conigrave",.) %>% 
+  gsub("JH Conigrave","<u>JH Conigrave<\\/u>",.) %>% 
+  gsub("KS Lee","KSK Lee",.)
 
-### <u>JH Conigrave</u>, KS Lee, K Harrison, T Dobbins, N Hayman, S Wilson, R Ivers, PS Haber, B Hummerston, D Johnson, D Gray, KM Conigrave (2019). Supporting Aboriginal Community Controlled Health Services to reduce the harms from alcohol. *The Australasian Professional Society on Alcohol & other Drugs (APSAD)*
-
-N/A
-
-Hobart, Australia
-
-2019
-
-
-
-### KSK Lee, S Wilson, <u>JH Conigrave</u>, J Perry, S Callinan, N Hayman, R Room, T Chikritzhs, D Gray, T Slade, KM Conigrave (2019). Re-thinking how we ask Indigenous Australia to describe their drinking. *The Australasian Professional Society on Alcohol & other Drugs (APSAD)*
+conf_pattern = "### {author} ({year}). {title}. *{conference}*
 
 N/A
 
-Hobart, Australia
+{location}
 
-2019
-
-
+{year}
 
 
-### S Rombouts, K Morley, <u>JH Conigrave</u>, E Louie, PS Haber (2019). Evidence based models of care for the treatment of alcohol use disorder in primary health care settings: A systematic review and meta-analysis. *The Australasian Professional Society on Alcohol & other Drugs (APSAD)*
+"
 
-N/A
-
-Hobart, Australia
-
-2019
-
-
-### M Dzidowska, KSK Lee, C Wylie, J Bailie, N Hayman, <u>JH Conigrave</u>, N Percival, KM Conigrave (2019). Approaches for improving practice in detection and treatment of unhealthy alcohol use in primary health care: Where are the gaps? *The Australasian Professional Society on Alcohol & other Drugs (APSAD)*
-
-N/A
-
-Hobart, Australia
-
-2019
-
-
-### <u>JH Conigrave</u>, BK Sahdra, J Ciarrochi (2017). The benefits of believing you can change: Growth mindset weakens the links between self-esteem and negative outcomes. *Contextual Behavioral Science Conference*
-
-N/A
-
-Seville, Spain
-
-2017
-
-
-### <u>JH Conigrave</u>, BK Sahdra, J Ciarrochi (2017). The benefits of believing you can change: Incremental theories weaken the links between self-esteem and negative outcomes. *Self Conference*
-
-N/A
-
-Melbourne, Australia
-
-2017
+glue::glue_data(conf, conf_pattern)
+```
 
 
 Grants {data-icon=file-invoice-dollar}
