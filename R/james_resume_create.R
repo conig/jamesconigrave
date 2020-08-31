@@ -29,18 +29,24 @@ website = function(){
 #' update_resume
 #'
 #' update resume on github
+#' @param push if TRUE, changes are pushed to github
 #' @export update_resume
 
-update_resume = function(){
-  md = system.file("to_github/jamesconigrave_resume.rmd", package = "jamesconigrave")
+update_resume = function(push = TRUE){
+  md = system.file("resume_files/jamesconigrave_resume.rmd", package = "jamesconigrave")
   gh = system.file("to_github", package = "jamesconigrave")
+  root = system.file("", package = "jamesconigrave")
+
+  resume_html = paste0(root, "/", "resume_files/docs/index.html")
+  resume_pdf = paste0(root, "/", "resume_files/jamesconigrave_resume.pdf")
 
   rmarkdown::render(md,
-                    output_file = system.file("to_github/docs/index.html", package = "jamesconigrave"))
+                    output_file = resume_html)
+
+
   pagedown::chrome_print(
-    input = system.file("to_github/docs/index.html", package = "jamesconigrave"),
-    output =
-      system.file("to_github/jamesconigrave_resume.pdf", package = "jamesconigrave")
+    input = resume_html,
+    output = resume_pdf
   )
 
       pass = shell("git config --global user.password", intern = TRUE)
@@ -50,21 +56,36 @@ update_resume = function(){
     message("git dir doesn't exist, initialising... ",glue::glue("{gh}"))
 
     shell(paste(glue::glue("cd {gh}"),
-          "git init",
+          "git clone https://github.com/JConigrave/resume.git",
+          "cd resume",
           glue::glue("git config user.password {username}"),
           glue::glue("git config user.password {pass}"),
-          "git remote add origin https://github.com/JConigrave/resume.git",
           sep = "&"))
   }
 
+      file.copy(from = resume_html,
+                to = system.file("to_github/resume/jamesconigrave_resume.html", package = "jamesconigrave"),
+                overwrite = TRUE)
+      file.copy(from = resume_pdf,
+                to = system.file("to_github/resume/jamesconigrave_resume.pdf", package = "jamesconigrave"),
+                overwrite = TRUE)
 
-  shell(paste(glue::glue("cd {gh}"),
-              "git add .",
-              glue::glue("git config user.password {username}"),
-              glue::glue("git config user.password {pass}"),
-              glue::glue("git config user.password"),
-              'git commit -m "automatic resume update"',
-              glue::glue('git push --force https://{username}:{pass}@github.com/conig/resume.git'),sep = "&"))
+      if(push) {
+        shell(
+          paste(
+            glue::glue("cd {gh}/resume"),
+            "git add .",
+            glue::glue("git config user.password {username}"),
+            glue::glue("git config user.password {pass}"),
+            glue::glue("git config user.password"),
+            'git commit -m "automatic resume update"',
+            glue::glue(
+              'git push https://{username}:{pass}@github.com/conig/resume.git'
+            ),
+            sep = "&"
+          )
+        )
+      }
 }
 
 
