@@ -10,60 +10,19 @@ output:
 
 ```{r data-load, message=FALSE, warning=FALSE, echo=FALSE, include = FALSE}
 library(dplyr); library(ggplot2)
-
 id = "m0d4TKcAAAAJ"
-
-#get pubs from google scholar
-pubs = scholar::get_publications(id, flush = TRUE) %>%
-  filter(journal != "ACU Research Bank") %>%
-  mutate(author_last = gsub("^\\w{1,} *","",author)) %>% 
-  mutate_if(is.factor, as.character) %>% 
-  arrange(desc(year), author_last)
-
-pubs$doi = jamesconigrave::get_doi(pubs)
-pubs$doi = ifelse(!is.na(pubs$doi), paste0("https://doi.org/", pubs$doi), "")
-pubs = lapply(pubs$doi, jamesconigrave::altmetric) %>% do.call(rbind,.) %>% 
-  cbind(pubs, .)
-
-# if there are any authors containing "..." get the full authorlist and format
-
-pubs$author = scholar::get_complete_authors(id, pubs$pubid)
-
-pubs$journal = ifelse(nchar(pubs$journal) > 0, paste0("*",pubs$journal,"*"), pubs$journal)
-pubs$number = ifelse(nchar(pubs$number) > 0, paste0(" *",pubs$number,"*"), pubs$number)
-
-extra_info = function(row){
-    info <- pubs[row, c("cites","tweets","media")]
-    info[is.na(info)] = 0
-    names(info) = c("citation","tweet","mainstream media outlet")
-    names(info)[info > 1] = paste0(names(info)[info > 1],"s")
-    info = subset(info, select = info > 0)
-    plain_text <- paste(paste(info, names(info)), collapse = ", ")
-    
-    ifelse(nchar(plain_text) >0, paste0("--- ", plain_text), "N/A")
-  }
-
-pubs$extra_info = sapply(seq_along(pubs$doi), extra_info)
-
-pubs$author = pubs$author %>% 
-  gsub("J Conigrave", "JH Conigrave",.) %>% 
-  gsub("JH Conigrave","<u>JH Conigrave<\\/u>",.) %>% 
-  gsub("KS Lee","KSK Lee",.)
+pubs = publications()
 
 pre_prints = pubs[pubs$journal == "*PsyArXiv*",]
 pubs =  pubs[pubs$journal != "*PsyArXiv*",]
+pubs.number = nrow(pubs)
 
-# pattern = "### {title}
-# 
-# {journal}, {number} --- {cites} citations
-# 
-# N/A
-# 
-# {year}
-# 
-# {author}
-# 
-# "
+# get top n pubs
+if(is.finite(n_pubs)) {
+  pubs <- pubs[order(pubs$cites, decreasing = TRUE),][1:n_pubs,]
+  pubs = pubs[order(pubs$author_last), ]
+  pubs = pubs[order(pubs$year, decreasing = TRUE), ]
+}
 
 pattern = "### {author} ({year}). {title}. {journal}, {number}. {doi}
 
@@ -76,17 +35,16 @@ N/A
 
 "
 
-fix_grammar = function(x) gsub("(?<!\\.)\\.\\.(?!\\.)","\\.",x, perl = T) %>% 
-  gsub("\\?\\.","\\?",.) %>% 
-  gsub(r"(\,\s\.)",".",.)
+fix_grammar = function(x){
+  x = gsub("(?<!\\.)\\.\\.(?!\\.)","\\.",x, perl = T)
+  x = gsub("\\?\\.","\\?",x)
+  x = gsub(r"(\,\s\.)",".",x)
+  x
+} 
 # regex interpretation. Match two dots and replace with one, if there's not an extra dot before, or after the two (three dots in a row).
 
-publications = glue::glue(pattern, .envir = as.environment(pubs)) %>% 
-   fix_grammar
-  
-  
-pre_prints = glue::glue(pattern, .envir = as.environment(pre_prints)) %>% 
-   fix_grammar
+publications = fix_grammar(glue::glue(pattern, .envir = as.environment(pubs)))
+pre_prints = fix_grammar(glue::glue(pattern, .envir = as.environment(pre_prints)))
 
 comm = read.csv(system.file("db/commentaries.csv", package = "jamesconigrave"), stringsAsFactors = F)
 comm$extra_info = "N/A"
@@ -141,7 +99,7 @@ Skills {#skills}
 Academic metrics {#skills}
 --------------------------------------------------------------------------------
 
-- Publications: `r nrow(pubs)`
+- Publications: `r pubs.number`
 
 - Citations: `r total_citations`
 
@@ -168,7 +126,9 @@ James Conigrave, PhD {#title}
 cat(jamesconigrave::bio())
 ```
 
-Education {data-icon=graduation-cap data-concise=true}
+```{r echo = FALSE, results = "asis"}
+
+content <- r"(Education {data-icon=graduation-cap data-concise=true}
 --------------------------------------------------------------------------------
 
 ### **PhD, Psychology**
@@ -195,9 +155,14 @@ Macquarie University
 
 Macquarie, NSW
 
-2010 - 2007
+2010 - 2007)"
+if(education) {
+  cat(content)
+}
+```
 
-Research Experience {data-icon=laptop}
+```{r echo = FALSE, results = "asis"}
+content = r"(Research Experience {data-icon=laptop}
 --------------------------------------------------------------------------------
 
 ### **Research Associate**
@@ -247,10 +212,17 @@ Frenchs Forest, NSW
 
 2014 - 2013
 
-<!-- - Managed the Access To Allied Psychological Services (ATAPS) program -->
+<!-- - Managed the Access To Allied Psychological Services (ATAPS) program -->)"
+
+if(experience){
+  cat(content)
+}
+```
 
 
-Workshops {data-icon=chalkboard-teacher}
+```{r echo = FALSE, results = "asis"}
+
+content = r"(Workshops {data-icon=chalkboard-teacher}
 --------------------------------------------------------------------------------
 
 ### **Introductory statistics**
@@ -293,15 +265,22 @@ N/A
 
 Present - 2019
 
---- Elected Chair in 2020
+--- Elected Chair in 2020)"
+
+if(workshops){
+  cat(content)
+}
+```
 
 
-R packages {data-icon=keyboard}
---------------------------------------------------------------------------------
+```{r echo = FALSE, results = "asis"}
+header = "R packages {data-icon=keyboard}
+--------------------------------------------------------------------------------\n\n"
+content = r"(
 
 ### <u>JH Conigrave</u> (2019). corx: Create and Format Correlation Matrices. *CRAN*. https://conigrave.com/corx
 
---- `r CRAN_downloads$dls[2] %>% format(big.mark = ",")` downloads
+--- [[CRAN_downloads$dls[2] %>% format(big.mark = ",")]] downloads
 
 N/A
 
@@ -326,41 +305,67 @@ N/A
 
 ### <u>JH Conigrave</u> (2017). Conigrave: Flexible Tools for Multiple Imputation. *CRAN*. https://CRAN.R-project.org/package=Conigrave
 
---- `r CRAN_downloads$dls[1] %>% format(big.mark = ",")` downloads
+--- [[CRAN_downloads$dls[1] %>% format(big.mark = ",")]] downloads
 
 N/A
 
-2017
+2017)"
 
-Publications {data-icon=file}
---------------------------------------------------------------------------------
+if(packages){
+  cat(header)
+  cat(glue::glue(content, .open = "[[", .close = "]]"))
+}
+```
+
 
 ```{r results = "asis", echo = FALSE, message = FALSE }
-
-publications
+if(n_pubs > 0){
+  
+  if(is.finite(n_pubs)){
+    pub_head = "Select publications"
+  }else{
+    pub_head = "Publications"
+  }
+  
+ cat(glue::glue("[[pub_head]] {data-icon=file}
+--------------------------------------------------------------------------------\n\n",.open = "[[", .close = "]]"))
+publications 
+}
 
 ```
 
-Commentaries on work {data-icon=quote-left}
---------------------------------------------------------------------------------
 
 ```{r results = "asis", echo = FALSE, message = FALSE }
+
+if(commentaries){
+  cat("Commentaries on work {data-icon=quote-left}
+--------------------------------------------------------------------------------\n\n")
 
 commentaries_other
+  
+}
+
 
 ```
 
-
-Pre-prints {data-icon=file}
---------------------------------------------------------------------------------
 
 ```{r results = "asis", echo = FALSE, message = FALSE }
-
-pre_prints
+if(preprints) {
+  cat(
+    "Pre-prints {data-icon=file}
+--------------------------------------------------------------------------------\n\n"
+  )
+  
+  pre_prints
+  
+}
 
 ```
 
-Peer review {data-icon=user-friends}
+
+```{r results = "asis", echo = FALSE, message = FALSE}
+if(peer_review){
+  cat(r"(Peer review {data-icon=user-friends}
 -------------------------------------------------------------------------------
 
 ### Journal of Health Science and Medical Research
@@ -393,17 +398,21 @@ N/A
 
 N/A
 
-2019
+2019)")
+  
+}
+```
 
-Conference contributions {data-icon=globe-asia}
---------------------------------------------------------------------------------
+
 ```{r conf, results = "asis", echo = FALSE, message = FALSE}
+
+if(conferences) {
+cat("Conference contributions {data-icon=globe-asia}
+--------------------------------------------------------------------------------\n\n")
+
 conf = readr::read_csv(system.file("db/conference.csv",package = "jamesconigrave")) %>% 
   dplyr::arrange(desc(year))
-conf$author = conf$author %>% 
-  gsub("J Conigrave", "JH Conigrave",.) %>% 
-  gsub("JH Conigrave","<u>JH Conigrave<\\/u>",.) %>% 
-  gsub("KS Lee","KSK Lee",.)
+conf$author = standardise_authors(conf$author)
 
 conf_pattern = "### {author} ({year}). {title}. *{conference}*
 
@@ -416,21 +425,22 @@ N/A
 
 "
 
-fix_grammar(glue::glue_data(conf, conf_pattern))
+  fix_grammar(glue::glue_data(conf, conf_pattern))
+}
+
 ```
 
 
-Grants {data-icon=file-invoice-dollar}
---------------------------------------------------------------------------------
-
 ```{r results = "asis", echo = FALSE, message = FALSE}
-grants = readr::read_csv(system.file("db/grants.csv",package = "jamesconigrave")) %>% 
+
+if(grants){
+  
+cat("Grants {data-icon=file-invoice-dollar}
+--------------------------------------------------------------------------------\n\n")
+grnt = readr::read_csv(system.file("db/grants.csv",package = "jamesconigrave")) %>% 
   dplyr::arrange(desc(year))
-grants$author = grants$author %>% 
-  gsub("J Conigrave", "JH Conigrave",.) %>% 
-  gsub("JH Conigrave","<u>JH Conigrave<\\/u>",.) %>% 
-  gsub("KS Lee","KSK Lee",.)
-grants$amount = trimws(format(as.numeric(grants$amount), big.mark = ","))
+grnt$author = standardise_authors(grnt$author)
+grnt$amount = trimws(format(as.numeric(grnt$amount), big.mark = ","))
 
 grant_pattern = "### {author} ({year}). {title}. *{organisation}*
 
@@ -443,7 +453,8 @@ N/A
 
 "
 
-glue::glue_data(grants, grant_pattern)
+glue::glue_data(grnt, grant_pattern)
+}
 
 ```
 

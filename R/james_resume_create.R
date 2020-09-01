@@ -8,7 +8,7 @@
 
 resume = function(path = NULL){
 
-  location = system.file("to_github/jamesconigrave_resume.pdf", package = "jamesconigrave")
+  location = system.file("to_github/resume/jamesconigrave_resume.pdf", package = "jamesconigrave")
 
   if(!is.null(path)){
     file.copy(from = location, to = path, overwrite = T)
@@ -28,11 +28,40 @@ website = function(){
 
 #' update_resume
 #'
-#' update resume on github
+#' update resume and optionally push changes to github
+#' @param education render education
+#' @param experience render experience
+#' @param workshop include workshops
+#' @param pacakge include packages
+#' @param n_pubs numeric, top n cited publications, defaults to Inf
+#' @param commentaries include commentaries by others
+#' @param peer_review include peer review activity
+#' @param preprint include pre-prints
+#' @param conferences include conference contributions
+#' @param grants include grants
+#' @param path if included, resume is additionally copied to path specified
 #' @param push if TRUE, changes are pushed to github
+#' @param ... additional arguments passed to css
 #' @export update_resume
 
-update_resume = function(push = TRUE){
+update_resume = function(education = TRUE,
+                         experience = TRUE,
+                         workshops = TRUE,
+                         packages = TRUE,
+                         n_pubs = Inf,
+                         commentaries = TRUE,
+                         peer_review = TRUE,
+                         preprints = TRUE,
+                         conferences = TRUE,
+                         grants = TRUE,
+                         path = NULL,
+                         push = FALSE,
+                         ...) {
+
+  css(path = system.file("resume_files/style-rules.css", package = "jamesconigrave"), ...)
+
+
+
   md = system.file("resume_files/jamesconigrave_resume.rmd", package = "jamesconigrave")
   gh = system.file("to_github", package = "jamesconigrave")
   root = system.file("", package = "jamesconigrave")
@@ -52,7 +81,7 @@ update_resume = function(push = TRUE){
       pass = shell("git config --global user.password", intern = TRUE)
       username = shell("git config --global user.name", intern = TRUE)
 
-  if(!dir.exists(paste0(gh,"/.git"))){
+  if(!dir.exists(paste0(gh,"/resume/.git"))){
     message("git dir doesn't exist, initialising... ",glue::glue("{gh}"))
 
     shell(paste(glue::glue("cd {gh}"),
@@ -69,6 +98,12 @@ update_resume = function(push = TRUE){
       file.copy(from = resume_pdf,
                 to = system.file("to_github/resume/jamesconigrave_resume.pdf", package = "jamesconigrave"),
                 overwrite = TRUE)
+
+      if(!is.null(path)){
+        file.copy(from = resume_pdf,
+                  to = path,
+                  overwrite = TRUE)
+      }
 
       if(push) {
         shell(

@@ -4,8 +4,49 @@
 \alias{update_resume}
 \title{update_resume}
 \usage{
-update_resume()
+update_resume(
+  education = TRUE,
+  experience = TRUE,
+  workshops = TRUE,
+  packages = TRUE,
+  n_pubs = Inf,
+  commentaries = TRUE,
+  peer_review = TRUE,
+  preprints = TRUE,
+  conferences = TRUE,
+  grants = TRUE,
+  path = NULL,
+  push = FALSE,
+  ...
+)
+}
+\arguments{
+\item{education}{render education}
+
+\item{experience}{render experience}
+
+\item{n_pubs}{numeric, top n cited publications, defaults to Inf}
+
+\item{commentaries}{include commentaries by others}
+
+\item{peer_review}{include peer review activity}
+
+\item{conferences}{include conference contributions}
+
+\item{grants}{include grants}
+
+\item{path}{if included, resume is additionally copied to path specified}
+
+\item{push}{if TRUE, changes are pushed to github}
+
+\item{...}{additional arguments passed to css}
+
+\item{workshop}{include workshops}
+
+\item{pacakge}{include packages}
+
+\item{preprint}{include pre-prints}
 }
 \description{
-update resume on github
+update resume and optionally push changes to github
 }
