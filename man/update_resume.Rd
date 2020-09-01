@@ -8,6 +8,8 @@ update_resume(
   education = TRUE,
   experience = TRUE,
   workshops = TRUE,
+  supervision = TRUE,
+  committees = TRUE,
   packages = TRUE,
   n_pubs = Inf,
   commentaries = TRUE,
@@ -24,6 +26,10 @@ update_resume(
 \item{education}{render education}
 
 \item{experience}{render experience}
+
+\item{supervision}{include supervision}
+
+\item{committees}{include committees}
 
 \item{n_pubs}{numeric, top n cited publications, defaults to Inf}
 

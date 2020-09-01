@@ -240,9 +240,16 @@ Australian Catholic University
 Strathfield, NSW
 
 2016
+)"
 
-Supervision {data-icon=users}
---------------------------------------------------------------------------------
+if(workshops){
+  cat(content)
+}
+```
+
+```{r echo = FALSE, results = "asis"}
+content = "Supervision {data-icon=users}
+--------------------------------------------------------------------------------\n\n
 
 ### **Teagan Weatherall** 
 
@@ -252,10 +259,16 @@ N/A
 
 Present - 2019 
 
---- Primary supervisor is A/Prof. Kylie Lee
+--- Primary supervisor is A/Prof. Kylie Lee"
 
-Committees {data-icon=comments}
---------------------------------------------------------------------------------
+if(supervision) cat(content)
+
+```
+
+
+```{r echo = FALSE, results = "asis"}
+content = "Committees {data-icon=comments}
+--------------------------------------------------------------------------------\n\n
 
 ### **Australasian Professional Society of Alcohol and Other Drugs (APSAD)**
 
@@ -265,12 +278,16 @@ N/A
 
 Present - 2019
 
---- Elected Chair in 2020)"
+--- Elected Chair in 2020"
 
-if(workshops){
+if(committees){
   cat(content)
 }
+
 ```
+
+
+
 
 
 ```{r echo = FALSE, results = "asis"}

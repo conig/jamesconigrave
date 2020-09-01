@@ -32,6 +32,8 @@ website = function(){
 #' @param education render education
 #' @param experience render experience
 #' @param workshop include workshops
+#' @param supervision include supervision
+#' @param committees include committees
 #' @param pacakge include packages
 #' @param n_pubs numeric, top n cited publications, defaults to Inf
 #' @param commentaries include commentaries by others
@@ -47,6 +49,8 @@ website = function(){
 update_resume = function(education = TRUE,
                          experience = TRUE,
                          workshops = TRUE,
+                         supervision = TRUE,
+                         committees = TRUE,
                          packages = TRUE,
                          n_pubs = Inf,
                          commentaries = TRUE,
