@@ -1,8 +1,11 @@
 #' css
 #'
 #' modify css and save to file
+#' @param path to file
+#' @param line_height gap between lines
+#' @param block_margin margin between blocks
 
-css = function(path = NULL, line_height = 1.4){
+css = function(path = NULL, line_height = 1.4, block_margin = .1){
 
 string <- r"(.blocks {
   break-inside: avoid;
@@ -30,8 +33,12 @@ h3 {
     font-size: .8rem;
 }
 
-. details{
+.details{
     padding-top: calc(var(--row-blocks-padding-top) - 0.1rem)!important;v
+}
+
+.main-block {
+    margin-top: ##block_margin##in;
 }
 
 /* table of contents, experiment */

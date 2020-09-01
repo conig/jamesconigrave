@@ -6,24 +6,31 @@
 #' @param id google scholar id
 #' @param n how many pubs to retrieve?
 #' @param exclude_journals vector of journal names to filter out
+#' @param cache_doi cache doi?
+#' @param cache_author cache author?
 
 publications = function(id = "m0d4TKcAAAAJ",
                         n = Inf,
                         journal_exclude = c("ACU Research Bank"),
-                        cache_doi = TRUE) {
+                        cache_doi = TRUE,
+                        cache_author = TRUE) {
   pubs = scholar::get_publications(id, flush = TRUE)
   pubs = pubs[!pubs$journal %in% journal_exclude,]
   pubs$author_last = gsub("^\\w{1,} *", "", pubs$author)
 
-  cache_path = paste0(system.file("", package = "jamesconigrave"),
+  doi_path = paste0(system.file("", package = "jamesconigrave"),
                       "/",
                       id,
                       "_doi.rds")
+  author_path = paste0(system.file("", package = "jamesconigrave"),
+                    "/",
+                    id,
+                    "_authors.rds")
 
   # merge in DOI information
 
-  if (file.exists(cache_path)) {
-    dois <- readRDS(cache_path)
+  if (file.exists(doi_path)) {
+    dois <- readRDS(doi_path)
     pubs <- merge(pubs, dois, all.x = TRUE)
   } else{
     pubs$doi = NA
@@ -34,7 +41,7 @@ publications = function(id = "m0d4TKcAAAAJ",
   if (cache_doi) {
     to_cache <- pubs[, c("pubid", "doi")]
 
-    saveRDS(to_cache, file = cache_path)
+    saveRDS(to_cache, file = doi_path)
   }
 
   # add altmetric --------------------------------------
@@ -60,6 +67,26 @@ publications = function(id = "m0d4TKcAAAAJ",
   }
 
   pubs$extra_info = sapply(seq_along(pubs$doi), extra_info)
+
+  # get compelte authors ---------
+
+  if (file.exists(author_path)) {
+    complete_authors <- readRDS(author_path)
+    pubs <- merge(pubs, complete_authors, all.x = TRUE)
+  } else{
+    pubs$complete_authors = NA
+  }
+
+  if(any(is.na(pubs$complete_authors))){
+  pubs$complete_authors[is.na(pubs$complete_authors)] = scholar::get_complete_authors(id, pubs$pubid[is.na(pubs$complete_authors)])
+  }
+
+  if (cache_author) {
+    to_cache <- pubs[, c("pubid", "complete_authors")]
+    saveRDS(to_cache, file = author_path)
+  }
+
+  pubs$author = pubs$complete_authors
 
   pubs$author = standardise_authors(pubs$author)
 
