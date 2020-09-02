@@ -108,7 +108,7 @@ Academic metrics {#skills}
 Disclaimer {#disclaimer}
 --------------------------------------------------------------------------------
 
-This HTML document was created using [pagedown](https://github.com/rstudio/pagedown) in R. Publications are generated from Google Scholar using the [scholar](https://github.com/jkeirstead/scholar) library. [Check out the code on GitHub](https://github.com/conig/resume/blob/master/jamesconigrave_resume.rmd).
+This HTML document was created using [pagedown](https://github.com/rstudio/pagedown) in R. Publications are generated from Google Scholar using the [scholar](https://github.com/jkeirstead/scholar) library. [Check out the code on GitHub](https://github.com/conig/jamesconigrave/).
 
 This document updates daily, get the latest version: [conigrave.com/resume](https://conigrave.com/resume).
 
