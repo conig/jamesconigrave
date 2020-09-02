@@ -64,13 +64,27 @@ update_resume = function(education = TRUE,
 
   css(path = system.file("resume_files/style-rules.css", package = "jamesconigrave"), ...)
 
-
-
   md = system.file("resume_files/jamesconigrave_resume.rmd", package = "jamesconigrave")
   gh = system.file("to_github", package = "jamesconigrave")
   root = system.file("", package = "jamesconigrave")
 
-  resume_html = paste0(root, "/", "resume_files/docs/index.html")
+  pass = shell("git config --global user.password", intern = TRUE)
+  username = shell("git config --global user.name", intern = TRUE)
+
+  if(!dir.exists(paste0(gh,"/resume/.git"))){
+    message("git dir doesn't exist, initialising... ",glue::glue("{gh}"))
+
+    shell(paste(glue::glue("cd {gh}"),
+                "git clone https://github.com/JConigrave/resume.git",
+                "cd resume",
+                glue::glue("git config user.password {username}"),
+                glue::glue("git config user.password {pass}"),
+                sep = "&"))
+  }
+
+
+
+  resume_html = paste0(root, "/", "to_github/resume/docs/index.html")
   resume_pdf = paste0(root, "/", "resume_files/jamesconigrave_resume.pdf")
 
   rmarkdown::render(md,
@@ -82,23 +96,8 @@ update_resume = function(education = TRUE,
     output = resume_pdf
   )
 
-      pass = shell("git config --global user.password", intern = TRUE)
-      username = shell("git config --global user.name", intern = TRUE)
 
-  if(!dir.exists(paste0(gh,"/resume/.git"))){
-    message("git dir doesn't exist, initialising... ",glue::glue("{gh}"))
 
-    shell(paste(glue::glue("cd {gh}"),
-          "git clone https://github.com/JConigrave/resume.git",
-          "cd resume",
-          glue::glue("git config user.password {username}"),
-          glue::glue("git config user.password {pass}"),
-          sep = "&"))
-  }
-
-      file.copy(from = resume_html,
-                to = system.file("to_github/resume/jamesconigrave_resume.html", package = "jamesconigrave"),
-                overwrite = TRUE)
       file.copy(from = resume_pdf,
                 to = system.file("to_github/resume/jamesconigrave_resume.pdf", package = "jamesconigrave"),
                 overwrite = TRUE)
