@@ -4,7 +4,14 @@
 \alias{css}
 \title{css}
 \usage{
-css(path = NULL, line_height = 1.4)
+css(path = NULL, line_height = 1.2, block_margin = 0.075)
+}
+\arguments{
+\item{path}{to file}
+
+\item{line_height}{gap between lines}
+
+\item{block_margin}{margin between blocks}
 }
 \description{
 modify css and save to file

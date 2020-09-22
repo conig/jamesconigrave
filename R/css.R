@@ -5,8 +5,7 @@
 #' @param line_height gap between lines
 #' @param block_margin margin between blocks
 
-css = function(path = NULL, line_height = 1.4, block_margin = .1){
-
+css = function(path = NULL, line_height = 1.2, block_margin = .075){
 string <- r"(.blocks {
   break-inside: avoid;
 }

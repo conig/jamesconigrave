@@ -8,13 +8,18 @@ publications(
   id = "m0d4TKcAAAAJ",
   n = Inf,
   journal_exclude = c("ACU Research Bank"),
-  cache_doi = TRUE
+  cache_doi = TRUE,
+  cache_author = TRUE
 )
 }
 \arguments{
 \item{id}{google scholar id}
 
 \item{n}{how many pubs to retrieve?}
+
+\item{cache_doi}{cache doi?}
+
+\item{cache_author}{cache author?}
 
 \item{exclude_journals}{vector of journal names to filter out}
 }

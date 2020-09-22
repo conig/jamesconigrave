@@ -44,6 +44,8 @@ publications = function(id = "m0d4TKcAAAAJ",
     saveRDS(to_cache, file = doi_path)
   }
 
+  pubs$doi = paste0("https://doi.org/",pubs$doi)
+
   # add altmetric --------------------------------------
 
   pubs <- cbind(pubs, do.call(rbind, lapply(pubs$doi, altmetric)))
