@@ -39,12 +39,12 @@ publications = function(id = "m0d4TKcAAAAJ",
   pubs$doi[is.na(pubs$doi)] = get_doi(pubs[is.na(pubs$doi), ])
 
   if (cache_doi) {
-    to_cache <- pubs[, c("pubid", "doi")]
+    to_cache <- pubs[!is.na(pubs$doi), c("pubid", "doi")]
 
     saveRDS(to_cache, file = doi_path)
   }
 
-  pubs$doi = paste0("https://doi.org/",pubs$doi)
+  pubs$doi = ifelse(is.na(pubs$doi), "",  paste0("https://doi.org/",pubs$doi))
 
   # add altmetric --------------------------------------
 
