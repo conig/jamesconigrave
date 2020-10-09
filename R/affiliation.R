@@ -5,7 +5,7 @@
 #' @export
 
 affiliation = function(papaja = FALSE){
-  out <- c("1" = "University of Sydney, Faculty of Medicine and Health, Central Clinical School, Discipline of Addiction Medicine, Centre of Research Excellence in Indigenous Health and Alcohol, New South Wales Australia",
+  out <- c("1" = "University of Sydney, Faculty of Medicine and Health, Central Clinical School, Discipline of Addiction Medicine, New South Wales Australia",
     "2" = "NHMRC Centre of Research Excellence in Indigenous Health and Alcohol")
 
   if(papaja){
