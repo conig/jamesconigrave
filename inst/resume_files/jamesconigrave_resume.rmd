@@ -14,12 +14,15 @@ id = "m0d4TKcAAAAJ"
 pubs = publications()
 
 pre_prints = pubs[pubs$journal == "*PsyArXiv*",]
-pubs =  pubs[pubs$journal != "*PsyArXiv*",]
+pubs = pubs[pubs$journal != "*PsyArXiv*",]
 pubs.number = nrow(pubs)
 
 # get top n pubs
 if(is.finite(n_pubs)) {
-  pubs <- pubs[order(pubs$cites, decreasing = TRUE),][1:n_pubs,]
+pubs$first_author <- unlist(lapply(pubs$author, function(x) strsplit(x, split = ",")[[1]][1]))
+pubs$is_me <- grepl("JH Conigrave", pubs$first_author)
+  
+  pubs <- pubs[order(pubs$is_me, pubs$cites, decreasing = TRUE),][1:n_pubs,]
   pubs = pubs[order(pubs$author_last), ]
   pubs = pubs[order(pubs$year, decreasing = TRUE), ]
 }
@@ -117,7 +120,7 @@ Last updated: `r Sys.time()` AEDT
 Main
 ================================================================================
 
-James Conigrave, PhD {#title}
+JAMES CONIGRAVE, PhD {#title}
 --------------------------------------------------------------------------------
 
 ### **Researcher --- Motivation, substance use and public health**
@@ -165,23 +168,13 @@ if(education) {
 content = r"(Research Experience {data-icon=laptop}
 --------------------------------------------------------------------------------
 
-### **Research Associate**
+### **Research Fellow**
 
 Centre of Research Excellence: Indigenous Health + Alcohol, <br/>The University of Sydney
 
 Camperdown, NSW
 
 Present - 2018
-
-### **Research Associate, Honorary**
-
-Justice Health and Forensic Mental Health Network
-
-Malabar, NSW
-
-Present - 2019
-
-<!-- - Developed algorithms to extract health data from prisoner reports -->
 
 ### **Research Assistant**
 
@@ -253,13 +246,13 @@ content = "Supervision {data-icon=users}
 
 ### **Teagan Weatherall** 
 
-PhD Student - Auxillary Supervisor
+PhD Student
 
 N/A
 
 Present - 2019 
 
---- Primary supervisor is A/Prof. Kylie Lee"
+--- Auxillary Supervisor"
 
 if(supervision) cat(content)
 
@@ -267,7 +260,7 @@ if(supervision) cat(content)
 
 
 ```{r echo = FALSE, results = "asis"}
-content = "Committees {data-icon=comments}
+content = "Committee membership {data-icon=comments}
 --------------------------------------------------------------------------------\n\n
 
 ### **Australasian Professional Society of Alcohol and Other Drugs (APSAD)**
@@ -382,48 +375,25 @@ if(preprints) {
 
 ```{r results = "asis", echo = FALSE, message = FALSE}
 if(peer_review){
-  cat(r"(Peer review {data-icon=user-friends}
--------------------------------------------------------------------------------
+  reviews <- read.csv(system.file("db/peer review.csv", package = "jamesconigrave"))
+  reviews <- reviews[reviews$IF >= 1 & !is.na(reviews$IF),]
+  reviews <- reviews[with(reviews, order(Year, Journal, decreasing = TRUE)),]
+  cat("Peer review {data-icon=user-friends}
+-------------------------------------------------------------------------------\n\n")
+  
+content <- glue::glue_data(reviews, "
 
-### Journal of Health Science and Medical Research
-
-N/A
-
-N/A
-
-2020
-
-### Journal of Individual Differences
+### {Journal}
 
 N/A
 
 N/A
 
-2020
+{Year}
 
-### Applied Psychology: Health and Well-Being
+\n")
 
-N/A
-
-N/A
-
-2019
-
-### Journal of Ethnicity in Substance Abuse
-
-N/A
-
-N/A
-
-2019
-
-### Drug and Alcohol Dependence
-
-N/A
-
-N/A
-
-2019)")
+cat(content)
   
 }
 ```

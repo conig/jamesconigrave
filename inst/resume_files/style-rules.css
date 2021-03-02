@@ -9,10 +9,18 @@
   --decorator-horizontal-margin: 0.2in;
 }
 
+a {
+  color: #00796b;
+}
+
 body {
     width: var(--content-width);
     font-family: serif !important;
     line-height: 1.4;
+}
+
+h1 {
+   text-transform: none;
 }
 
 h3 {
@@ -24,7 +32,7 @@ h3 {
     font-size: .8rem;
 }
 
-. details{
+.details{
     padding-top: calc(var(--row-blocks-padding-top) - 0.1rem)!important;v
 }
 

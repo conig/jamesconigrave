@@ -17,10 +17,18 @@ string <- r"(.blocks {
   --decorator-horizontal-margin: 0.2in;
 }
 
+a {
+  color: #00796b;
+}
+
 body {
     width: var(--content-width);
     font-family: serif !important;
     line-height: ##line_height##;
+}
+
+h1 {
+   text-transform: none;
 }
 
 h3 {
@@ -31,6 +39,7 @@ h3 {
     padding-top: calc(var(--row-blocks-padding-top) + 0.04rem)!important;
     font-size: .8rem;
 }
+
 
 .details{
     padding-top: calc(var(--row-blocks-padding-top) - 0.1rem)!important;v

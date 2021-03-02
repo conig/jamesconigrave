@@ -58,6 +58,8 @@ publications = function(id = "m0d4TKcAAAAJ",
                        pubs$number)
 
   extra_info = function(row) {
+    cid = pubs[row,"cid"]
+    cite_link = glue::glue("https://scholar.google.com/scholar?oi=bibs&hl=en&cites={cid}")
     info <- pubs[row, c("cites", "tweets", "media")]
     info[is.na(info)] = 0
     names(info) = c("citation", "tweet", "mainstream media outlet")
@@ -65,7 +67,11 @@ publications = function(id = "m0d4TKcAAAAJ",
     info = subset(info, select = info > 0)
     plain_text <- paste(paste(info, names(info)), collapse = ", ")
 
-    ifelse(nchar(plain_text) > 0, paste0("--- ", plain_text), "N/A")
+  out <-  ifelse(nchar(plain_text) > 0, paste0("--- ", plain_text), "N/A")
+  out <- gsub("citation\\b",glue::glue("[citation]({cite_link})"),out)
+  out <- gsub("citations",glue::glue("[citations]({cite_link})"),out)
+  out
+
   }
 
   pubs$extra_info = sapply(seq_along(pubs$doi), extra_info)
