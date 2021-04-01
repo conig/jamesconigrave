@@ -49,7 +49,7 @@ fix_grammar = function(x){
 publications = fix_grammar(glue::glue(pattern, .envir = as.environment(pubs)))
 pre_prints = fix_grammar(glue::glue(pattern, .envir = as.environment(pre_prints)))
 
-comm = read.csv(system.file("db/commentaries.csv", package = "jamesconigrave"), stringsAsFactors = F)
+comm = read.csv(system.file("db/commentaries.csv", package = "conig"), stringsAsFactors = F)
 comm$extra_info = "N/A"
 comm$number = ""
 comm$doi = ""
@@ -126,7 +126,7 @@ JAMES CONIGRAVE, PhD {#title}
 ### **Researcher --- Motivation, substance use and public health**
 
 ```{r echo=FALSE, results = "asis"}
-cat(jamesconigrave::bio())
+cat(conig::bio())
 ```
 
 ```{r echo = FALSE, results = "asis"}
@@ -375,10 +375,10 @@ if(preprints) {
 
 ```{r results = "asis", echo = FALSE, message = FALSE}
 if(peer_review){
-  reviews <- read.csv(system.file("db/peer review.csv", package = "jamesconigrave"))
-  reviews <- reviews[reviews$IF >= 1 & !is.na(reviews$IF),]
+  reviews <- read.csv(system.file("db/peer review.csv", package = "conig"))
+  reviews <- reviews[reviews$IF >= 1 & !is.na(reviews$IF),][1:5,]
   reviews <- reviews[with(reviews, order(Year, Journal, decreasing = TRUE)),]
-  cat("Peer review {data-icon=user-friends}
+  cat("Recent peer review {data-icon=user-friends}
 -------------------------------------------------------------------------------\n\n")
   
 content <- glue::glue_data(reviews, "
@@ -405,7 +405,7 @@ if(conferences) {
 cat("Conference contributions {data-icon=globe-asia}
 --------------------------------------------------------------------------------\n\n")
 
-conf = readr::read_csv(system.file("db/conference.csv",package = "jamesconigrave")) %>% 
+conf = readr::read_csv(system.file("db/conference.csv",package = "conig")) %>% 
   dplyr::arrange(desc(year))
 conf$author = standardise_authors(conf$author)
 
@@ -432,7 +432,7 @@ if(grants){
   
 cat("Grants {data-icon=file-invoice-dollar}
 --------------------------------------------------------------------------------\n\n")
-grnt = readr::read_csv(system.file("db/grants.csv",package = "jamesconigrave")) %>% 
+grnt = readr::read_csv(system.file("db/grants.csv",package = "conig")) %>% 
   dplyr::arrange(desc(year))
 grnt$author = standardise_authors(grnt$author)
 grnt$amount = trimws(format(as.numeric(grnt$amount), big.mark = ","))

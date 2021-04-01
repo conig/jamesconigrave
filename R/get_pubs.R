@@ -18,11 +18,11 @@ publications = function(id = "m0d4TKcAAAAJ",
   pubs = pubs[!pubs$journal %in% journal_exclude,]
   pubs$author_last = gsub("^\\w{1,} *", "", pubs$author)
 
-  doi_path = paste0(system.file("", package = "jamesconigrave"),
+  doi_path = paste0(system.file("", package = "conig"),
                       "/",
                       id,
                       "_doi.rds")
-  author_path = paste0(system.file("", package = "jamesconigrave"),
+  author_path = paste0(system.file("", package = "conig"),
                     "/",
                     id,
                     "_authors.rds")

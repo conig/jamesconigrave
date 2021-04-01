@@ -8,7 +8,7 @@
 
 resume = function(path = NULL){
 
-  location = system.file("to_github/resume/jamesconigrave_resume.pdf", package = "jamesconigrave")
+  location = system.file("to_github/resume/jamesconigrave_resume.pdf", package = "conig")
 
   if(!is.null(path)){
     file.copy(from = location, to = path, overwrite = T)
@@ -62,11 +62,11 @@ update_resume = function(education = TRUE,
                          push = FALSE,
                          ...) {
 
-  css(path = system.file("resume_files/style-rules.css", package = "jamesconigrave"), ...)
+  css(path = system.file("resume_files/style-rules.css", package = "conig"), ...)
 
-  md = system.file("resume_files/jamesconigrave_resume.rmd", package = "jamesconigrave")
-  gh = system.file("to_github", package = "jamesconigrave")
-  root = system.file("", package = "jamesconigrave")
+  md = system.file("resume_files/jamesconigrave_resume.rmd", package = "conig")
+  gh = system.file("to_github", package = "conig")
+  root = system.file("", package = "conig")
 
   pass = shell("git config --global user.password", intern = TRUE)
   username = shell("git config --global user.name", intern = TRUE)
@@ -99,7 +99,7 @@ update_resume = function(education = TRUE,
 
 
       file.copy(from = resume_pdf,
-                to = system.file("to_github/resume/jamesconigrave_resume.pdf", package = "jamesconigrave"),
+                to = system.file("to_github/resume/jamesconigrave_resume.pdf", package = "conig"),
                 overwrite = TRUE)
 
       if(!is.null(path)){

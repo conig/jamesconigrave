@@ -4,7 +4,7 @@
 #' @export
 
 papers = function(){
-  dir <- system.file("papers",  package= "jamesconigrave")
+  dir <- system.file("papers",  package= "conig")
   papers <- list.files(dir)
 
 
