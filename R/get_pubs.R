@@ -113,4 +113,26 @@ standardise_authors = function(x){
   x
 }
 
+#' predict_new_cites
+#'
+#' Predict how many cites you'll get in the current year
+#' @param end_date date at which to end at. Defaults to end of the year
+#' @export
+
+predict_new_cites = function(end_date = NULL, id = "m0d4TKcAAAAJ"){
+
+  current_date <- Sys.Date()
+  current_year <- paste0(substring(current_date,1,4))
+  start_date <- as.Date(paste(current_year, 1,1, sep = "-"))
+
+  if(is.null(end_date)){
+    end_date<- as.Date(paste(current_year, 12,31, sep = "-"))
+  }
+  so_far <- as.numeric(difftime(current_date, start_date, units = "days"))
+  total <- as.numeric(difftime(end_date, start_date, units = "days"))
+
+  cites <- unlist(scholar::get_citation_history(id)["cites"])
+  cites <- cites[length(cites)]
+  unname(round(cites / (so_far / total),2))
+}
 

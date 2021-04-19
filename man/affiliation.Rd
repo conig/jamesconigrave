@@ -4,7 +4,10 @@
 \alias{affiliation}
 \title{affiliation}
 \usage{
-affiliation()
+affiliation(papaja = FALSE)
+}
+\arguments{
+\item{papaja}{if true, affiliations are printed so they can be pasted into a papaja manuscript.}
 }
 \description{
 My affiliation
