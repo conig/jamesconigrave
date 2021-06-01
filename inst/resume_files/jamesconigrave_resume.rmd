@@ -8,6 +8,16 @@ output:
     css: ["style-rules.css", "resume"]
 ---
 
+```{css, echo=FALSE}
+.pagedjs_page:not(:first-of-type) {
+  --sidebar-width: 7.90rem;
+  --sidebar-background-color: #ffffff;
+  --main-width: calc(var(--content-width) - var(--sidebar-width));
+  --decorator-horizontal-margin: 0.2in;
+}
+```
+
+
 ```{r data-load, message=FALSE, warning=FALSE, echo=FALSE, include = FALSE}
 library(dplyr); library(ggplot2)
 id = "m0d4TKcAAAAJ"
@@ -55,7 +65,7 @@ comm$number = ""
 comm$doi = ""
 comm$journal =  ifelse(nchar(comm$journal) > 0, paste0("*",comm$journal,"*"), comm$journal)
 
-commentaries_other = glue::glue(pattern, .envir = as.environment(comm)) %>% 
+commentaries_other = glue::glue(pattern, .envir = as.environment(comm)) |> 
   fix_grammar()
 
 total_citations = scholar::get_profile(id)$total_cites
@@ -68,8 +78,8 @@ total_citations = scholar::get_profile(id)$total_cites
 #   scale_y_continuous(labels = scales::number_format(accuracy = 1)) +
 #   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
-CRAN_downloads = cranlogs::cran_downloads(c("corx","Conigrave"), from = "2015-01-01", to = lubridate::today()) %>% 
-  group_by(package) %>% 
+CRAN_downloads = cranlogs::cran_downloads(c("corx","Conigrave"), from = "2015-01-01", to = lubridate::today()) |> 
+  group_by(package) |> 
   summarise(dls = sum(count))
 
 ```
@@ -290,7 +300,7 @@ content = r"(
 
 ### <u>JH Conigrave</u> (2019). corx: Create and Format Correlation Matrices. *CRAN*. https://conigrave.com/corx
 
---- [[CRAN_downloads$dls[2] %>% format(big.mark = ",")]] downloads
+--- [[CRAN_downloads$dls[2] |> format(big.mark = ",")]] downloads
 
 N/A
 
@@ -315,7 +325,7 @@ N/A
 
 ### <u>JH Conigrave</u> (2017). Conigrave: Flexible Tools for Multiple Imputation. *CRAN*. https://CRAN.R-project.org/package=Conigrave
 
---- [[CRAN_downloads$dls[1] %>% format(big.mark = ",")]] downloads
+--- [[CRAN_downloads$dls[1] |> format(big.mark = ",")]] downloads
 
 N/A
 
@@ -339,7 +349,7 @@ if(n_pubs > 0){
   
  cat(glue::glue("[[pub_head]] {data-icon=file}
 --------------------------------------------------------------------------------\n\n",.open = "[[", .close = "]]"))
-publications 
+publications
 }
 
 ```
@@ -405,7 +415,7 @@ if(conferences) {
 cat("Conference contributions {data-icon=globe-asia}
 --------------------------------------------------------------------------------\n\n")
 
-conf = readr::read_csv(system.file("db/conference.csv",package = "conig")) %>% 
+conf = readr::read_csv(system.file("db/conference.csv",package = "conig")) |> 
   dplyr::arrange(desc(year))
 conf$author = standardise_authors(conf$author)
 
@@ -432,7 +442,7 @@ if(grants){
   
 cat("Grants {data-icon=file-invoice-dollar}
 --------------------------------------------------------------------------------\n\n")
-grnt = readr::read_csv(system.file("db/grants.csv",package = "conig")) %>% 
+grnt = readr::read_csv(system.file("db/grants.csv",package = "conig")) |> 
   dplyr::arrange(desc(year))
 grnt$author = standardise_authors(grnt$author)
 grnt$amount = trimws(format(as.numeric(grnt$amount), big.mark = ","))

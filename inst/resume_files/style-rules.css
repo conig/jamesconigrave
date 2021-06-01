@@ -16,7 +16,7 @@ a {
 body {
     width: var(--content-width);
     font-family: serif !important;
-    line-height: 1.4;
+    line-height: 1.2;
 }
 
 h1 {
@@ -32,10 +32,16 @@ h3 {
     font-size: .8rem;
 }
 
+
 .details{
     padding-top: calc(var(--row-blocks-padding-top) - 0.1rem)!important;v
+}
+
+.main-block {
+    margin-top: 0.075in;
 }
 
 /* table of contents, experiment */
 
    <link type="text/css" rel="stylesheet" href="jquery.tocify.css" />
+

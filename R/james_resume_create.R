@@ -75,7 +75,7 @@ update_resume = function(education = TRUE,
     message("git dir doesn't exist, initialising... ",glue::glue("{gh}"))
 
     shell(paste(glue::glue("cd {gh}"),
-                "git clone https://github.com/JConigrave/resume.git",
+                "git clone https://github.com/conig/resume.git",
                 "cd resume",
                 glue::glue("git config user.password {username}"),
                 glue::glue("git config user.password {pass}"),

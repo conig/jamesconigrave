@@ -10,12 +10,7 @@ string <- r"(.blocks {
   break-inside: avoid;
 }
 
-.pagedjs_page:not(:first-of-type) {
-  --sidebar-width: 7.90rem;
-  --sidebar-background-color: #ffffff;
-  --main-width: calc(var(--content-width) - var(--sidebar-width));
-  --decorator-horizontal-margin: 0.2in;
-}
+
 
 a {
   color: #00796b;

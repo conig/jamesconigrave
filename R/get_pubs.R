@@ -27,19 +27,25 @@ publications = function(id = "m0d4TKcAAAAJ",
                     id,
                     "_authors.rds")
 
+
   # merge in DOI information
 
   if (file.exists(doi_path)) {
     dois <- readRDS(doi_path)
+    names(dois) <- c("pubid", "doi","title2")
     pubs <- merge(pubs, dois, all.x = TRUE)
+    pubs$title[grepl("…",pubs$title)] <- pubs$title2[grepl("…",pubs$title)]
+    pubs$title2 <- NULL
   } else{
     pubs$doi = NA
   }
+  dois <- get_doi(pubs[is.na(pubs$doi), ])
 
-  pubs$doi[is.na(pubs$doi)] = get_doi(pubs[is.na(pubs$doi), ])
+  pubs[is.na(pubs$doi), c("title","doi")] = dois
+
 
   if (cache_doi) {
-    to_cache <- pubs[!is.na(pubs$doi), c("pubid", "doi")]
+    to_cache <- pubs[!is.na(pubs$doi), c("pubid", "doi", "title")]
 
     saveRDS(to_cache, file = doi_path)
   }

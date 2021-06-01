@@ -36,19 +36,32 @@ get_doi = function(pubs) {
   sp <- cli::make_spinner("star", template = "Searching for DOIs {spin}")
   results = lapply(seq_along(pubs[, 1]), function(i)
   {
-    qry <- rcrossref::cr_works(query = paste(pubs$title[i], pubs$journal[i], sep = ","),
-                               limit = 5)$data
-    qry <- qry[!grepl("supp",qry$doi),][1,]
-    sp$spin()
-    if (stringdist::stringdist(tolower(qry$title), tolower(pubs$title[i])) > 2) {
-      return(NA)
+    qry <- rcrossref::cr_works(
+      flq = list(
+        "query.container-title" = pubs$journal[i],
+                 "query.author" = pubs$author_last[i],
+                 "query.bibliographic" = pubs$title[i]),
+      limit = 5)$data
+
+    if(nrow(qry) == 0){
+      qry <- rcrossref::cr_works(
+        flq = list(
+          "query.author" = pubs$author_last[i],
+          "query.bibliographic" = pubs$title[i]),
+        limit = 5)$data
     }
 
-    qry$doi
+    qry <- qry[!grepl("supp",qry$doi),][which.max(qry$score),]
+    sp$spin()
+    # if (stringdist::stringdist(tolower(qry$title), tolower(pubs$title[i])) > 15) {
+    #   return(NA)
+    # }
+
+    qry[,c("title","doi")]
 
   })
   sp$finish()
-  results <- unlist(results)
+  results <- do.call(rbind, results)
   results
 }
 
