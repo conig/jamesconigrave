@@ -30,7 +30,6 @@ format_author = function(author){
 #'
 #' Finds dois for scholar pubs
 #' @param pubs scholar::get_publications output
-#' @export
 
 get_doi = function(pubs) {
   sp <- cli::make_spinner("star", template = "Searching for DOIs {spin}")
