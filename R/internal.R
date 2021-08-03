@@ -28,40 +28,31 @@ format_author = function(author){
 
 #' get_doi
 #'
-#' Finds dois for scholar pubs
-#' @param pubs scholar::get_publications output
+#' Get a doi for a publication
+#' @param title
+#' @param journal
+#' @param author_last
 
-get_doi = function(pubs) {
-  sp <- cli::make_spinner("star", template = "Searching for DOIs {spin}")
-  results = lapply(seq_along(pubs[, 1]), function(i)
-  {
+get_doi <- function(title, journal, author){
+
+  qry <- rcrossref::cr_works(
+    flq = list(
+      "query.container-title" = journal,
+      "query.author" = author,
+      "query.bibliographic" = title),
+    limit = 5)$data
+
+  if(nrow(qry) == 0){
     qry <- rcrossref::cr_works(
       flq = list(
-        "query.container-title" = pubs$journal[i],
-                 "query.author" = pubs$author_last[i],
-                 "query.bibliographic" = pubs$title[i]),
+        "query.author" = author,
+        "query.bibliographic" = title),
       limit = 5)$data
+  }
 
-    if(nrow(qry) == 0){
-      qry <- rcrossref::cr_works(
-        flq = list(
-          "query.author" = pubs$author_last[i],
-          "query.bibliographic" = pubs$title[i]),
-        limit = 5)$data
-    }
+  qry <- qry[!grepl("supp",qry$doi),][which.max(as.numeric(qry$score)),]
+  qry$doi
 
-    qry <- qry[!grepl("supp",qry$doi),][which.max(qry$score),]
-    sp$spin()
-    # if (stringdist::stringdist(tolower(qry$title), tolower(pubs$title[i])) > 15) {
-    #   return(NA)
-    # }
-
-    qry[,c("title","doi")]
-
-  })
-  sp$finish()
-  results <- do.call(rbind, results)
-  results
 }
 
 #' altmetric

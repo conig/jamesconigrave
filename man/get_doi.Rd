@@ -4,11 +4,8 @@
 \alias{get_doi}
 \title{get_doi}
 \usage{
-get_doi(pubs)
-}
-\arguments{
-\item{pubs}{scholar::get_publications output}
+get_doi(title, journal, author)
 }
 \description{
-Finds dois for scholar pubs
+Get a doi for a publication
 }

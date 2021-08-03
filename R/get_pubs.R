@@ -15,6 +15,7 @@ publications = function(id = "m0d4TKcAAAAJ",
                         cache_doi = TRUE,
                         cache_author = TRUE) {
   pubs = scholar::get_publications(id, flush = TRUE)
+  # return(pubs)
   pubs = pubs[!pubs$journal %in% journal_exclude,]
   pubs$author_last = gsub("^\\w{1,} *", "", pubs$author)
 
@@ -39,10 +40,9 @@ publications = function(id = "m0d4TKcAAAAJ",
   } else{
     pubs$doi = NA
   }
-  dois <- get_doi(pubs[is.na(pubs$doi), ])
 
-  pubs[is.na(pubs$doi), c("title","doi")] = dois
-
+  pubs[is.na(pubs$doi), ]$doi <- with(pubs[is.na(pubs$doi), ],
+                       mapply(get_doi, title, journal, author_last))
 
   if (cache_doi) {
     to_cache <- pubs[!is.na(pubs$doi), c("pubid", "doi", "title")]
