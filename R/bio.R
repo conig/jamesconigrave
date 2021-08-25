@@ -11,3 +11,15 @@ bio = function(){
     "James is interested in the relationship between alcohol consumption and basic psychological need satisfaction.",
     sep = ". ")
 }
+
+#' years_since_conferral
+#'
+#' Returns years since PhD Conferral
+#' @export
+
+years_since_conferral <- function(){
+  conferral <- as.Date("2019-05-22")
+  years <- as.numeric(difftime(Sys.Date(), conferral, units = "days") / 365.25)
+  names(years) <- paste0("Years since 2019-05-22")
+  round(years,2)
+}

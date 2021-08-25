@@ -68,17 +68,13 @@ update_resume = function(education = TRUE,
   gh = system.file("to_github", package = "conig")
   root = system.file("", package = "conig")
 
-  pass = shell("git config --global user.password", intern = TRUE)
-  username = shell("git config --global user.name", intern = TRUE)
-
   if(!dir.exists(paste0(gh,"/resume/.git"))){
     message("git dir doesn't exist, initialising... ",glue::glue("{gh}"))
 
     shell(paste(glue::glue("cd {gh}"),
                 "git clone https://github.com/conig/resume.git",
                 "cd resume",
-                glue::glue("git config user.password {username}"),
-                glue::glue("git config user.password {pass}"),
+
                 sep = "&"))
   }
 
@@ -113,12 +109,9 @@ update_resume = function(education = TRUE,
           paste(
             glue::glue("cd {gh}/resume"),
             "git add .",
-            glue::glue("git config user.password {username}"),
-            glue::glue("git config user.password {pass}"),
-            glue::glue("git config user.password"),
             'git commit -m "automatic resume update"',
             glue::glue(
-              'git push https://{username}:{pass}@github.com/conig/resume.git'
+              'git push'
             ),
             sep = "&"
           )
