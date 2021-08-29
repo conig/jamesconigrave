@@ -130,7 +130,7 @@ Last updated: `r Sys.time()` AEDT
 Main
 ================================================================================
 
-JAMES CONIGRAVE, PhD {#title}
+JAMES CONIGRAVE {#title}
 --------------------------------------------------------------------------------
 
 ### **Researcher --- Motivation, substance use and public health**
