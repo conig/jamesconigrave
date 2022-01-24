@@ -105,17 +105,9 @@ update_resume = function(education = TRUE,
       }
 
       if(push) {
-        shell(
-          paste(
-            glue::glue("cd {gh}/resume"),
-            "git add .",
-            'git commit -m "automatic resume update"',
-            glue::glue(
-              'git push'
-            ),
-            sep = "&"
-          )
-        )
+        gert::git_add(files = "*", repo = glue::glue("{gh}/resume"))
+        gert::git_commit(repo = glue::glue("{gh}/resume"), message = glue::glue("auto update {Sys.time()}"))
+        gert::git_push(repo = glue::glue("{gh}/resume"))
       }
 }
 

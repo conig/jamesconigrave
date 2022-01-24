@@ -15,6 +15,7 @@ publications = function(id = "m0d4TKcAAAAJ",
                         cache_doi = TRUE,
                         cache_author = TRUE) {
   pubs = scholar::get_publications(id, flush = TRUE)
+  pubs$year[is.na(pubs$year)] <- "In press"
   # return(pubs)
   pubs = pubs[!pubs$journal %in% journal_exclude,]
   pubs$author_last = gsub("^\\w{1,} *", "", pubs$author)
@@ -142,3 +143,27 @@ predict_new_cites = function(end_date = NULL, id = "m0d4TKcAAAAJ"){
   unname(round(cites / (so_far / total),2))
 }
 
+#' export_pubs
+#'
+#' Export publications to ris
+#' @param path path to output file
+#' @param format format of output file (ris or bib)
+#' @export
+
+export_pubs <- function(path = NULL, format = "bib"){
+  p <- publications()
+  p$bibtype <- "article"
+  p$author <- p$complete_authors
+  p$author <- gsub("J Conigrave", "JH Conigrave", p$author)
+  p$author <- gsub("\\, ", " and ", p$author)
+  p$journal <- gsub("^\\*", "" , p$journal)
+  p$journal <- gsub("\\*$", "", p$journal)
+  p$number <- trimws(p$number)
+  p$number <- gsub("^\\*", "" , p$number)
+  p$number <- gsub("\\*$", "", p$number)
+  p <- p[! p$journal %in% c("PsyArXiv", "Academy of Management Proceedings"), ]
+  if(is.null(path)) return(p)
+  bib <-  revtools::as.bibliography(p)
+  revtools::write_bibliography(bib, path, format = "bib")
+
+}

@@ -29,9 +29,9 @@ format_author = function(author){
 #' get_doi
 #'
 #' Get a doi for a publication
-#' @param title
-#' @param journal
-#' @param author_last
+#' @param title title of article
+#' @param journal journal of article
+#' @param author author name
 
 get_doi <- function(title, journal, author){
 

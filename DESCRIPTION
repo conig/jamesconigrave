@@ -24,7 +24,8 @@ Imports:
     stringdist,
     rcrossref,
     cli,
-    jsonlite
-RoxygenNote: 7.1.1
+    jsonlite,
+    revtools
+RoxygenNote: 7.1.2
 Suggests: 
     clipr

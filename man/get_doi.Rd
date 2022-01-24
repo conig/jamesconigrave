@@ -6,6 +6,13 @@
 \usage{
 get_doi(title, journal, author)
 }
+\arguments{
+\item{title}{title of article}
+
+\item{journal}{journal of article}
+
+\item{author}{author name}
+}
 \description{
 Get a doi for a publication
 }

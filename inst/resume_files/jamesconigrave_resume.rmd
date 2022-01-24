@@ -93,9 +93,9 @@ Contact Info {#contact}
 --------------------------------------------------------------------------------
 
 - <i class="fa fa-globe-asia"></i> [conigrave.com](https://conigrave.com)
+- <i class="fa fa-leaf"></i> [scopus profile](https://www.scopus.com/authid/detail.uri?authorId=57207914919)
 - <i class="fa fa-google"></i> [google scholar](https://scholar.google.com/citations?user=m0d4TKcAAAAJ&hl=en)
 - <i class="fa fa-github"></i> [github.com/conig](https://github.com/conig)
-- <i class="fa fa-envelope"></i> james@conigrave.com
 
 
 Skills {#skills}
@@ -112,9 +112,13 @@ Skills {#skills}
 Academic metrics {#skills}
 --------------------------------------------------------------------------------
 
+- Years post conferral: `r round(conig::years_since_conferral())`
+
 - Publications: `r pubs.number`
 
 - Citations: `r total_citations`
+
+- FWCI: `r round(conig::scopus_FWCI(),2)`
 
 - h-index: `r h_index`
 
@@ -301,23 +305,6 @@ content = r"(
 ### <u>JH Conigrave</u> (2019). corx: Create and Format Correlation Matrices. *CRAN*. https://conigrave.com/corx
 
 --- [[CRAN_downloads$dls[2] |> format(big.mark = ",")]] downloads
-
-N/A
-
-2019
-
-
-### <u>JH Conigrave</u> (2019). msemtools: Routines, tables, and figures for metaSEM analyses. *GitHub*. https://github.com/conig/msemtools
-
-N/A
-
-N/A
-
-2019
-
-### <u>JH Conigrave</u> (2019). papyr: Tools for writing academic papers with rmarkdown. *GitHub*. https://github.com/conig/papyr
-
-N/A
 
 N/A
 
