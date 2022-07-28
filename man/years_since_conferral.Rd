@@ -4,7 +4,7 @@
 \alias{years_since_conferral}
 \title{years_since_conferral}
 \usage{
-years_since_conferral()
+years_since_conferral(end_date = NULL)
 }
 \description{
 Returns years since PhD Conferral

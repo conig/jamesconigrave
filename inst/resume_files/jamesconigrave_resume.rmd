@@ -101,35 +101,33 @@ Contact Info {#contact}
 Skills {#skills}
 --------------------------------------------------------------------------------
 
-- Statistical analysis, data-manipulation, dashboards, writing, public speaking
+Statistical analysis, data-manipulation, dashboards, writing, public speaking
 
-- Programming: R, Julia, Python
+Programming: R, Julia, Python
 
-- Document creation: LaTeX, Markdown, HTML, CSS
+Document creation: LaTeX, Markdown, HTML, CSS
 
-- Adobe suite: Indesign, Photoshop, After effects 
+Adobe suite: Indesign, Photoshop, After effects 
 
-Academic metrics {#skills}
+Academic metrics {#metrics}
 --------------------------------------------------------------------------------
 
-- Years post conferral: `r round(conig::years_since_conferral())`
+Publications: `r pubs.number`
 
-- Publications: `r pubs.number`
+Citations: `r total_citations`
 
-- Citations: `r total_citations`
+FWCI: `r round(conig::scopus_FWCI(),2)`
 
-- FWCI: `r round(conig::scopus_FWCI(),2)`
+h-index: `r h_index`
 
-- h-index: `r h_index`
-
-Disclaimer {#disclaimer}
+Disclaimer {#docinfo}
 --------------------------------------------------------------------------------
 
-This HTML document was created using [pagedown](https://github.com/rstudio/pagedown) in R. Publications are generated from Google Scholar using the [scholar](https://github.com/jkeirstead/scholar) library. [Check out the code on GitHub](https://github.com/conig/jamesconigrave/).
+This HTML document was created using [pagedown](https://github.com/rstudio/pagedown) in R. Google Scholar data retrieved using the [scholar](https://github.com/jkeirstead/scholar) library. [Check out the code on GitHub](https://github.com/conig/jamesconigrave/).
 
-This document updates daily, get the latest version: [conigrave.com/resume](https://conigrave.com/resume).
+This document updates daily: [conigrave.com/resume](https://conigrave.com/resume).
 
-Last updated: `r Sys.time()` AEDT
+Updated: `r Sys.time()` AEDT
 
 Main
 ================================================================================
@@ -154,7 +152,7 @@ Institute for Positive Psychology and Education,<br/> Australian Catholic Univer
 
 North Sydney, NSW
 
-2018 - 2015
+2019 - 2015
 
 <!-- Thesis: The Benefits of Believing You Can Change: Implicit Malleability Theories Moderate the Relationship Between Low self-esteem and Negative Outcomes -->
 
@@ -279,7 +277,7 @@ content = "Committee membership {data-icon=comments}
 
 ### **Australasian Professional Society of Alcohol and Other Drugs (APSAD)**
 
-Early-Mid Career Researchers Subcomittee
+Early-Mid Career Researchers Subcommittee
 
 N/A
 

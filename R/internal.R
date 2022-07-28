@@ -51,6 +51,10 @@ get_doi <- function(title, journal, author){
   }
 
   qry <- qry[!grepl("supp",qry$doi),][which.max(as.numeric(qry$score)),]
+
+  if(nrow(qry) == 0) return("")
+  str_match <- agrep(qry$title, title)
+  if(length(str_match) == 0) return("")
   qry$doi
 
 }
