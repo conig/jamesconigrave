@@ -20,12 +20,12 @@ output:
 
 ```{r data-load, message=FALSE, warning=FALSE, echo=FALSE, include = FALSE}
 library(dplyr); library(ggplot2)
-id = "m0d4TKcAAAAJ"
-pubs = publications()
+id <- "m0d4TKcAAAAJ"
+pubs <- publications()
 
-pre_prints = pubs[pubs$journal == "*PsyArXiv*",]
-pubs = pubs[pubs$journal != "*PsyArXiv*",]
-pubs.number = nrow(pubs)
+pre_prints <- pubs[pubs$journal == "*PsyArXiv*",]
+pubs <- pubs[pubs$journal != "*PsyArXiv*",]
+pubs.number <- nrow(pubs)
 
 # get top n pubs
 if(is.finite(n_pubs)) {
@@ -70,13 +70,7 @@ commentaries_other = glue::glue(pattern, .envir = as.environment(comm)) |>
 
 total_citations = scholar::get_profile(id)$total_cites
  
- h_index = scholar::predict_h_index(id)[1,2]
-# cit_plot = ggplot(citations, aes(year, cites)) +
-#   geom_bar(stat= "identity") + theme_classic() +
-#   labs(y = "Citations",
-#        x = "") +
-#   scale_y_continuous(labels = scales::number_format(accuracy = 1)) +
-#   theme(axis.text.x = element_text(angle = 45, hjust = 1))
+h_index <- scholar::predict_h_index(id)[1,2]
 
 CRAN_downloads = cranlogs::cran_downloads(c("corx","Conigrave"), from = "2015-01-01", to = lubridate::today()) |> 
   group_by(package) |> 
@@ -281,7 +275,7 @@ Early-Mid Career Researchers Subcommittee
 
 N/A
 
-Present - 2019
+2022 - 2019
 
 --- Elected Chair in 2020"
 
@@ -290,8 +284,6 @@ if(committees){
 }
 
 ```
-
-
 
 
 
@@ -371,8 +363,8 @@ if(preprints) {
 ```{r results = "asis", echo = FALSE, message = FALSE}
 if(peer_review){
   reviews <- read.csv(system.file("db/peer review.csv", package = "conig"))
-  reviews <- reviews[reviews$IF >= 1 & !is.na(reviews$IF),][1:5,]
-  reviews <- reviews[with(reviews, order(Year, Journal, decreasing = TRUE)),]
+  reviews <- reviews[reviews$IF >= 2 & !is.na(reviews$IF),][1:5,]
+  reviews <- reviews[with(reviews, order(Year, IF, decreasing = TRUE)),]
   cat("Recent peer review {data-icon=user-friends}
 -------------------------------------------------------------------------------\n\n")
   

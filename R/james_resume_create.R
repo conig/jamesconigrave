@@ -6,14 +6,15 @@
 #' @param path If provided, the resume is copied to that destination. In this instance, the file is not opened
 #' @export resume
 
-resume = function(path = NULL){
-
+resume = function(path = NULL) {
   location = system.file("to_github/resume/jamesconigrave_resume.pdf", package = "conig")
 
-  if(!is.null(path)){
-    file.copy(from = location, to = path, overwrite = T)
-  }else{
-  shell.exec(location)
+  if (!is.null(path)) {
+    file.copy(from = location,
+              to = path,
+              overwrite = T)
+  } else{
+    shell.exec(location)
   }
 }
 
@@ -22,8 +23,8 @@ resume = function(path = NULL){
 #' open resume
 #' @export website
 
-website = function(){
-    shell.exec("https://jconigrave.github.io/")
+website = function() {
+  shell.exec("https://jconigrave.github.io/")
 }
 
 #' update_resume
@@ -46,9 +47,10 @@ website = function(){
 #' @param ... additional arguments passed to css
 #' @export update_resume
 
-update_resume = function(education = TRUE,
+update_resume <- function(push = TRUE,
+                         education = TRUE,
                          experience = TRUE,
-                         workshops = TRUE,
+                         workshops = FALSE,
                          supervision = TRUE,
                          committees = TRUE,
                          packages = TRUE,
@@ -59,23 +61,27 @@ update_resume = function(education = TRUE,
                          conferences = TRUE,
                          grants = TRUE,
                          path = NULL,
-                         push = FALSE,
                          ...) {
-
-  css(path = system.file("resume_files/style-rules.css", package = "conig"), ...)
+  css(path = system.file("resume_files/style-rules.css", package = "conig"),
+      ...)
 
   md = system.file("resume_files/jamesconigrave_resume.rmd", package = "conig")
   gh = system.file("to_github", package = "conig")
   root = system.file("", package = "conig")
 
-  if(!dir.exists(paste0(gh,"/resume/.git"))){
-    message("git dir doesn't exist, initialising... ",glue::glue("{gh}"))
+  if (!dir.exists(paste0(gh, "/resume/.git"))) {
+    message("git dir doesn't exist, initialising... ",
+            glue::glue("{gh}"))
 
-    shell(paste(glue::glue("cd {gh}"),
-                "git clone https://github.com/conig/resume.git",
-                "cd resume",
+    shell(
+      paste(
+        glue::glue("cd {gh}"),
+        "git clone https://github.com/conig/resume.git",
+        "cd resume",
 
-                sep = "&"))
+        sep = "&"
+      )
+    )
   }
 
 
@@ -87,28 +93,31 @@ update_resume = function(education = TRUE,
                     output_file = resume_html)
 
 
-  pagedown::chrome_print(
-    input = resume_html,
-    output = resume_pdf
+  pagedown::chrome_print(input = resume_html,
+                         output = resume_pdf)
+
+
+
+  file.copy(
+    from = resume_pdf,
+    to = system.file("to_github/resume/jamesconigrave_resume.pdf", package = "conig"),
+    overwrite = TRUE
   )
 
+  if (!is.null(path)) {
+    file.copy(from = resume_pdf,
+              to = path,
+              overwrite = TRUE)
+  }
 
-
-      file.copy(from = resume_pdf,
-                to = system.file("to_github/resume/jamesconigrave_resume.pdf", package = "conig"),
-                overwrite = TRUE)
-
-      if(!is.null(path)){
-        file.copy(from = resume_pdf,
-                  to = path,
-                  overwrite = TRUE)
-      }
-
-      if(push) {
-        gert::git_add(files = "*", repo = glue::glue("{gh}/resume"))
-        gert::git_commit(repo = glue::glue("{gh}/resume"), message = glue::glue("auto update {Sys.time()}"))
-        gert::git_push(repo = glue::glue("{gh}/resume"))
-      }
+  if (push) {
+    gert::git_add(files = "*", repo = glue::glue("{gh}/resume"))
+    gert::git_commit(
+      repo = glue::glue("{gh}/resume"),
+      message = glue::glue("auto update {Sys.time()}")
+    )
+    gert::git_push(repo = glue::glue("{gh}/resume"))
+  }
 }
 
 
@@ -137,7 +146,7 @@ fix_case = function(string,
 #' Creates a short resume at path
 #' @param path path to output file
 
-short_resume <- function(path = "short_resume.pdf", n_pubs = 8){
+short_resume <- function(path = "short_resume.pdf", n_pubs = 8) {
   update_resume(
     path = path,
     line_height = 1.09,
