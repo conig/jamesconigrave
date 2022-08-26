@@ -70,7 +70,7 @@ commentaries_other = glue::glue(pattern, .envir = as.environment(comm)) |>
 
 total_citations = scholar::get_profile(id)$total_cites
  
-h_index <- scholar::predict_h_index(id)[1,2]
+h_index <- tryCatch(scholar::predict_h_index(id)[1,2], error = function(x) NULL)
 
 CRAN_downloads = cranlogs::cran_downloads(c("corx","Conigrave"), from = "2015-01-01", to = lubridate::today()) |> 
   group_by(package) |> 
@@ -112,7 +112,11 @@ Citations: `r total_citations`
 
 FWCI: `r round(conig::scopus_FWCI(),2)`
 
-h-index: `r h_index`
+```{r echo = FALSE, results = "asis"}
+if(!is.null(h_index))
+  cat("h-index: ", h_index, "\n")
+```
+
 
 Disclaimer {#docinfo}
 --------------------------------------------------------------------------------
