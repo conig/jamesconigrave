@@ -110,8 +110,6 @@ Publications: `r pubs.number`
 
 Citations: `r total_citations`
 
-FWCI: `r round(conig::scopus_FWCI(),2)`
-
 ```{r echo = FALSE, results = "asis"}
 if(!is.null(h_index))
   cat("h-index: ", h_index, "\n")

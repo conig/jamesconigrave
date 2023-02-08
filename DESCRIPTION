@@ -25,7 +25,9 @@ Imports:
     rcrossref,
     cli,
     jsonlite,
-    revtools
+    revtools,
+    lubridate,
+    readr
 RoxygenNote: 7.1.2
 Suggests: 
     clipr
