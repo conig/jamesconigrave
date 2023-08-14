@@ -5,9 +5,10 @@
 \title{update_resume}
 \usage{
 update_resume(
+  push = TRUE,
   education = TRUE,
   experience = TRUE,
-  workshops = TRUE,
+  workshops = FALSE,
   supervision = TRUE,
   committees = TRUE,
   packages = TRUE,
@@ -18,11 +19,12 @@ update_resume(
   conferences = TRUE,
   grants = TRUE,
   path = NULL,
-  push = FALSE,
   ...
 )
 }
 \arguments{
+\item{push}{if TRUE, changes are pushed to github}
+
 \item{education}{render education}
 
 \item{experience}{render experience}
@@ -42,8 +44,6 @@ update_resume(
 \item{grants}{include grants}
 
 \item{path}{if included, resume is additionally copied to path specified}
-
-\item{push}{if TRUE, changes are pushed to github}
 
 \item{...}{additional arguments passed to css}
 

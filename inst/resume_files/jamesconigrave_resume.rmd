@@ -176,6 +176,22 @@ if(education) {
 content = r"(Research Experience {data-icon=laptop}
 --------------------------------------------------------------------------------
 
+### **Academic Lead, Academic Workforce (Secondment)**
+
+Office of the Provost, Australian Catholic University
+
+North Sydney, NSW
+
+Present - 2023
+
+### **Research Fellow**
+
+Institute for Positive Psychology and Education, Australian Catholic University
+
+North Sydney, NSW
+
+Present - 2023
+
 ### **Research Fellow**
 
 Centre of Research Excellence: Indigenous Health + Alcohol, <br/>The University of Sydney

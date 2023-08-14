@@ -3,6 +3,7 @@
 export("%>%")
 export(affiliation)
 export(altmetric)
+export(aut_to_doi)
 export(bio)
 export(export_pubs)
 export(new_paper)
