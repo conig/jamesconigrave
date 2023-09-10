@@ -5,7 +5,7 @@
 \title{update_resume}
 \usage{
 update_resume(
-  push = TRUE,
+  push = FALSE,
   education = TRUE,
   experience = TRUE,
   workshops = FALSE,
