@@ -4,7 +4,7 @@
 \alias{aut_to_doi}
 \title{aut_to_doi}
 \usage{
-aut_to_doi(string = NULL, n = 1)
+aut_to_doi(string = NULL, n = 3, qry = "")
 }
 \arguments{
 \item{string}{string to search}

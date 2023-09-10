@@ -47,7 +47,7 @@ website = function() {
 #' @param ... additional arguments passed to css
 #' @export update_resume
 
-update_resume <- function(push = TRUE,
+update_resume <- function(push = FALSE,
                          education = TRUE,
                          experience = TRUE,
                          workshops = FALSE,
@@ -69,7 +69,7 @@ update_resume <- function(push = TRUE,
   gh = system.file("to_github", package = "conig")
   root = system.file("", package = "conig")
 
-  if (!dir.exists(paste0(gh, "/resume/.git"))) {
+  if (!dir.exists(paste0(gh, "/resume/.git")) & push == TRUE) {
     message("git dir doesn't exist, initialising... ",
             glue::glue("{gh}"))
 
@@ -105,9 +105,17 @@ update_resume <- function(push = TRUE,
   )
 
   if (!is.null(path)) {
-    file.copy(from = resume_pdf,
-              to = path,
-              overwrite = TRUE)
+    if (tools::file_ext(path) == "pdf") {
+      file.copy(from = resume_pdf,
+                to = path,
+                overwrite = TRUE)
+    }
+    if (tools::file_ext(path) == "html") {
+      file.copy(from = resume_html,
+                to = path,
+                overwrite = TRUE)
+    }
+
   }
 
   if (push) {
