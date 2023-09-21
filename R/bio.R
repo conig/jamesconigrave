@@ -4,7 +4,7 @@
 #' @export
 
 bio = function(){
-  glue::glue("I am a Research Fellow ({round(years_since_conferral()[[1]],1)} years since conferral) at the University of Sydney. I am interested in understanding the motivational underpinnings of risk taking behaviour. I am passionate about reproducible research, and enjoy writing software packages to help researchers clearly and efficiently communicate their findings."
+  glue::glue("I am a Research Fellow ({round(years_since_conferral()[[1]],1)} years since conferral). I am interested in understanding the motivational underpinnings of risk taking behaviour. I am passionate about reproducible research, and enjoy writing software packages to help researchers clearly and efficiently communicate their findings."
     )
 }
 

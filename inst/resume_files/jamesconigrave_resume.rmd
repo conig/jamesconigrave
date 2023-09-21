@@ -138,41 +138,6 @@ cat(conig::bio())
 ```
 
 ```{r echo = FALSE, results = "asis"}
-
-content <- r"(Education {data-icon=graduation-cap data-concise=true}
---------------------------------------------------------------------------------
-
-### **PhD, Psychology**
-
-Institute for Positive Psychology and Education,<br/> Australian Catholic University
-
-North Sydney, NSW
-
-2019 - 2015
-
-<!-- Thesis: The Benefits of Believing You Can Change: Implicit Malleability Theories Moderate the Relationship Between Low self-esteem and Negative Outcomes -->
-
-### **Masters of Public Health**
-
-The University of Sydney
-
-Camperdown, NSW
-
-2012 - 2011
-
-### **BA Psychology & B Health**
-
-Macquarie University
-
-Macquarie, NSW
-
-2010 - 2007)"
-if(education) {
-  cat(content)
-}
-```
-
-```{r echo = FALSE, results = "asis"}
 content = r"(Research Experience {data-icon=laptop}
 --------------------------------------------------------------------------------
 
@@ -198,7 +163,7 @@ Centre of Research Excellence: Indigenous Health + Alcohol, <br/>The University 
 
 Camperdown, NSW
 
-Present - 2018
+2022 - 2018
 
 ### **Research Assistant**
 
@@ -236,6 +201,42 @@ if(experience){
 }
 ```
 
+
+
+```{r echo = FALSE, results = "asis"}
+
+content <- r"(Education {data-icon=graduation-cap data-concise=true}
+--------------------------------------------------------------------------------
+
+### **PhD, Psychology**
+
+Institute for Positive Psychology and Education,<br/> Australian Catholic University
+
+North Sydney, NSW
+
+2019 - 2015
+
+<!-- Thesis: The Benefits of Believing You Can Change: Implicit Malleability Theories Moderate the Relationship Between Low self-esteem and Negative Outcomes -->
+
+### **Masters of Public Health**
+
+The University of Sydney
+
+Camperdown, NSW
+
+2012 - 2011
+
+### **BA Psychology & B Health**
+
+Macquarie University
+
+Macquarie, NSW
+
+2010 - 2007)"
+if(education) {
+  cat(content)
+}
+```
 
 ```{r echo = FALSE, results = "asis"}
 
