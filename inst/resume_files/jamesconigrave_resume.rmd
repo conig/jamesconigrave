@@ -384,7 +384,7 @@ if(preprints) {
 
 ```{r results = "asis", echo = FALSE, message = FALSE}
 if(peer_review){
-  reviews <- read.csv(system.file("db/peer review.csv", package = "conig"))
+  reviews <- data.table::fread("https://raw.githubusercontent.com/conig/jamesconigrave/master/inst/db/peer%20review.csv")
   reviews <- reviews[reviews$IF >= 2 & !is.na(reviews$IF),][1:5,]
   reviews <- reviews[with(reviews, order(Year, IF, decreasing = TRUE)),]
   cat("Recent peer review {data-icon=user-friends}
