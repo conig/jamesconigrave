@@ -65,29 +65,29 @@ update_resume <- function(push = FALSE,
   css(path = system.file("resume_files/style-rules.css", package = "conig"),
       ...)
 
-  md = system.file("resume_files/jamesconigrave_resume.rmd", package = "conig")
-  gh = system.file("to_github", package = "conig")
-  root = system.file("", package = "conig")
+  md <- system.file("resume_files/jamesconigrave_resume.rmd", package = "conig")
+  gh <- system.file("to_github", package = "conig")
+  root <- system.file("", package = "conig")
 
+  # If no gh file...
+  if(gh == ""){
+    dir.create(paste0(root, "/to_github/resume"), recursive = TRUE)
+    gh <- system.file("to_github", package = "conig")
+  } 
+
+  # Check if git has already been init
   if (!dir.exists(paste0(gh, "/resume/.git")) & push == TRUE) {
     message("git dir doesn't exist, initialising... ",
             glue::glue("{gh}"))
 
-    shell(
-      paste(
-        glue::glue("cd {gh}"),
-        "git clone https://github.com/conig/resume.git",
-        "cd resume",
+  # Clone the repo using gert
+  gert::git_clone(url = "https://github.com/conig/resume.git",
+    path = gh)
 
-        sep = "&"
-      )
-    )
   }
 
-
-
-  resume_html = paste0(root, "/", "to_github/resume/docs/index.html")
-  resume_pdf = paste0(root, "/", "resume_files/jamesconigrave_resume.pdf")
+  resume_html <- paste0(root, "/", "to_github/resume/docs/index.html")
+  resume_pdf <- paste0(root, "/", "resume_files/jamesconigrave_resume.pdf")
 
   rmarkdown::render(md,
                     output_file = resume_html)
@@ -95,8 +95,6 @@ update_resume <- function(push = FALSE,
 
   pagedown::chrome_print(input = resume_html,
                          output = resume_pdf)
-
-
 
   file.copy(
     from = resume_pdf,

@@ -27,7 +27,8 @@ Imports:
     jsonlite,
     revtools,
     lubridate,
-    readr
+    readr,
+    gert
 RoxygenNote: 7.2.3
 Suggests: 
     clipr
