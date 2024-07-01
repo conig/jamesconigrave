@@ -9,14 +9,16 @@
 #' @param cache_doi cache doi?
 #' @param cache_author cache author?
 
-publications = function(id = "m0d4TKcAAAAJ",
+publications <- function(id = "m0d4TKcAAAAJ",
                         n = Inf,
                         journal_exclude = c("ACU Research Bank"),
                         cache_doi = TRUE,
                         cache_author = TRUE) {
   pubs = scholar::get_publications(id, flush = TRUE)
-  pubs$year[is.na(pubs$year)] <- "In press"
-  # return(pubs)
+
+  # remove pubs without a year
+  pubs <- pubs[!is.na(pubs$year),]
+
   pubs = pubs[!pubs$journal %in% journal_exclude,]
   pubs$author_last = gsub("^\\w{1,} *", "", pubs$author)
 

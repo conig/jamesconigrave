@@ -126,7 +126,7 @@ This HTML document was created using [pagedown](https://github.com/rstudio/paged
 
 This document updates daily: [conigrave.com/resume](https://conigrave.com/resume).
 
-Updated: `r Sys.time()` AEDT
+Updated: `r format(Sys.time(), format = "%Y-%m-%d %H:%M:%S")` AEDT
 
 Main
 ================================================================================
