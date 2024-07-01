@@ -143,7 +143,7 @@ cat(conig::bio())
 ```
 
 ```{r echo = FALSE, results = "asis"}
-content = r"(Research Experience {data-icon=laptop}
+content = r"(Academic Experience {data-icon=laptop}
 --------------------------------------------------------------------------------
 
 ### **Research Fellow**
