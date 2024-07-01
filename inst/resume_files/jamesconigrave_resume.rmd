@@ -57,10 +57,11 @@ fix_grammar <- function(x){
 
 # regex interpretation. Match two dots and replace with one, if there's not an extra dot before, or after the two (three dots in a row).
 
-publications = fix_grammar(glue::glue(pattern, .envir = as.environment(pubs)))
-pre_prints = fix_grammar(glue::glue(pattern, .envir = as.environment(pre_prints)))
+publications <- fix_grammar(glue::glue(pattern, .envir = as.environment(pubs)))
+pre_prints <- fix_grammar(glue::glue(pattern, .envir = as.environment(pre_prints)))
 
-comm <- data.table::fread("https://github.com/conig/jamesconigrave/blob/master/inst/db/commentaries.csv")
+comm <- read.csv("https://raw.githubusercontent.com/conig/jamesconigrave/master/inst/db/commentaries.csv", fileEncoding = "UTF-8", stringsAsFactors = FALSE)
+
 comm$extra_info = "N/A"
 comm$number = ""
 comm$doi = ""
