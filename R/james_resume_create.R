@@ -76,7 +76,7 @@ update_resume <- function(push = FALSE,
   } 
 
   # Check if git has already been init
-  if (!dir.exists(paste0(gh, "/resume/.git")) & push == TRUE) {
+  if (!dir.exists(paste0(gh, "/.git")) & push == TRUE) {
     message("git dir doesn't exist, initialising... ",
             glue::glue("{gh}"))
 
