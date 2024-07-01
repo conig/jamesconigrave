@@ -80,14 +80,19 @@ update_resume <- function(push = FALSE,
     message("git dir doesn't exist, initialising... ",
             glue::glue("{gh}"))
 
+  # If resume folder already exists, delete it
+  if(dir.exists(paste0(gh, "/resume"))){
+    unlink(paste0(gh, "/resume"), recursive = TRUE)
+  }
+
   # Clone the repo using gert
   gert::git_clone(url = "https://github.com/conig/resume.git",
     path = gh)
 
   }
 
-  resume_html <- paste0(root, "/", "to_github/resume/docs/index.html")
-  resume_pdf <- paste0(root, "/", "resume_files/jamesconigrave_resume.pdf")
+  resume_html <- paste0(root, "to_github/docs/index.html")
+  resume_pdf <- paste0(root, "resume_files/jamesconigrave_resume.pdf")
 
   rmarkdown::render(md,
                     output_file = resume_html)
@@ -98,7 +103,7 @@ update_resume <- function(push = FALSE,
 
   file.copy(
     from = resume_pdf,
-    to = system.file("to_github/resume/jamesconigrave_resume.pdf", package = "conig"),
+    to = system.file("to_github/jamesconigrave_resume.pdf", package = "conig"),
     overwrite = TRUE
   )
 
@@ -117,12 +122,12 @@ update_resume <- function(push = FALSE,
   }
 
   if (push) {
-    gert::git_add(files = "*", repo = glue::glue("{gh}/resume"))
+    gert::git_add(files = "*", repo = glue::glue("{gh}"))
     gert::git_commit(
-      repo = glue::glue("{gh}/resume"),
+      repo = glue::glue("{gh}"),
       message = glue::glue("auto update {Sys.time()}")
     )
-    gert::git_push(repo = glue::glue("{gh}/resume"))
+    gert::git_push(repo = glue::glue("{gh}"))
   }
 }
 
