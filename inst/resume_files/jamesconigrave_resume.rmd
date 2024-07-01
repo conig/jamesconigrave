@@ -60,7 +60,7 @@ fix_grammar <- function(x){
 publications <- fix_grammar(glue::glue(pattern, .envir = as.environment(pubs)))
 pre_prints <- fix_grammar(glue::glue(pattern, .envir = as.environment(pre_prints)))
 
-comm <- read.csv("https://raw.githubusercontent.com/conig/jamesconigrave/master/inst/db/commentaries.csv", fileEncoding = "UTF-8", stringsAsFactors = FALSE)
+comm <- data.table::fread("https://raw.githubusercontent.com/conig/jamesconigrave/master/inst/db/commentaries.csv", encoding = 'UTF-8')
 
 comm$extra_info = "N/A"
 comm$number = ""
