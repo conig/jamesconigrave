@@ -47,7 +47,7 @@ website = function() {
 #' @param ... additional arguments passed to css
 #' @export update_resume
 
-update_resume <- function(push = FALSE,
+update_resume <- function(push = TRUE,
                          education = TRUE,
                          experience = TRUE,
                          workshops = FALSE,

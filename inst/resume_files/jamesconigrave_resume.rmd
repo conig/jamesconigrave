@@ -414,7 +414,7 @@ if(conferences) {
 cat("Conference contributions {data-icon=globe-asia}
 --------------------------------------------------------------------------------\n\n")
 
-conf = readr::read_csv(system.file("db/conference.csv",package = "conig")) |> 
+conf <- data.table::fread("https://raw.githubusercontent.com/conig/jamesconigrave/master/inst/db/conference.csv") |> 
   dplyr::arrange(desc(year))
 conf$author = standardise_authors(conf$author)
 
