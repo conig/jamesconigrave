@@ -23,8 +23,10 @@ library(dplyr); library(ggplot2)
 id <- "m0d4TKcAAAAJ"
 pubs <- publications()
 
-pre_prints <- pubs[pubs$journal == "*PsyArXiv*",]
-pubs <- pubs[pubs$journal != "*PsyArXiv*",]
+pre_print_journals <- c("*OSF*", "*PsyArXiv*") 
+
+pre_prints <- pubs[pubs$journal %in% pre_print_journals ,]
+pubs <- pubs[!pubs$journal %in% pre_print_journals,]
 pubs.number <- nrow(pubs)
 
 # get top n pubs
@@ -144,13 +146,21 @@ cat(conig::bio())
 content = r"(Research Experience {data-icon=laptop}
 --------------------------------------------------------------------------------
 
+### **Research Fellow**
+
+Centre for Alcohol Policy Research, La Trobe University
+
+Bundoora, Vic
+
+Present - 2024
+
 ### **Academic Lead, Academic Workforce (Secondment)**
 
 Office of the Provost, Australian Catholic University
 
 North Sydney, NSW
 
-Present - 2023
+2024 - 2023
 
 ### **Research Fellow**
 
@@ -158,7 +168,7 @@ Institute for Positive Psychology and Education, Australian Catholic University
 
 North Sydney, NSW
 
-Present - 2023
+2024 - 2023
 
 ### **Research Fellow**
 
