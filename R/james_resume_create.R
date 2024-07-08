@@ -7,14 +7,22 @@
 #' @export resume
 
 resume = function(path = NULL) {
-  location = system.file("to_github/resume/jamesconigrave_resume.pdf", package = "conig")
-
+  location = system.file("to_github/jamesconigrave_resume.pdf", package = "conig")
+  
   if (!is.null(path)) {
     file.copy(from = location,
               to = path,
-              overwrite = T)
-  } else{
-    shell.exec(location)
+              overwrite = TRUE)
+  } else {
+    os_type = .Platform$OS.type
+    sys_name = Sys.info()["sysname"]
+    switch(os_type,
+           "windows" = shell.exec(location),
+           "unix" = switch(sys_name,
+                           "Darwin" = system2("open", location, wait = FALSE),
+                           system2("xdg-open", location, wait = FALSE)),
+           stop("Unsupported operating system")
+    )
   }
 }
 

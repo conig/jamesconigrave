@@ -54,7 +54,7 @@ publications <- function(id = "m0d4TKcAAAAJ",
   }
 
   pubs$doi = ifelse(is.na(pubs$doi), "",  paste0("https://doi.org/",pubs$doi))
-
+  pubs$doi[pubs$doi == "https://doi.org/"] <- ""
   # add altmetric --------------------------------------
 
   pubs <- cbind(pubs, do.call(rbind, lapply(pubs$doi, altmetric)))
