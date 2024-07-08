@@ -26,39 +26,6 @@ format_author = function(author){
 
 }
 
-#' get_doi
-#'
-#' Get a doi for a publication
-#' @param title title of article
-#' @param journal journal of article
-#' @param author author name
-
-get_doi <- function(title, journal, author){
-
-  qry <- rcrossref::cr_works(
-    flq = list(
-      "query.container-title" = journal,
-      "query.author" = author,
-      "query.bibliographic" = title),
-    limit = 5)$data
-
-  if(nrow(qry) == 0){
-    qry <- rcrossref::cr_works(
-      flq = list(
-        "query.author" = author,
-        "query.bibliographic" = title),
-      limit = 5)$data
-  }
-
-  qry <- qry[!grepl("supp",qry$doi),][which.max(as.numeric(qry$score)),]
-
-  if(nrow(qry) == 0) return("")
-  str_match <- agrep(qry$title, title)
-  if(length(str_match) == 0) return("")
-  qry$doi
-
-}
-
 #' altmetric
 #'
 #' Finds altmetric statistics
