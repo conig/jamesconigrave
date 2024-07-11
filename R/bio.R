@@ -32,3 +32,18 @@ years_since_conferral <- function(end_date = NULL) {
   colnames(out) <- "years"
   out
 }
+
+#' academic_letters
+#' 
+#' Returns string which includes academic letters
+#' @param include_area logical. If TRUE, includes the area of study in the string and separates each entry by commas.
+#' @export
+
+academic_letters <- function(include_area = TRUE){
+  letters <- "PhD (Psychology), MPH, BA (Psych), BHlth"
+  if(!include_area){
+    letters <- gsub("\\s\\(.*?\\)", "", letters)
+    letters <- gsub(",", "", letters)
+  }
+  letters
+}
