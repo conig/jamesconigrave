@@ -14,7 +14,10 @@ publications <- function(id = "m0d4TKcAAAAJ",
                         journal_exclude = c("ACU Research Bank"),
                         cache_doi = TRUE,
                         cache_author = TRUE) {
-  pubs <- scholar::get_publications(id, flush = TRUE)
+  pubs <- scholar::get_publications(id, flush = TRUE) |>
+    data.table::data.table()
+  pubs$title <- gsub("…", "...", pubs$title)
+
   # remove pubs without a year
   pubs <- pubs[!is.na(pubs$year),]
 
