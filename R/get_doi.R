@@ -26,11 +26,13 @@ get_doi <- function(title, journal, author, include_url = FALSE){
 
   if(nrow(qry) == 0) return(NA)
   str_match <- agrepl(title, qry$title)
-  if(!str_match) return(NA)
+  
+  if(!is.na(str_match))
+    if(!str_match) return(NA)
 
   if(include_url){
     # If empty, leave it empty
-    if(qry$doi == "") return(NA)
+    if(qry$doi == "") return(qry$doi)
     return(paste0("https://doi.org/",qry$doi))
   }
 

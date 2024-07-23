@@ -14,12 +14,11 @@ publications <- function(id = "m0d4TKcAAAAJ",
                         journal_exclude = c("ACU Research Bank"),
                         cache_doi = TRUE,
                         cache_author = TRUE) {
-  pubs = scholar::get_publications(id, flush = TRUE)
-
+  pubs <- scholar::get_publications(id, flush = TRUE)
   # remove pubs without a year
   pubs <- pubs[!is.na(pubs$year),]
 
-  pubs = pubs[!pubs$journal %in% journal_exclude,]
+  pubs <- pubs[!pubs$journal %in% journal_exclude,]
   pubs$author_last = gsub("^\\w{1,} *", "", pubs$author)
 
   doi_path = paste0(system.file("", package = "conig"),
