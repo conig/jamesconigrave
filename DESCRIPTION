@@ -1,6 +1,6 @@
 Package: conig
 Title: Contains and updates James Conigrave's resume
-Version: 1.0.0
+Version: 1.0.1
 Authors@R: 
     person(given = "James",
            family = "Conigrave",
@@ -28,7 +28,8 @@ Imports:
     revtools,
     lubridate,
     readr,
-    gert
+    gert,
+    data.table
 RoxygenNote: 7.3.2
 Suggests: 
     clipr
