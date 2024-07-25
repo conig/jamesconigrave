@@ -1,6 +1,6 @@
 Package: conig
 Title: Contains and updates James Conigrave's resume
-Version: 1.0.1
+Version: 1.0.2
 Authors@R: 
     person(given = "James",
            family = "Conigrave",

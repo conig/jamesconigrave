@@ -4,7 +4,7 @@
 \alias{academic_letters}
 \title{academic_letters}
 \usage{
-academic_letters(include_area = TRUE)
+academic_letters(include_area = FALSE)
 }
 \arguments{
 \item{include_area}{logical. If TRUE, includes the area of study in the string and separates each entry by commas.}
