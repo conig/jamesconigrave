@@ -6,7 +6,7 @@
 #' @param path If provided, the resume is copied to that destination. In this instance, the file is not opened
 #' @export resume
 
-resume = function(path = NULL) {
+resume <- function(path = NULL) {
   location = system.file("to_github/jamesconigrave_resume.pdf", package = "conig")
   
   if (!is.null(path)) {
