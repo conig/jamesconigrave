@@ -229,6 +229,14 @@ North Sydney, NSW
 
 2019 - 2015
 
+### **Certificate IV in Project Management**
+
+Northern Sydney Institute of TAFE
+
+Crows Nest, NSW
+
+2014
+
 <!-- Thesis: The Benefits of Believing You Can Change: Implicit Malleability Theories Moderate the Relationship Between Low self-esteem and Negative Outcomes -->
 
 ### **Masters of Public Health**
@@ -245,7 +253,9 @@ Macquarie University
 
 Macquarie, NSW
 
-2010 - 2007)"
+2010 - 2007
+
+)"
 if(education) {
   cat(content)
 }
