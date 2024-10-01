@@ -102,9 +102,11 @@ Skills {#skills}
 
 Statistical analysis, data-manipulation, dashboards, writing, public speaking
 
-Programming: R, Julia, Python
+Programming: R, Julia, Python, lua
 
 Document creation: LaTeX, Markdown, HTML, CSS
+
+Plugin creation: R, neovim
 
 Adobe suite: Indesign, Photoshop, After effects 
 
@@ -119,7 +121,6 @@ Citations: `r total_citations`
 if(!is.null(h_index))
   cat("h-index: ", h_index, "\n")
 ```
-
 
 Disclaimer {#docinfo}
 --------------------------------------------------------------------------------
