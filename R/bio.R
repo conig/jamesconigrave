@@ -4,7 +4,7 @@
 #' @export
 
 bio = function(){
-  glue::glue("I am a Research Fellow at La Trobe with a background in psychology. I am interested in understanding what factors can help people make better decisions about their health. In particular, I am interested in better understand motivation for health behaviour change, and risk taking. I have focused on building skills in biostatistics and programming, and have supported the continued development of the grog survey app."
+  glue::glue("I am a Research Fellow at La Trobe with a background in psychology. I am interested in understanding what factors can help people make better decisions about their health. In particular, I am interested in better understand motivation for health behaviour change, and risk taking. I have focused on building skills in biostatistics and programming, and have supported the continued development of the Grog Survey App."
     )
 }
 
