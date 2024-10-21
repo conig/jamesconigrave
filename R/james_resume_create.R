@@ -40,6 +40,7 @@ website = function() {
 #' update resume and optionally push changes to github
 #' @param education render education
 #' @param experience render experience
+#' @param professional render professional experience
 #' @param workshop include workshops
 #' @param supervision include supervision
 #' @param committees include committees
@@ -58,6 +59,7 @@ website = function() {
 update_resume <- function(push = TRUE,
                          education = TRUE,
                          experience = TRUE,
+                         professional = TRUE,
                          workshops = FALSE,
                          supervision = TRUE,
                          committees = TRUE,

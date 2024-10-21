@@ -179,6 +179,8 @@ Camperdown, NSW
 
 2022 - 2018
 
+<!-- 
+
 ### **Research Assistant**
 
 Institute for Positive Psychology and Education, <br/> Australian Catholic University
@@ -186,6 +188,8 @@ Institute for Positive Psychology and Education, <br/> Australian Catholic Unive
 North Sydney, NSW
 
 2017 - 2015
+
+-->
 
 Professional Experience {data-icon=suitcase}
 --------------------------------------------------------------------------------
@@ -198,7 +202,7 @@ North Sydney, NSW
 
 2014
 
-<!-- - Managed GPs in school program -->
+<!-- Managed GPs in school program -->
 
 ### **Mental Health Coordinator**
 
@@ -209,6 +213,10 @@ Frenchs Forest, NSW
 2014 - 2013
 
 <!-- - Managed the Access To Allied Psychological Services (ATAPS) program -->)"
+
+if(!professional){
+content <-  gsub("Professional Experience.*", "", content)
+}
 
 if(experience){
   cat(content)
