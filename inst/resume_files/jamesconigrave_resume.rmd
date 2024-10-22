@@ -33,8 +33,9 @@ pubs.number <- nrow(pubs)
 if(is.finite(n_pubs)) {
 pubs$first_author <- unlist(lapply(pubs$author, function(x) strsplit(x, split = ",")[[1]][1]))
 pubs$is_me <- grepl("JH Conigrave", pubs$first_author)
-  
-  pubs <- pubs[order(pubs$is_me, pubs$cites, decreasing = TRUE),][1:n_pubs,]
+cites_per_year <- pubs$cites / ((Sys.Date()+1) - pubs$year) 
+
+  pubs <- pubs[order(cites_per_year, pubs$is_me, decreasing = TRUE),][1:n_pubs,]
   pubs = pubs[order(pubs$author_last), ]
   pubs = pubs[order(pubs$year, decreasing = TRUE), ]
 }
