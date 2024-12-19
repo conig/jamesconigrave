@@ -116,12 +116,11 @@ Adobe suite: Indesign, Photoshop, After effects
 
 Academic metrics {#metrics}
 --------------------------------------------------------------------------------
+Grant funding: `r round(sum(grnt$amount)/1000000, 1) |> paste0("M")`
 
 Publications: `r pubs.number`
 
 Citations: `r total_citations`
-
-Grant funding: `r round(sum(grnt$amount)/1000000, 1) |> paste0("M")`
 
 ```{r echo = FALSE, results = "asis"}
 if(!is.null(h_index))
