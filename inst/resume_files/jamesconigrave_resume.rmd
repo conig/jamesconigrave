@@ -28,7 +28,10 @@ pre_print_journals <- c("*OSF*", "*PsyArXiv*")
 pre_prints <- pubs[pubs$journal %in% pre_print_journals ,]
 pubs <- pubs[!pubs$journal %in% pre_print_journals,]
 pubs.number <- nrow(pubs)
-
+# Get grant funding
+grnt <- data.table::fread(system.file("db/grants.csv",package = "conig")) |> 
+  dplyr::arrange(desc(year))
+total_grant_funding <- paste0("$",round(sum(grnt$amount)/1e6,1), "M")
 # get top n pubs
 if(is.finite(n_pubs)) {
 pubs$first_author <- unlist(lapply(pubs$author, function(x) strsplit(x, split = ",")[[1]][1]))
@@ -117,6 +120,8 @@ Academic metrics {#metrics}
 Publications: `r pubs.number`
 
 Citations: `r total_citations`
+
+Grant funding: `r round(sum(grnt$amount)/1000000, 1) |> paste0("M")`
 
 ```{r echo = FALSE, results = "asis"}
 if(!is.null(h_index))
@@ -298,6 +303,32 @@ if(workshops){
 }
 ```
 
+
+```{r results = "asis", echo = FALSE, message = FALSE}
+
+if(grants){
+  
+cat("Select Grants {data-icon=file-invoice-dollar}
+--------------------------------------------------------------------------------\n\n")
+grnt <- grnt[grnt$amount >=1e6,]
+grnt$author <- standardise_authors(grnt$author)
+grnt$amount <- trimws(format(as.numeric(grnt$amount), big.mark = ","))
+
+grant_pattern = "### {author} ({year}). {title}. *{organisation}*
+
+--- ${amount}
+
+N/A
+
+{year}
+
+
+"
+
+glue::glue_data(grnt, grant_pattern)
+}
+```
+
 ```{r echo = FALSE, results = "asis"}
 content = "Supervision {data-icon=users}
 --------------------------------------------------------------------------------\n\n
@@ -308,36 +339,13 @@ PhD Student
 
 N/A
 
-Present - 2019 
+2022
 
 --- Auxillary Supervisor"
 
 if(supervision) cat(content)
 
 ```
-
-
-```{r echo = FALSE, results = "asis"}
-content = "Committee membership {data-icon=comments}
---------------------------------------------------------------------------------\n\n
-
-### **Australasian Professional Society of Alcohol and Other Drugs (APSAD)**
-
-Early-Mid Career Researchers Subcommittee
-
-N/A
-
-2022 - 2019
-
---- Elected Chair in 2020"
-
-if(committees){
-  cat(content)
-}
-
-```
-
-
 
 ```{r echo = FALSE, results = "asis"}
 header = "R packages {data-icon=keyboard}
@@ -437,6 +445,24 @@ cat(content)
 }
 ```
 
+```{r echo = FALSE, results = "asis"}
+content = "Committee membership {data-icon=comments}
+--------------------------------------------------------------------------------\n\n
+
+### **Australasian Professional Society of Alcohol and Other Drugs (APSAD)**
+
+Early-Mid Career Researchers Subcommittee
+
+N/A
+
+2022 - 2019
+
+--- Elected Chair in 2020"
+
+if(committees){
+  cat(content)
+}
+```
 
 ```{r conf, results = "asis", echo = FALSE, message = FALSE}
 
@@ -460,34 +486,6 @@ N/A
 "
 
   fix_grammar(glue::glue_data(conf, conf_pattern))
-}
-
-```
-
-
-```{r results = "asis", echo = FALSE, message = FALSE}
-
-if(grants){
-  
-cat("Grants {data-icon=file-invoice-dollar}
---------------------------------------------------------------------------------\n\n")
-grnt = readr::read_csv(system.file("db/grants.csv",package = "conig")) |> 
-  dplyr::arrange(desc(year))
-grnt$author = standardise_authors(grnt$author)
-grnt$amount = trimws(format(as.numeric(grnt$amount), big.mark = ","))
-
-grant_pattern = "### {author} ({year}). {title}. *{organisation}*
-
---- ${amount}
-
-N/A
-
-{year}
-
-
-"
-
-glue::glue_data(grnt, grant_pattern)
 }
 
 ```
