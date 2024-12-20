@@ -153,7 +153,10 @@ cat(conig::bio())
 ```{r echo = FALSE, results = "asis"}
 if(experience > 0) {
   exp <- data.table::fread(system.file("db/experience.csv", package = "conig"))
-  exp <- exp[order(-as.numeric(exp$end)),]
+  is_present <- exp$end == "Present"
+  exp$end[is_present] <- lubridate::year(Sys.Date())
+  exp <- suppressWarnings(exp[order(-as.numeric(exp$end)),])
+  exp$end[is_present] <- "Present"
   if(is.numeric(experience)){
     exp <- exp[exp$priority == "Yes",]
     exp <- exp[1:experience, ]
