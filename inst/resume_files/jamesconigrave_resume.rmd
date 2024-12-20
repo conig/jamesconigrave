@@ -149,54 +149,45 @@ cat(conig::bio())
 ```
 
 ```{r echo = FALSE, results = "asis"}
-content = r"(Academic Experience {data-icon=laptop}
---------------------------------------------------------------------------------
+if(experience > 0) {
+  exp <- data.table::fread(system.file("db/experience.csv", package = "conig"))
+  exp <- exp[order(-exp$end),]
+  if(is.numeric(experience)){
+    exp <- exp[priority == "Yes",]
+    exp <- exp[1:experience, ]
+  }
 
-### **Research Fellow**
+  exp$exp_year_range <- sapply(1:nrow(exp), function(i) {
+    start <- exp$start[i]
+    end <- exp$end[i]
+    start_end <- na.omit(c(start, end))
+    paste(start_end, collapse = " - ")
+  })
+  exp_header <- r"(Academic Experience {data-icon=laptop}
+--------------------------------------------------------------------------------)"
+  exp_content <- glue::glue_data(exp,
+"
+### **{title}**
 
-Centre for Alcohol Policy Research, La Trobe University
+{org}
 
-Bundoora, Vic
+{location}
 
-Present - 2024
+{exp_year_range}
 
-### **Academic Lead, Academic Workforce (Secondment)**
 
-Office of the Provost, Australian Catholic University
+"
 
-North Sydney, NSW
+  ) |>
+  paste(collapse = "\n\n")
+  exp_content <- paste0(exp_header, "\n", exp_content)
+  cat(exp_content)
+  cat("\n\n")
+}
 
-2024 - 2023
+# add professional experience
 
-### **Research Fellow**
-
-Institute for Positive Psychology and Education, Australian Catholic University
-
-North Sydney, NSW
-
-2024 - 2023
-
-### **Research Fellow**
-
-Centre of Research Excellence: Indigenous Health + Alcohol, <br/>The University of Sydney
-
-Camperdown, NSW
-
-2022 - 2018
-
-<!-- 
-
-### **Research Assistant**
-
-Institute for Positive Psychology and Education, <br/> Australian Catholic University
-
-North Sydney, NSW
-
-2017 - 2015
-
--->
-
-Professional Experience {data-icon=suitcase}
+professional_content <- r"(Professional Experience {data-icon=suitcase}
 --------------------------------------------------------------------------------
 
 ### **Health Promotion Officer**
@@ -215,63 +206,48 @@ Sydney North Shore and Beaches Medicare Local
 
 Frenchs Forest, NSW
 
-2014 - 2013
-
-<!-- - Managed the Access To Allied Psychological Services (ATAPS) program -->)"
+2014 - 2013)"
 
 if(!professional){
-content <-  gsub("Professional Experience.*", "", content)
+professional_content <-  gsub(".*", "", professional_content)
 }
 
-if(experience){
-  cat(content)
-}
+cat(professional_content)
 ```
-
-
 
 ```{r echo = FALSE, results = "asis"}
 
-content <- r"(Education {data-icon=graduation-cap data-concise=true}
---------------------------------------------------------------------------------
+if(education > 0){
+  edu_data <- data.table::fread(system.file("db/education.csv", package = "conig"))
+  edu_data <- edu_data[order(-edu_data$end),]
 
-### **PhD, Psychology**
+  if(is.numeric(education)){
+    edu_data <- edu_data[priority == "Yes" ,][1:education,]
+  }
 
-Institute for Positive Psychology and Education,<br/> Australian Catholic University
+  edu_data$edu_range <- sapply(seq_len(nrow(edu_data)), function(i) {
+    start <- edu_data$start[i]
+    end <- edu_data$end[i]
+    start_end <- na.omit(c(start, end))
+    paste(start_end, collapse = " - ")
+  })
 
-North Sydney, NSW
+edu_content_header <- r"(Education {data-icon=graduation-cap data-concise=true}
+--------------------------------------------------------------------------------)"
+edu_content<- glue::glue_data(edu_data,
+"
 
-2019 - 2015
+### **{qual}**
 
-### **Certificate IV in Project Management**
+{institution}
 
-Northern Sydney Institute of TAFE
+{location}
 
-Crows Nest, NSW
+{edu_range}
 
-2014
 
-<!-- Thesis: The Benefits of Believing You Can Change: Implicit Malleability Theories Moderate the Relationship Between Low self-esteem and Negative Outcomes -->
-
-### **Masters of Public Health**
-
-The University of Sydney
-
-Camperdown, NSW
-
-2012 - 2011
-
-### **BA Psychology & B Health**
-
-Macquarie University
-
-Macquarie, NSW
-
-2010 - 2007
-
-)"
-if(education) {
-  cat(content)
+")
+  cat(edu_content)
 }
 ```
 

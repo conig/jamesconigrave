@@ -8,6 +8,7 @@ update_resume(
   push = TRUE,
   education = TRUE,
   experience = TRUE,
+  professional = TRUE,
   workshops = FALSE,
   supervision = TRUE,
   committees = TRUE,
@@ -28,6 +29,8 @@ update_resume(
 \item{education}{render education}
 
 \item{experience}{render experience}
+
+\item{professional}{render professional experience}
 
 \item{supervision}{include supervision}
 

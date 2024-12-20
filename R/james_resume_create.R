@@ -162,23 +162,4 @@ fix_case = function(string,
 
 }
 
-#' short_resume
-#'
-#' Creates a short resume at path
-#' @param path path to output file
 
-short_resume <- function(path = "short_resume.pdf", n_pubs = 8) {
-  update_resume(
-    path = path,
-    line_height = 1.09,
-    block_margin = .05,
-    n_pubs = n_pubs,
-    experience = FALSE,
-    peer_review = FALSE,
-    workshops = FALSE,
-    commentaries = FALSE,
-    preprints = FALSE,
-    conferences = FALSE,
-    supervision = TRUE
-  )
-}
