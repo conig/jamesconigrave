@@ -10,6 +10,7 @@ short_resume <- function(path = "short_resume.pdf", n_pubs = 8) {
     path = path,
     education = 2,
     experience = 3,
+    professional = FALSE,
     line_height = 1.09,
     block_margin = .05,
     n_pubs = n_pubs,
