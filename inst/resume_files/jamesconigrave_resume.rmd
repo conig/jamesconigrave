@@ -153,7 +153,7 @@ if(experience > 0) {
   exp <- data.table::fread(system.file("db/experience.csv", package = "conig"))
   exp <- exp[order(-exp$end),]
   if(is.numeric(experience)){
-    exp <- exp[priority == "Yes",]
+    exp <- exp[exp$priority == "Yes",]
     exp <- exp[1:experience, ]
   }
 
@@ -213,16 +213,17 @@ professional_content <-  gsub(".*", "", professional_content)
 }
 
 cat(professional_content)
+cat("\n\n")
 ```
 
 ```{r echo = FALSE, results = "asis"}
 
-if(education > 0){
+if (education > 0) {
   edu_data <- data.table::fread(system.file("db/education.csv", package = "conig"))
-  edu_data <- edu_data[order(-edu_data$end),]
+  edu_data <- edu_data[order(-edu_data$end), ]
 
-  if(is.numeric(education)){
-    edu_data <- edu_data[priority == "Yes" ,][1:education,]
+  if (is.numeric(education)) {
+    edu_data <- edu_data[edu_data$priority == "Yes", ][1:education, ]
   }
 
   edu_data$edu_range <- sapply(seq_len(nrow(edu_data)), function(i) {
@@ -232,10 +233,11 @@ if(education > 0){
     paste(start_end, collapse = " - ")
   })
 
-edu_content_header <- r"(Education {data-icon=graduation-cap data-concise=true}
+  edu_content_header <- r"(Education {data-icon=graduation-cap data-concise=true}
 --------------------------------------------------------------------------------)"
-edu_content<- glue::glue_data(edu_data,
-"
+  edu_content <- glue::glue_data(
+    edu_data,
+    "
 
 ### **{qual}**
 
@@ -246,7 +248,10 @@ edu_content<- glue::glue_data(edu_data,
 {edu_range}
 
 
-")
+"
+  )
+  cat(edu_content_header)
+  cat("\n\n")
   cat(edu_content)
 }
 ```
