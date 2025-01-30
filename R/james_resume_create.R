@@ -31,8 +31,8 @@ resume <- function(path = NULL) {
 #' open resume
 #' @export website
 
-website = function() {
-  shell.exec("https://jconigrave.github.io/")
+website <- function() {
+  shell.exec("https://www.conigrave.com/")
 }
 
 #' update_resume
@@ -96,9 +96,8 @@ update_resume <- function(push = TRUE,
   }
 
   # Clone the repo using gert
-  gert::git_clone(url = "https://github.com/conig/resume.git",
+  gert::git_clone(url = "git@github.com:conig/resume.git",
     path = gh)
-
   }
 
   resume_html <- paste0(root, "to_github/docs/index.html")
