@@ -43,7 +43,6 @@ cites_per_year <- pubs$cites / (lubridate::year(Sys.Date()) - pubs$year + 1)
   pubs <- pubs[order(cites_per_year, pubs$is_me, decreasing = TRUE),][1:n_pubs,]
   pubs = pubs[order(pubs$author_last), ]
   pubs = pubs[order(pubs$year, decreasing = TRUE), ]
-}
 
 pattern = "### {author} ({year}). {title}. {journal}, {number}. {doi}
 
@@ -70,7 +69,6 @@ pre_prints <- fix_grammar(glue::glue(pattern, .envir = as.environment(pre_prints
 
 comm <- data.table::fread("https://raw.githubusercontent.com/conig/jamesconigrave/master/inst/db/commentaries.csv", encoding = "Latin-1")
 
-
 comm$extra_info = "N/A"
 comm$number = ""
 comm$doi = ""
@@ -83,7 +81,8 @@ total_citations = scholar::get_profile(id)$total_cites
  
 h_index <- tryCatch(scholar::predict_h_index(id)[1,2], error = function(x) NULL)
 
-CRAN_downloads = cranlogs::cran_downloads(c("corx","Conigrave"), from = "2015-01-01", to = lubridate::today()) |> 
+CRAN_downloads = cranlogs::cran_downloads(
+  c("corx","Conigrave", "revise"), from = "2015-01-01", to = lubridate::today()) |> 
   group_by(package) |> 
   summarise(dls = sum(count))
 
@@ -336,6 +335,15 @@ if(supervision) cat(content)
 header = "R packages {data-icon=keyboard}
 --------------------------------------------------------------------------------\n\n"
 content = r"(
+
+### <u>JH Conigrave</u> (2025). revise: Dynamic Revision Letters for 'Rmarkdown' Manuscripts *CRAN*. https://github.com/conig/revise
+
+--- [[CRAN_downloads$dls[3] |> format(big.mark = ",")]] downloads
+
+N/A
+
+2025
+
 
 ### <u>JH Conigrave</u> (2019). corx: Create and Format Correlation Matrices. *CRAN*. https://conigrave.com/corx
 
