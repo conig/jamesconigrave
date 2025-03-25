@@ -25,26 +25,26 @@ library(data.table)
 id <- "m0d4TKcAAAAJ"
 pubs <- publications()
 
-pre_print_journals <- c("*OSF*", "*PsyArXiv*") 
+pre_print_journals <- c("*OSF*", "*PsyArXiv*")
 
-pre_prints <- pubs[pubs$journal %in% pre_print_journals ,]
-pubs <- pubs[!pubs$journal %in% pre_print_journals,]
+pre_prints <- pubs[pubs$journal %in% pre_print_journals, ]
+pubs <- pubs[!pubs$journal %in% pre_print_journals, ]
 pubs.number <- nrow(pubs)
 # Get grant funding
-grnt <- data.table::fread(system.file("db/grants.csv",package = "conig")) |> 
+grnt <- data.table::fread(system.file("db/grants.csv", package = "conig")) |>
   dplyr::arrange(desc(year))
-total_grant_funding <- paste0("$",round(sum(grnt$amount)/1e6,1), "M")
+total_grant_funding <- paste0("$", round(sum(grnt$amount) / 1e6, 1), "M")
 # get top n pubs
-if(is.finite(n_pubs)) {
-pubs$first_author <- unlist(lapply(pubs$author, function(x) strsplit(x, split = ",")[[1]][1]))
-pubs$is_me <- grepl("JH Conigrave", pubs$first_author)
-cites_per_year <- pubs$cites / (lubridate::year(Sys.Date()) - pubs$year + 1) 
+if (is.finite(n_pubs)) {
+  pubs$first_author <- unlist(lapply(pubs$author, function(x) strsplit(x, split = ",")[[1]][1]))
+  pubs$is_me <- grepl("JH Conigrave", pubs$first_author)
+  cites_per_year <- pubs$cites / (lubridate::year(Sys.Date()) - pubs$year + 1)
 
-  pubs <- pubs[order(cites_per_year, pubs$is_me, decreasing = TRUE),][1:n_pubs,]
-  pubs = pubs[order(pubs$author_last), ]
-  pubs = pubs[order(pubs$year, decreasing = TRUE), ]
-
-pattern = "### {author} ({year}). {title}. {journal}, {number}. {doi}
+  pubs <- pubs[order(cites_per_year, pubs$is_me, decreasing = TRUE), ][1:n_pubs, ]
+  pubs <- pubs[order(pubs$author_last), ]
+  pubs <- pubs[order(pubs$year, decreasing = TRUE), ]
+}
+pattern <- "### {author} ({year}). {title}. {journal}, {number}. {doi}
 
 {extra_info}
 
@@ -55,10 +55,10 @@ N/A
 
 "
 
-fix_grammar <- function(x){
-  x = gsub("(?<!\\.)\\.\\.(?!\\.)","\\.",x, perl = T)
-  x = gsub("\\?\\.","\\?",x)
-  x = gsub(r"(\,\s\.)",".",x)
+fix_grammar <- function(x) {
+  x <- gsub("(?<!\\.)\\.\\.(?!\\.)", "\\.", x, perl = T)
+  x <- gsub("\\?\\.", "\\?", x)
+  x <- gsub(r"(\,\s\.)", ".", x)
   x
 }
 
@@ -69,23 +69,25 @@ pre_prints <- fix_grammar(glue::glue(pattern, .envir = as.environment(pre_prints
 
 comm <- data.table::fread("https://raw.githubusercontent.com/conig/jamesconigrave/master/inst/db/commentaries.csv", encoding = "Latin-1")
 
-comm$extra_info = "N/A"
-comm$number = ""
-comm$doi = ""
-comm$journal =  ifelse(nchar(comm$journal) > 0, paste0("*",comm$journal,"*"), comm$journal)
+comm$extra_info <- "N/A"
+comm$number <- ""
+comm$doi <- ""
+comm$journal <- ifelse(nchar(comm$journal) > 0, paste0("*", comm$journal, "*"), comm$journal)
 
-commentaries_other = glue::glue(pattern, .envir = as.environment(comm)) |> 
+commentaries_other <- glue::glue(pattern, .envir = as.environment(comm)) |>
   fix_grammar()
 
-total_citations = scholar::get_profile(id)$total_cites
- 
-h_index <- tryCatch(scholar::predict_h_index(id)[1,2], error = function(x) NULL)
+total_citations <- scholar::get_profile(id)$total_cites
 
-CRAN_downloads = cranlogs::cran_downloads(
-  c("corx","Conigrave", "revise"), from = "2015-01-01", to = lubridate::today()) |> 
-  group_by(package) |> 
-  summarise(dls = sum(count))
+h_index <- tryCatch(scholar::predict_h_index(id)[1, 2], error = function(x) NULL)
 
+CRAN_downloads <- cranlogs::cran_downloads(
+  packages = c("corx", "Conigrave", "revise"),
+  from = "2015-01-01",
+  to = lubridate::today()
+) |>
+  dplyr::group_by(package) |>
+  dplyr::summarise(dls = sum(count, na.rm = TRUE))
 ```
 
 Aside
