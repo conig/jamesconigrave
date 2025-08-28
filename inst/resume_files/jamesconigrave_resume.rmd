@@ -317,8 +317,8 @@ glue::glue_data(grnt, grant_pattern)
 ```{r echo = FALSE, results = "asis"}
 students <- data.table::fread("https://raw.githubusercontent.com/conig/jamesconigrave/master/inst/db/students.csv")
 
---------------------------------------------------------------------------------\n\n"
 content_header = "Supervision {data-icon=users}
+--------------------------------------------------------------------------------\n\n"
 
 content <- glue::glue_data(students, "
 
