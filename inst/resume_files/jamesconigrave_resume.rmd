@@ -289,7 +289,6 @@ if(workshops){
 }
 ```
 
-
 ```{r results = "asis", echo = FALSE, message = FALSE}
 
 if(grants){
