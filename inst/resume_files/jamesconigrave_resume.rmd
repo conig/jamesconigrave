@@ -317,8 +317,10 @@ glue::glue_data(grnt, grant_pattern)
 ```{r echo = FALSE, results = "asis"}
 students <- data.table::fread("https://raw.githubusercontent.com/conig/jamesconigrave/master/inst/db/students.csv")
 
-content <- glue::glue_data(students, "Supervision {{data-icon=users}}
+content_header <- r"(Supervision {data-icon=users}
 --------------------------------------------------------------------------------\n\n
+)"
+content <- glue::glue_data(students, "
 
 ### **{name_first} {name_last}** 
 
@@ -330,7 +332,10 @@ N/A
 
 --- {role}")
 
-if(supervision) cat(content)
+if(supervision) {
+  cat(content_header)
+  cat(content)
+}
 
 ```
 
