@@ -317,6 +317,7 @@ glue::glue_data(grnt, grant_pattern)
 ```{r echo = FALSE, results = "asis"}
 students <- data.table::fread("https://raw.githubusercontent.com/conig/jamesconigrave/master/inst/db/students.csv")
 students$year_end[is.na(students$year_end)] <- "Present"
+students <- students[order(-students$year_start),]
 
 content_header = "Supervision {data-icon=users}
 --------------------------------------------------------------------------------\n\n"
