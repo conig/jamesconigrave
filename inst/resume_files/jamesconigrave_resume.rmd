@@ -88,6 +88,8 @@ CRAN_downloads <- cranlogs::cran_downloads(
 ) |>
   dplyr::group_by(package) |>
   dplyr::summarise(dls = sum(count, na.rm = TRUE))
+total_cran_downloads <- sum(CRAN_downloads$dls) |> 
+  format(big.mark = ",")
 ```
 
 Aside
@@ -124,6 +126,8 @@ Grant funding: `r round(sum(grnt$amount)/1000000, 1) |> paste0("M")`
 Publications: `r pubs.number`
 
 Citations: `r total_citations`
+
+CRAN downloads: `r total_cran_downloads`
 
 ```{r echo = FALSE, results = "asis"}
 if(!is.null(h_index))
