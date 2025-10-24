@@ -7,21 +7,25 @@
 #' @export resume
 
 resume <- function(path = NULL) {
-  location = system.file("to_github/jamesconigrave_resume.pdf", package = "conig")
-  
+  location = system.file(
+    "to_github/jamesconigrave_resume.pdf",
+    package = "conig"
+  )
+
   if (!is.null(path)) {
-    file.copy(from = location,
-              to = path,
-              overwrite = TRUE)
+    file.copy(from = location, to = path, overwrite = TRUE)
   } else {
     os_type = .Platform$OS.type
     sys_name = Sys.info()["sysname"]
-    switch(os_type,
-           "windows" = shell.exec(location),
-           "unix" = switch(sys_name,
-                           "Darwin" = system2("open", location, wait = FALSE),
-                           system2("xdg-open", location, wait = FALSE)),
-           stop("Unsupported operating system")
+    switch(
+      os_type,
+      "windows" = shell.exec(location),
+      "unix" = switch(
+        sys_name,
+        "Darwin" = system2("open", location, wait = FALSE),
+        system2("xdg-open", location, wait = FALSE)
+      ),
+      stop("Unsupported operating system")
     )
   }
 }
@@ -56,59 +60,58 @@ website <- function() {
 #' @param ... additional arguments passed to css
 #' @export update_resume
 
-update_resume <- function(push = TRUE,
-                         education = TRUE,
-                         experience = TRUE,
-                         professional = TRUE,
-                         workshops = FALSE,
-                         supervision = TRUE,
-                         committees = TRUE,
-                         packages = TRUE,
-                         n_pubs = Inf,
-                         commentaries = TRUE,
-                         peer_review = TRUE,
-                         preprints = TRUE,
-                         conferences = TRUE,
-                         grants = TRUE,
-                         path = NULL,
-                         ...) {
-  css(path = system.file("resume_files/style-rules.css", package = "conig"),
-      ...)
+update_resume <- function(
+  push = TRUE,
+  education = TRUE,
+  experience = TRUE,
+  professional = TRUE,
+  workshops = FALSE,
+  supervision = TRUE,
+  committees = TRUE,
+  packages = TRUE,
+  n_pubs = Inf,
+  commentaries = TRUE,
+  peer_review = TRUE,
+  preprints = TRUE,
+  conferences = TRUE,
+  grants = TRUE,
+  path = NULL,
+  ...
+) {
+  css(
+    path = system.file("resume_files/style-rules.css", package = "conig"),
+    ...
+  )
 
   md <- system.file("resume_files/jamesconigrave_resume.rmd", package = "conig")
-  gh <- system.file("to_github", package = "conig")
   root <- system.file("", package = "conig")
+  gh <- paste0(root, "to_github")
+  if (!dir.exists(gh)) {
+    dir.create(paste0(gh), recursive = TRUE)
+    gh <- system.file("to_github", package = "conig")
+  }
 
   # If no gh file...
-  if(gh == ""){
-    dir.create(paste0(root, "/to_github/resume"), recursive = TRUE)
-    gh <- system.file("to_github", package = "conig")
-  } 
 
   # Check if git has already been init
   if (!dir.exists(paste0(gh, "/.git")) & push == TRUE) {
-    message("git dir doesn't exist, initialising... ",
-            glue::glue("{gh}"))
+    message("git dir doesn't exist, initialising... ", glue::glue("{gh}"))
 
-  # If resume folder already exists, delete it
-  if(dir.exists(paste0(gh, "/resume"))){
-    unlink(paste0(gh, "/resume"), recursive = TRUE)
-  }
+    # If resume folder already exists, delete it
+    if (dir.exists(paste0(gh, "/resume"))) {
+      unlink(paste0(gh, "/resume"), recursive = TRUE)
+    }
 
-  # Clone the repo using gert
-  gert::git_clone(url = "git@github.com:conig/resume.git",
-    path = gh)
+    # Clone the repo using gert
+    gert::git_clone(url = "git@github.com:conig/resume.git", path = gh)
   }
 
   resume_html <- paste0(root, "to_github/docs/index.html")
   resume_pdf <- paste0(root, "resume_files/jamesconigrave_resume.pdf")
 
-  rmarkdown::render(md,
-                    output_file = resume_html)
+  rmarkdown::render(md, output_file = resume_html)
 
-
-  pagedown::chrome_print(input = resume_html,
-                         output = resume_pdf)
+  pagedown::chrome_print(input = resume_html, output = resume_pdf)
 
   file.copy(
     from = resume_pdf,
@@ -118,16 +121,11 @@ update_resume <- function(push = TRUE,
 
   if (!is.null(path)) {
     if (tools::file_ext(path) == "pdf") {
-      file.copy(from = resume_pdf,
-                to = path,
-                overwrite = TRUE)
+      file.copy(from = resume_pdf, to = path, overwrite = TRUE)
     }
     if (tools::file_ext(path) == "html") {
-      file.copy(from = resume_html,
-                to = path,
-                overwrite = TRUE)
+      file.copy(from = resume_html, to = path, overwrite = TRUE)
     }
-
   }
 
   if (push) {
@@ -141,16 +139,18 @@ update_resume <- function(push = TRUE,
 }
 
 
-fix_case = function(string,
-                    words = c(
-                      "aboriginal",
-                      "torres",
-                      "strait",
-                      "islander",
-                      "australian",
-                      "australia",
-                      "australian's"
-                    )) {
+fix_case = function(
+  string,
+  words = c(
+    "aboriginal",
+    "torres",
+    "strait",
+    "islander",
+    "australian",
+    "australia",
+    "australian's"
+  )
+) {
   words2 = stringr::str_to_title(words)
 
   for (i in seq_along(words)) {
@@ -158,7 +158,4 @@ fix_case = function(string,
   }
 
   return(string)
-
 }
-
-
