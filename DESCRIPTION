@@ -30,6 +30,8 @@ Imports:
     readr,
     gert,
     data.table
-RoxygenNote: 7.3.2
+RoxygenNote: 7.3.3
 Suggests: 
-    clipr
+    clipr,
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3

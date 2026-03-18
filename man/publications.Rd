@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_pubs.R
 \name{publications}
 \alias{publications}
-\title{get_pubs}
+\title{publications}
 \usage{
 publications(
   id = "m0d4TKcAAAAJ",

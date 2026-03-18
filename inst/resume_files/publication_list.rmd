@@ -19,7 +19,7 @@ pubs = scholar::get_publications(id, flush = TRUE) %>%
   mutate(author_last = gsub("^\\w{1,} *","",author)) %>% 
   arrange(desc(year), author_last)
 
-pubs$author = scholar::get_complete_authors(id, pubs$pubid)
+pubs$author = get_complete_authors_batched(id, pubs$pubid)
 
 pubs = pubs %>% dplyr::mutate_if(is.factor, as.character)
 
@@ -111,4 +111,3 @@ Pre-prints {data-icon=file}
 pre_prints
 
 ```
-

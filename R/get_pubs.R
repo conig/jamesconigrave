@@ -104,9 +104,9 @@ publications <- function(
   if (any(is.na(pubs$complete_authors))) {
     pubs$complete_authors[is.na(
       pubs$complete_authors
-    )] = scholar::get_complete_authors(
-      id,
-      pubs$pubid[is.na(pubs$complete_authors)]
+    )] = get_complete_authors_batched(
+      id = id,
+      pubids = pubs$pubid[is.na(pubs$complete_authors)]
     )
   }
 
@@ -132,6 +132,31 @@ standardise_authors = function(x) {
   x = gsub("JH Conigrave", "<u>JH Conigrave<\\/u>", x)
   x = gsub("KS Lee", "KSK Lee", x)
   x
+}
+
+get_complete_authors_batched <- function(
+  id,
+  pubids,
+  batch_size = 30,
+  batch_delay = 0.5,
+  sleep_fn = Sys.sleep
+) {
+  pubids <- as.character(pubids)
+  if (length(pubids) == 0) {
+    return(character())
+  }
+
+  batches <- split(pubids, ceiling(seq_along(pubids) / batch_size))
+  authors <- vector("list", length(batches))
+
+  for (i in seq_along(batches)) {
+    authors[[i]] <- scholar::get_complete_authors(id, batches[[i]])
+    if (i < length(batches) && batch_delay > 0) {
+      sleep_fn(batch_delay)
+    }
+  }
+
+  unlist(authors, use.names = FALSE)
 }
 
 #' predict_new_cites
