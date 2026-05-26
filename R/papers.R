@@ -8,11 +8,11 @@ papers = function(){
   papers <- list.files(dir)
 
 
-  path <- select.list(
+  path <- utils::select.list(
     title = "What paper would you like to open?",
     choices = papers
   )
 
-  shell.exec(glue::glue("{dir}/{path}"))
+  open_with_default_app(glue::glue("{dir}/{path}"))
 
 }

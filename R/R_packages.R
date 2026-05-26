@@ -22,9 +22,11 @@ R_packages <- function(n = Inf){
     )] |>
     data.table::data.table()
 
-  out <-
-    out[order(-updated_at)][!name %in% c("resume", "jamesconigrave", "conig.github.io") &
-                              !fork & language == "R"]
+  out <- out[order(-out$updated_at), ]
+  out <- out[
+    !out$name %in% c("resume", "jamesconigrave", "conig.github.io") &
+      !out$fork & out$language == "R",
+  ]
   if(is.infinite(n)) n <- nrow(out)
 
   out$updated_at <- as.Date(out$updated_at)

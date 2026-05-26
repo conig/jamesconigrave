@@ -32,15 +32,21 @@ update_resume(
 
 \item{professional}{render professional experience}
 
+\item{workshops}{include workshops}
+
 \item{supervision}{include supervision}
 
 \item{committees}{include committees}
+
+\item{packages}{include packages}
 
 \item{n_pubs}{numeric, top n cited publications, defaults to Inf}
 
 \item{commentaries}{include commentaries by others}
 
 \item{peer_review}{include peer review activity}
+
+\item{preprints}{include pre-prints}
 
 \item{conferences}{include conference contributions}
 
@@ -49,12 +55,6 @@ update_resume(
 \item{path}{if included, resume is additionally copied to path specified}
 
 \item{...}{additional arguments passed to css}
-
-\item{workshop}{include workshops}
-
-\item{pacakge}{include packages}
-
-\item{preprint}{include pre-prints}
 }
 \description{
 update resume and optionally push changes to github

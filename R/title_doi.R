@@ -15,7 +15,7 @@ title_to_doi <- function(title = NULL) {
   message(doi)
 
   paste0("https://www.doi.org/",doi) |>
-    browseURL()
+    utils::browseURL()
 }
 
 #' aut_to_doi

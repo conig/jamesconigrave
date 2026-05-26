@@ -7,26 +7,14 @@
 #' @export resume
 
 resume <- function(path = NULL) {
-  location = system.file(
+  location = conig_file(
     "to_github/jamesconigrave_resume.pdf",
-    package = "conig"
   )
 
   if (!is.null(path)) {
     file.copy(from = location, to = path, overwrite = TRUE)
   } else {
-    os_type = .Platform$OS.type
-    sys_name = Sys.info()["sysname"]
-    switch(
-      os_type,
-      "windows" = shell.exec(location),
-      "unix" = switch(
-        sys_name,
-        "Darwin" = system2("open", location, wait = FALSE),
-        system2("xdg-open", location, wait = FALSE)
-      ),
-      stop("Unsupported operating system")
-    )
+    open_with_default_app(location)
   }
 }
 
@@ -36,7 +24,47 @@ resume <- function(path = NULL) {
 #' @export website
 
 website <- function() {
-  shell.exec("https://www.conigrave.com/")
+  open_with_default_app("https://www.conigrave.com/")
+}
+
+open_with_default_app <- function(
+  target,
+  os_type = .Platform$OS.type,
+  sys_name = unname(Sys.info()[["sysname"]]),
+  which_fn = Sys.which,
+  system2_fn = system2,
+  shell_exec_fn = shell.exec,
+  browse_url_fn = utils::browseURL
+) {
+
+  if (os_type == "windows") {
+    shell_exec_fn(target)
+    return(invisible(target))
+  }
+
+  if (sys_name == "Darwin") {
+    system2_fn("open", args = target, wait = FALSE)
+    return(invisible(target))
+  }
+
+  if (os_type == "unix") {
+    if (nzchar(which_fn("xdg-open"))) {
+      system2_fn("xdg-open", args = target, wait = FALSE)
+    } else {
+      browse_url_fn(target)
+    }
+    return(invisible(target))
+  }
+
+  stop("Unsupported operating system")
+}
+
+conig_file <- function(..., mustWork = FALSE) {
+  system.file(..., package = "conig", mustWork = mustWork)
+}
+
+conig_resume_checkout_dir <- function() {
+  file.path(tools::R_user_dir("conig", "data"), "resume")
 }
 
 #' update_resume
@@ -45,14 +73,14 @@ website <- function() {
 #' @param education render education
 #' @param experience render experience
 #' @param professional render professional experience
-#' @param workshop include workshops
+#' @param workshops include workshops
 #' @param supervision include supervision
 #' @param committees include committees
-#' @param pacakge include packages
+#' @param packages include packages
 #' @param n_pubs numeric, top n cited publications, defaults to Inf
 #' @param commentaries include commentaries by others
 #' @param peer_review include peer review activity
-#' @param preprint include pre-prints
+#' @param preprints include pre-prints
 #' @param conferences include conference contributions
 #' @param grants include grants
 #' @param path if included, resume is additionally copied to path specified
@@ -78,46 +106,67 @@ update_resume <- function(
   path = NULL,
   ...
 ) {
-  css(
-    path = system.file("resume_files/style-rules.css", package = "conig"),
-    ...
+  css_path <- conig_file(
+    "resume_files/style-rules.css",
+    mustWork = TRUE
   )
+  css(path = css_path, ...)
 
-  md <- system.file("resume_files/jamesconigrave_resume.rmd", package = "conig")
-  root <- system.file("", package = "conig")
-  gh <- paste0(root, "to_github")
-  if (!dir.exists(gh)) {
-    dir.create(paste0(gh), recursive = TRUE)
-    gh <- system.file("to_github", package = "conig")
+  md <- conig_file(
+    "resume_files/jamesconigrave_resume.rmd",
+    mustWork = TRUE
+  )
+  root <- conig_file("", mustWork = TRUE)
+  gh <- if (push) {
+    conig_resume_checkout_dir()
+  } else {
+    file.path(root, "to_github")
   }
+  docs_dir <- file.path(gh, "docs")
 
   # If no gh file...
 
   # Check if git has already been init
-  if (!dir.exists(paste0(gh, "/.git")) & push == TRUE) {
+  if (push && !dir.exists(file.path(gh, ".git"))) {
     message("git dir doesn't exist, initialising... ", glue::glue("{gh}"))
+    dir.create(dirname(gh), recursive = TRUE, showWarnings = FALSE)
 
-    # If resume folder already exists, delete it
-    if (dir.exists(paste0(gh, "/resume"))) {
-      unlink(paste0(gh, "/resume"), recursive = TRUE)
+    if (dir.exists(gh)) {
+      gh_files <- list.files(gh, all.files = TRUE, no.. = TRUE)
+      if (length(gh_files) > 0) {
+        unlink(gh, recursive = TRUE)
+      }
     }
 
     # Clone the repo using gert
-    gert::git_clone(url = "git@github.com:conig/resume.git", path = gh)
+    gert::git_clone(url = "ssh://git@github.com/conig/resume.git", path = gh)
   }
 
-  resume_html <- paste0(root, "to_github/docs/index.html")
-  resume_pdf <- paste0(root, "resume_files/jamesconigrave_resume.pdf")
+  if (!dir.exists(gh)) {
+    dir.create(gh, recursive = TRUE)
+  }
+  if (!dir.exists(docs_dir)) {
+    dir.create(docs_dir, recursive = TRUE)
+  }
+
+  resume_html <- file.path(docs_dir, "index.html")
+  resume_pdf <- if (push) {
+    file.path(gh, "jamesconigrave_resume.pdf")
+  } else {
+    file.path(root, "resume_files", "jamesconigrave_resume.pdf")
+  }
 
   rmarkdown::render(md, output_file = resume_html)
 
   pagedown::chrome_print(input = resume_html, output = resume_pdf)
 
-  file.copy(
-    from = resume_pdf,
-    to = system.file("to_github/jamesconigrave_resume.pdf", package = "conig"),
-    overwrite = TRUE
-  )
+  if (!push) {
+    file.copy(
+      from = resume_pdf,
+      to = file.path(gh, "jamesconigrave_resume.pdf"),
+      overwrite = TRUE
+    )
+  }
 
   if (!is.null(path)) {
     if (tools::file_ext(path) == "pdf") {

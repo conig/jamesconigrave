@@ -16,7 +16,7 @@ publications <- function(
 ) {
   pubs <- scholar::get_publications(id, flush = TRUE) |>
     data.table::data.table()
-  pubs$title <- gsub("…", "...", pubs$title)
+  pubs$title <- gsub("\u2026", "...", pubs$title)
 
   # remove pubs without a year
   pubs <- pubs[!is.na(pubs$year), ]
@@ -38,7 +38,8 @@ publications <- function(
     dois <- readRDS(doi_path)
     names(dois) <- c("pubid", "doi", "title2")
     pubs <- merge(pubs, dois, all.x = TRUE)
-    pubs$title[grepl("…", pubs$title)] <- pubs$title2[grepl("…", pubs$title)]
+    pubs$title[grepl("\u2026", pubs$title)] <-
+      pubs$title2[grepl("\u2026", pubs$title)]
     pubs$title2 <- NULL
   } else {
     pubs$doi = NA

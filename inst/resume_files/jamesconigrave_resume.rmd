@@ -17,7 +17,6 @@ output:
 }
 ```
 
-
 ```{r data-load, message=FALSE, warning=FALSE, echo=FALSE, include = FALSE}
 library(dplyr)
 library(ggplot2)
@@ -36,11 +35,15 @@ grnt <- data.table::fread(system.file("db/grants.csv", package = "conig")) |>
 total_grant_funding <- paste0("$", round(sum(grnt$amount) / 1e6, 1), "M")
 # get top n pubs
 if (is.finite(n_pubs)) {
-  pubs$first_author <- unlist(lapply(pubs$author, function(x) strsplit(x, split = ",")[[1]][1]))
+  pubs$first_author <- unlist(lapply(pubs$author, function(x) {
+    strsplit(x, split = ",")[[1]][1]
+  }))
   pubs$is_me <- grepl("JH Conigrave", pubs$first_author)
   cites_per_year <- pubs$cites / (lubridate::year(Sys.Date()) - pubs$year + 1)
 
-  pubs <- pubs[order(cites_per_year, pubs$is_me, decreasing = TRUE), ][1:n_pubs, ]
+  pubs <- pubs[order(cites_per_year, pubs$is_me, decreasing = TRUE), ][
+    1:n_pubs,
+  ]
   pubs <- pubs[order(pubs$author_last), ]
   pubs <- pubs[order(pubs$year, decreasing = TRUE), ]
 }
@@ -65,21 +68,33 @@ fix_grammar <- function(x) {
 # regex interpretation. Match two dots and replace with one, if there's not an extra dot before, or after the two (three dots in a row).
 
 publications <- fix_grammar(glue::glue(pattern, .envir = as.environment(pubs)))
-pre_prints <- fix_grammar(glue::glue(pattern, .envir = as.environment(pre_prints)))
+pre_prints <- fix_grammar(glue::glue(
+  pattern,
+  .envir = as.environment(pre_prints)
+))
 
-comm <- data.table::fread("https://raw.githubusercontent.com/conig/jamesconigrave/master/inst/db/commentaries.csv", encoding = "Latin-1")
+comm <- data.table::fread(
+  "https://raw.githubusercontent.com/conig/jamesconigrave/master/inst/db/commentaries.csv",
+  encoding = "Latin-1"
+)
 
 comm$extra_info <- "N/A"
 comm$number <- ""
 comm$doi <- ""
-comm$journal <- ifelse(nchar(comm$journal) > 0, paste0("*", comm$journal, "*"), comm$journal)
+comm$journal <- ifelse(
+  nchar(comm$journal) > 0,
+  paste0("*", comm$journal, "*"),
+  comm$journal
+)
 
 commentaries_other <- glue::glue(pattern, .envir = as.environment(comm)) |>
   fix_grammar()
 
 total_citations <- scholar::get_profile(id)$total_cites
 
-h_index <- tryCatch(scholar::predict_h_index(id)[1, 2], error = function(x) NULL)
+h_index <- tryCatch(scholar::predict_h_index(id)[1, 2], error = function(x) {
+  NULL
+})
 
 CRAN_downloads <- cranlogs::cran_downloads(
   packages = c("corx", "Conigrave", "revise"),
@@ -88,26 +103,22 @@ CRAN_downloads <- cranlogs::cran_downloads(
 ) |>
   dplyr::group_by(package) |>
   dplyr::summarise(dls = sum(count, na.rm = TRUE))
-total_cran_downloads <- sum(CRAN_downloads$dls) |> 
+total_cran_downloads <- sum(CRAN_downloads$dls) |>
   format(big.mark = ",")
 ```
 
-Aside
-================================================================================
+# Aside
 
 <!-- ![James](james_smaller.png){width=100%} -->
 
-Contact Info {#contact}
---------------------------------------------------------------------------------
+## Contact Info {#contact}
 
 - <i class="fa fa-globe-asia"></i> [conigrave.com](https://conigrave.com)
 - <i class="fa fa-leaf"></i> [scopus profile](https://www.scopus.com/authid/detail.uri?authorId=57207914919)
 - <i class="fa fa-google"></i> [google scholar](https://scholar.google.com/citations?user=m0d4TKcAAAAJ&hl=en)
 - <i class="fa fa-github"></i> [github.com/conig](https://github.com/conig)
 
-
-Skills {#skills}
---------------------------------------------------------------------------------
+## Skills {#skills}
 
 Statistical analysis, data-manipulation, dashboards, writing, public speaking
 
@@ -117,10 +128,10 @@ Document creation: LaTeX, Markdown, HTML, CSS
 
 Plugin creation: R, neovim
 
-Adobe suite: Indesign, Photoshop, After effects 
+Adobe suite: Indesign, Photoshop, After effects
 
-Academic metrics {#metrics}
---------------------------------------------------------------------------------
+## Academic metrics {#metrics}
+
 Grant funding: `r round(sum(grnt$amount)/1000000, 1) |> paste0("M")`
 
 Publications: `r pubs.number`
@@ -130,12 +141,12 @@ Citations: `r total_citations`
 CRAN downloads: `r total_cran_downloads`
 
 ```{r echo = FALSE, results = "asis"}
-if(!is.null(h_index))
+if (!is.null(h_index)) {
   cat("h-index: ", h_index, "\n")
+}
 ```
 
-Disclaimer {#docinfo}
---------------------------------------------------------------------------------
+## Disclaimer {#docinfo}
 
 This HTML document was created using [pagedown](https://github.com/rstudio/pagedown) in R. Google Scholar data retrieved using the [scholar](https://github.com/jkeirstead/scholar) library. [Check out the code on GitHub](https://github.com/conig/jamesconigrave/).
 
@@ -143,11 +154,9 @@ This document updates daily: [conigrave.com/resume](https://conigrave.com/resume
 
 Updated: `r format(Sys.time(), format = "%Y-%m-%d %H:%M:%S")` AEDT
 
-Main
-================================================================================
+# Main
 
-JAMES CONIGRAVE {#title}
---------------------------------------------------------------------------------
+## JAMES CONIGRAVE {#title}
 
 ### **Researcher --- Motivation, substance use and public health**
 
@@ -156,14 +165,14 @@ cat(conig::bio())
 ```
 
 ```{r echo = FALSE, results = "asis"}
-if(experience > 0) {
+if (experience > 0) {
   exp <- data.table::fread(system.file("db/experience.csv", package = "conig"))
   is_present <- exp$end == "Present"
   exp$end[is_present] <- lubridate::year(Sys.Date())
-  exp <- suppressWarnings(exp[order(-as.numeric(exp$end)),])
+  exp <- suppressWarnings(exp[order(-as.numeric(exp$end)), ])
   exp$end[is_present] <- "Present"
-  if(is.numeric(experience)){
-    exp <- exp[exp$priority == "Yes",]
+  if (is.numeric(experience)) {
+    exp <- exp[exp$priority == "Yes", ]
     exp <- exp[1:experience, ]
   }
 
@@ -175,8 +184,9 @@ if(experience > 0) {
   })
   exp_header <- r"(Academic Experience {data-icon=laptop}
 --------------------------------------------------------------------------------)"
-  exp_content <- glue::glue_data(exp,
-"
+  exp_content <- glue::glue_data(
+    exp,
+    "
 ### **{title}**
 
 {org}
@@ -187,9 +197,8 @@ if(experience > 0) {
 
 
 "
-
   ) |>
-  paste(collapse = "\n\n")
+    paste(collapse = "\n\n")
   exp_content <- paste0(exp_header, "\n", exp_content)
   cat(exp_content)
   cat("\n\n")
@@ -218,8 +227,8 @@ Frenchs Forest, NSW
 
 2014 - 2013)"
 
-if(!professional){
-professional_content <-  gsub(".*", "", professional_content)
+if (!professional) {
+  professional_content <- gsub(".*", "", professional_content)
 }
 
 cat(professional_content)
@@ -229,7 +238,10 @@ cat("\n\n")
 ```{r echo = FALSE, results = "asis"}
 
 if (education > 0) {
-  edu_data <- data.table::fread(system.file("db/education.csv", package = "conig"))
+  edu_data <- data.table::fread(system.file(
+    "db/education.csv",
+    package = "conig"
+  ))
   edu_data <- edu_data[order(-edu_data$end), ]
 
   if (is.numeric(education)) {
@@ -288,22 +300,23 @@ Strathfield, NSW
 2016
 )"
 
-if(workshops){
+if (workshops) {
   cat(content)
 }
 ```
 
 ```{r results = "asis", echo = FALSE, message = FALSE}
 
-if(grants){
-  
-cat("Select Grants {data-icon=file-invoice-dollar}
---------------------------------------------------------------------------------\n\n")
-grnt <- grnt[grnt$amount >=1e6,]
-grnt$author <- standardise_authors(grnt$author)
-grnt$amount <- trimws(format(as.numeric(grnt$amount), big.mark = ","))
+if (grants) {
+  cat(
+    "Select Grants {data-icon=file-invoice-dollar}
+--------------------------------------------------------------------------------\n\n"
+  )
+  grnt <- grnt[grnt$amount >= 1e6, ]
+  grnt$author <- standardise_authors(grnt$author)
+  grnt$amount <- trimws(format(as.numeric(grnt$amount), big.mark = ","))
 
-grant_pattern = "### {author} ({year}). {title}. *{organisation}*
+  grant_pattern = "### {author} ({year}). {title}. *{organisation}*
 
 --- ${amount}
 
@@ -314,21 +327,25 @@ N/A
 
 "
 
-glue::glue_data(grnt, grant_pattern)
+  glue::glue_data(grnt, grant_pattern)
 }
 ```
 
 ```{r echo = FALSE, results = "asis"}
-students <- data.table::fread("https://raw.githubusercontent.com/conig/jamesconigrave/master/inst/db/students.csv")
+students <- data.table::fread(
+  "https://raw.githubusercontent.com/conig/jamesconigrave/master/inst/db/students.csv"
+)
 students$year_end[is.na(students$year_end)] <- "Present"
-students <- students[order(-students$year_start),]
+students <- students[order(-students$year_start), ]
 
 content_header = "Supervision {data-icon=users}
 --------------------------------------------------------------------------------\n\n"
 
-content <- glue::glue_data(students, "
+content <- glue::glue_data(
+  students,
+  "
 
-### **{name_first} {name_last}** 
+### **{name_first} {name_last}**
 
 {type}
 
@@ -338,13 +355,13 @@ N/A
 
 --- {role}
 
-\n")
+\n"
+)
 
-if(supervision) {
+if (supervision) {
   cat(content_header)
   cat(content)
 }
-
 ```
 
 ```{r echo = FALSE, results = "asis"}
@@ -377,67 +394,68 @@ N/A
 
 2017)"
 
-if(packages){
+if (packages) {
   cat(header)
   cat(glue::glue(content, .open = "[[", .close = "]]"))
 }
 ```
 
-
 ```{r results = "asis", echo = FALSE, message = FALSE }
-if(n_pubs > 0){
-  
-  if(is.finite(n_pubs)){
+if (n_pubs > 0) {
+  if (is.finite(n_pubs)) {
     pub_head = "Select publications"
-  }else{
+  } else {
     pub_head = "Publications"
   }
-  
- cat(glue::glue("[[pub_head]] {data-icon=file}
---------------------------------------------------------------------------------\n\n",.open = "[[", .close = "]]"))
-publications
+
+  cat(glue::glue(
+    "[[pub_head]] {data-icon=file}
+--------------------------------------------------------------------------------\n\n",
+    .open = "[[",
+    .close = "]]"
+  ))
+  publications
 }
-
 ```
-
 
 ```{r results = "asis", echo = FALSE, message = FALSE }
 
-if(commentaries){
-  cat("Commentaries on work {data-icon=quote-left}
---------------------------------------------------------------------------------\n\n")
+if (commentaries) {
+  cat(
+    "Commentaries on work {data-icon=quote-left}
+--------------------------------------------------------------------------------\n\n"
+  )
 
-commentaries_other
-  
+  commentaries_other
 }
-
-
 ```
 
-
 ```{r results = "asis", echo = FALSE, message = FALSE }
-if(preprints) {
+if (preprints) {
   cat(
     "Pre-prints {data-icon=file}
 --------------------------------------------------------------------------------\n\n"
   )
-  
-  pre_prints
-  
-}
 
+  pre_prints
+}
 ```
 
-
 ```{r results = "asis", echo = FALSE, message = FALSE}
-if(peer_review){
-  reviews <- data.table::fread("https://raw.githubusercontent.com/conig/jamesconigrave/master/inst/db/peer%20review.csv")
-  reviews <- reviews[reviews$IF >= 2 & !is.na(reviews$IF),][1:5,]
-  reviews <- reviews[with(reviews, order(Year, IF, decreasing = TRUE)),]
-  cat("Recent peer review {data-icon=user-friends}
--------------------------------------------------------------------------------\n\n")
-  
-content <- glue::glue_data(reviews, "
+if (peer_review) {
+  reviews <- data.table::fread(
+    "https://raw.githubusercontent.com/conig/jamesconigrave/master/inst/db/peer%20review.csv"
+  )
+  reviews <- reviews[reviews$IF >= 2 & !is.na(reviews$IF), ][1:5, ]
+  reviews <- reviews[with(reviews, order(Year, IF, decreasing = TRUE)), ]
+  cat(
+    "Recent peer review {data-icon=user-friends}
+-------------------------------------------------------------------------------\n\n"
+  )
+
+  content <- glue::glue_data(
+    reviews,
+    "
 
 ### {Journal}
 
@@ -447,10 +465,10 @@ N/A
 
 {Year}
 
-\n")
+\n"
+  )
 
-cat(content)
-  
+  cat(content)
 }
 ```
 
@@ -468,22 +486,26 @@ N/A
 
 --- Elected Chair in 2020"
 
-if(committees){
+if (committees) {
   cat(content)
 }
 ```
 
 ```{r conf, results = "asis", echo = FALSE, message = FALSE}
 
-if(conferences) {
-cat("Conference contributions {data-icon=globe-asia}
---------------------------------------------------------------------------------\n\n")
+if (conferences) {
+  cat(
+    "Conference contributions {data-icon=globe-asia}
+--------------------------------------------------------------------------------\n\n"
+  )
 
-conf <- data.table::fread("https://raw.githubusercontent.com/conig/jamesconigrave/master/inst/db/conference.csv") |> 
-  dplyr::arrange(desc(year))
-conf$author = standardise_authors(conf$author)
+  conf <- data.table::fread(
+    "https://raw.githubusercontent.com/conig/jamesconigrave/master/inst/db/conference.csv"
+  ) |>
+    dplyr::arrange(desc(year))
+  conf$author = standardise_authors(conf$author)
 
-conf_pattern = "### {author} ({year}). {title}. *{conference}*
+  conf_pattern = "### {author} ({year}). {title}. *{conference}*
 
 N/A
 
@@ -496,7 +518,6 @@ N/A
 
   fix_grammar(glue::glue_data(conf, conf_pattern))
 }
-
 ```
 
 <!-- Scholarships {data-icon=medal} -->

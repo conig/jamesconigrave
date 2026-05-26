@@ -23,6 +23,7 @@ Imports:
     magrittr,
     stringdist,
     rcrossref,
+    httr,
     cli,
     jsonlite,
     revtools,
