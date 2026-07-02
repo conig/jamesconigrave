@@ -5,6 +5,8 @@ local_fake_conig_install <- function() {
   resume_dir <- file.path(root, "resume_files")
   dir.create(resume_dir, recursive = TRUE)
   writeLines("", file.path(resume_dir, "style-rules.css"))
+  writeLines("body { color: #17222d; }", file.path(resume_dir, "style-rules-alt.css"))
+  writeLines("<script></script>", file.path(resume_dir, "resume-alt-script.html"))
   writeLines("", file.path(resume_dir, "jamesconigrave_resume.rmd"))
 
   local_mocked_bindings(
@@ -36,19 +38,32 @@ local_mock_resume_renderers <- function(
 ) {
   env <- parent.frame()
   expected_md <- file.path(root, "resume_files", "jamesconigrave_resume.rmd")
-  expected_html <- file.path(output_root, "docs", "index.html")
+  expected_web_html <- file.path(output_root, "docs", "index.html")
   expected_pdf <- pdf_path
 
-  rendered <- FALSE
+  print_rendered <- FALSE
+  web_rendered <- FALSE
   printed <- FALSE
+  print_html <- NULL
 
   local_mocked_bindings(
-    render = function(input, output_file, ...) {
-      rendered <<- TRUE
+    render = function(input, output_file, output_dir = NULL, output_format = NULL, ...) {
       expect_equal(input, expected_md)
-      expect_equal(output_file, expected_html)
       expect_true(dir.exists(dirname(output_file)))
-      writeLines("<html></html>", output_file)
+
+      if (is.null(output_format)) {
+        print_rendered <<- TRUE
+        print_html <<- output_file
+        expect_false(identical(output_file, expected_web_html))
+        writeLines("<html>pagedown resume</html>", output_file)
+      } else {
+        web_rendered <<- TRUE
+        expect_s3_class(output_format, "rmarkdown_output_format")
+        expect_equal(output_file, expected_web_html)
+        expect_equal(output_dir, dirname(expected_web_html))
+        writeLines("<html>alternate resume</html>", output_file)
+      }
+
       invisible(output_file)
     },
     .package = "rmarkdown",
@@ -57,7 +72,8 @@ local_mock_resume_renderers <- function(
   local_mocked_bindings(
     chrome_print = function(input, output, ...) {
       printed <<- TRUE
-      expect_equal(input, expected_html)
+      expect_equal(input, print_html)
+      expect_false(identical(input, expected_web_html))
       expect_equal(output, expected_pdf)
       expect_true(file.exists(input))
       writeBin(charToRaw("%PDF-1.4\n"), output)
@@ -67,7 +83,11 @@ local_mock_resume_renderers <- function(
     .env = env
   )
 
-  list(rendered = function() rendered, printed = function() printed)
+  list(
+    print_rendered = function() print_rendered,
+    web_rendered = function() web_rendered,
+    printed = function() printed
+  )
 }
 
 test_that("update_resume creates CV outputs from an installed package root", {
@@ -77,11 +97,55 @@ test_that("update_resume creates CV outputs from an installed package root", {
 
   update_resume(push = FALSE)
 
-  expect_true(calls$rendered())
+  expect_true(calls$print_rendered())
+  expect_true(calls$web_rendered())
   expect_true(calls$printed())
   expect_true(file.exists(file.path(root, "to_github", "docs", "index.html")))
   expect_true(file.exists(file.path(root, "resume_files", "jamesconigrave_resume.pdf")))
   expect_true(file.exists(file.path(root, "to_github", "jamesconigrave_resume.pdf")))
+})
+
+test_that("update_alt_resume renders a separate web-native HTML resume", {
+  root <- local_fake_conig_install()
+  resume_rmd <- file.path(root, "resume_files", "jamesconigrave_resume.rmd")
+  writeLines(
+    c(
+      "---",
+      "output:",
+      "  pagedown::html_resume:",
+      "    css: [\"style-rules.css\", \"resume\"]",
+      "---",
+      "",
+      "# Main",
+      "",
+      "## JAMES CONIGRAVE {#title}",
+      "",
+      "Same content"
+    ),
+    resume_rmd
+  )
+
+  rendered <- FALSE
+  expected_html <- file.path(root, "to_github", "docs", "index.html")
+
+  local_mocked_bindings(
+    render = function(input, output_format, output_file, output_dir, envir, ...) {
+      rendered <<- TRUE
+      expect_equal(input, resume_rmd)
+      expect_s3_class(output_format, "rmarkdown_output_format")
+      expect_equal(output_file, expected_html)
+      expect_equal(output_dir, dirname(expected_html))
+      writeLines("<html>alternate resume</html>", output_file)
+      invisible(output_file)
+    },
+    .package = "rmarkdown"
+  )
+
+  result <- update_alt_resume()
+
+  expect_true(rendered)
+  expect_equal(result, expected_html)
+  expect_true(file.exists(expected_html))
 })
 
 test_that("update_resume bootstraps a fresh push checkout before rendering", {
@@ -145,7 +209,8 @@ test_that("update_resume bootstraps a fresh push checkout before rendering", {
   update_resume()
 
   expect_true(cloned)
-  expect_true(calls$rendered())
+  expect_true(calls$print_rendered())
+  expect_true(calls$web_rendered())
   expect_true(calls$printed())
   expect_true(added)
   expect_true(committed)

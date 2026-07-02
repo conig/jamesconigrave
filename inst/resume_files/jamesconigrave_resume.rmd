@@ -1,6 +1,6 @@
 ---
 title: "James Conigrave's resume"
-author: James Conigrave
+author: James H. Conigrave
 date: "`r Sys.Date()`"
 output:
   pagedown::html_resume:
@@ -65,15 +65,68 @@ fix_grammar <- function(x) {
   x
 }
 
-section_heading <- function(title, icon) {
-  glue::glue("{title} {{data-icon={icon}}}
+section_attributes <- function(...) {
+  values <- list(...)
+  values <- values[!vapply(values, is.null, logical(1))]
+  values <- values[!vapply(values, function(x) identical(x, FALSE), logical(1))]
+
+  attrs <- mapply(
+    function(name, value) {
+      name <- gsub("_", "-", name)
+      if (isTRUE(value)) {
+        return(glue::glue("{name}=true"))
+      }
+      glue::glue('{name}="{value}"')
+    },
+    names(values),
+    values,
+    USE.NAMES = FALSE
+  )
+
+  paste(attrs, collapse = " ")
+}
+
+section_heading <- function(
+  title,
+  icon,
+  concise = FALSE,
+  alt_group = NULL,
+  alt_group_title = NULL,
+  alt_group_icon = NULL
+) {
+  attrs <- section_attributes(
+    data_icon = icon,
+    data_concise = concise,
+    data_alt_group = alt_group,
+    data_alt_group_title = alt_group_title,
+    data_alt_group_icon = alt_group_icon
+  )
+
+  glue::glue(
+    "{title} {{{attrs}}}
 --------------------------------------------------------------------------------
 
-")
+"
+  )
 }
 
 year_range <- function(start, end) {
   paste(unique(na.omit(c(end, start))), collapse = " - ")
+}
+
+format_citation_person <- function(person) {
+  given <- person$given
+  initials <- paste0(gsub("\\.", "", substring(given, 1, 1)), collapse = "")
+  paste(initials, person$family)
+}
+
+format_citation_authors <- function(authors) {
+  formatted <- vapply(authors, format_citation_person, character(1))
+  standardise_authors(paste(formatted, collapse = ", "))
+}
+
+package_citation_entry <- function(package, fallback) {
+  tryCatch(utils::citation(package)[[1]], error = function(e) fallback)
 }
 
 # regex interpretation. Match two dots and replace with one, if there's not an extra dot before, or after the two (three dots in a row).
@@ -101,7 +154,8 @@ comm$journal <- ifelse(
 commentaries_other <- glue::glue(pattern, .envir = as.environment(comm)) |>
   fix_grammar()
 
-total_citations <- scholar::get_profile(id)$total_cites
+total_citations <- scholar::get_profile(id)$total_cites |>
+  format(big.mark = ",")
 
 h_index <- tryCatch(scholar::predict_h_index(id)[1, 2], error = function(x) {
   NULL
@@ -169,8 +223,7 @@ Updated: `r format(Sys.time(), format = "%Y-%m-%d %H:%M:%S")` AEDT
 
 ### **Researcher in motivation, substance use, and public health**
 
-Profile {data-icon=user}
---------------------------------------------------------------------------------
+## Profile {data-icon=user}
 
 ```{r echo=FALSE, results = "asis"}
 cat(conig::bio())
@@ -191,8 +244,13 @@ if (experience > 0) {
   exp$exp_year_range <- sapply(1:nrow(exp), function(i) {
     year_range(exp$start[i], exp$end[i])
   })
-  exp_header <- r"(Academic appointments {data-icon=laptop}
---------------------------------------------------------------------------------)"
+  exp_header <- section_heading(
+    "Academic appointments",
+    "laptop",
+    alt_group = "career",
+    alt_group_title = "Career",
+    alt_group_icon = "laptop"
+  )
   exp_content <- glue::glue_data(
     exp,
     "
@@ -215,8 +273,16 @@ if (experience > 0) {
 
 # add professional experience
 
-professional_content <- r"(Earlier professional roles {data-icon=suitcase}
---------------------------------------------------------------------------------
+professional_content <- paste0(
+  section_heading(
+    "Earlier professional roles",
+    "suitcase",
+    concise = TRUE,
+    alt_group = "career",
+    alt_group_title = "Career",
+    alt_group_icon = "laptop"
+  ),
+  r"(
 
 ### **Health Promotion Officer**
 
@@ -235,6 +301,7 @@ Sydney North Shore and Beaches Medicare Local
 Frenchs Forest, NSW
 
 2014 - 2013)"
+)
 
 if (!professional) {
   professional_content <- gsub(".*", "", professional_content)
@@ -261,8 +328,11 @@ if (education > 0) {
     year_range(edu_data$start[i], edu_data$end[i])
   })
 
-  edu_content_header <- r"(Education {data-icon=graduation-cap data-concise=true}
---------------------------------------------------------------------------------)"
+  edu_content_header <- section_heading(
+    "Education",
+    "graduation-cap",
+    concise = TRUE
+  )
   edu_content <- glue::glue_data(
     edu_data,
     "
@@ -283,6 +353,27 @@ if (education > 0) {
   cat(edu_content)
 }
 ```
+
+```{r echo = FALSE, results = "asis"}
+cat(section_heading(
+  "Awards",
+  "award",
+  concise = TRUE,
+  alt_group = "recognition-funding",
+  alt_group_title = "Recognition and funding",
+  alt_group_icon = "award"
+))
+```
+
+### **APSAD Mentor Award**
+
+Australasian Professional Society on Alcohol and other Drugs (APSAD)
+
+N/A
+
+2025
+
+--- Awarded for sustained mentoring and support for career development in the alcohol, tobacco and other drugs field.
 
 ```{r echo = FALSE, results = "asis"}
 
@@ -315,7 +406,13 @@ if (workshops) {
 
 if (grants) {
   cat(
-    section_heading("Selected funding", "file-invoice-dollar")
+    section_heading(
+      "Selected funding",
+      "file-invoice-dollar",
+      alt_group = "recognition-funding",
+      alt_group_title = "Recognition and funding",
+      alt_group_icon = "award"
+    )
   )
   grnt <- grnt[grnt$amount >= 1e6, ]
   grnt$author <- standardise_authors(grnt$author)
@@ -368,15 +465,34 @@ if (supervision) {
 
 ```{r echo = FALSE, results = "asis"}
 header = section_heading("Software", "keyboard")
-content = r"(
+revise_citation <- package_citation_entry(
+  "revise",
+  utils::bibentry(
+    bibtype = "Manual",
+    title = "revise: Dynamic Revision Letters for 'Rmarkdown' Manuscripts",
+    author = c(
+      utils::person("James", "Conigrave"),
+      utils::person("Philip", "Parker"),
+      utils::person("Taren", "Sanders"),
+      utils::person("Michael", "Noetel"),
+      utils::person(c("Caspar", "J."), "Van Lissa")
+    ),
+    year = "2026",
+    url = "https://github.com/conig/revise"
+  )
+)
+revise_authors <- format_citation_authors(revise_citation$author)
 
-### <u>JH Conigrave</u> (2025). revise: Dynamic Revision Letters for 'Rmarkdown' Manuscripts *CRAN*. https://github.com/conig/revise
+content = glue::glue(
+  r"(
+
+### [[revise_authors]] ([[revise_citation$year]]). [[revise_citation$title]]. *R package*. [[revise_citation$url]]
 
 --- [[CRAN_downloads$dls[3] |> format(big.mark = ",")]] downloads
 
 N/A
 
-2025
+[[revise_citation$year]]
 
 
 ### <u>JH Conigrave</u> (2019). corx: Create and Format Correlation Matrices. *CRAN*. https://conigrave.com/corx
@@ -393,11 +509,14 @@ N/A
 
 N/A
 
-2017)"
+2017)",
+  .open = "[[",
+  .close = "]]"
+)
 
 if (packages) {
   cat(header)
-  cat(glue::glue(content, .open = "[[", .close = "]]"))
+  cat(content)
 }
 ```
 
@@ -409,34 +528,49 @@ if (n_pubs > 0) {
     pub_head = "Peer-reviewed publications"
   }
 
-  cat(glue::glue(
-    "[[pub_head]] {data-icon=file}
---------------------------------------------------------------------------------\n\n",
-    .open = "[[",
-    .close = "]]"
-  ))
-  publications
-}
-```
-
-```{r results = "asis", echo = FALSE, message = FALSE }
-
-if (commentaries) {
   cat(
-    section_heading("Research translation", "quote-left")
+    section_heading(
+      pub_head,
+      "file",
+      alt_group = "research-outputs",
+      alt_group_title = "Research outputs",
+      alt_group_icon = "file"
+    )
   )
-
-  commentaries_other
+  publications
 }
 ```
 
 ```{r results = "asis", echo = FALSE, message = FALSE }
 if (preprints) {
   cat(
-    section_heading("Preprints", "file")
+    section_heading(
+      "Preprints",
+      "file",
+      alt_group = "research-outputs",
+      alt_group_title = "Research outputs",
+      alt_group_icon = "file"
+    )
   )
 
   pre_prints
+}
+```
+
+```{r results = "asis", echo = FALSE, message = FALSE }
+if (commentaries) {
+  cat(
+    section_heading(
+      "Research translation",
+      "quote-left",
+      concise = TRUE,
+      alt_group = "research-outputs",
+      alt_group_title = "Research outputs",
+      alt_group_icon = "file"
+    )
+  )
+
+  commentaries_other
 }
 ```
 
@@ -446,23 +580,51 @@ if (peer_review) {
     "db/peer review.csv",
     package = "conig"
   ))
-  reviews <- reviews[reviews$IF >= 2 & !is.na(reviews$IF), ][1:5, ]
-  reviews <- reviews[with(reviews, order(Year, IF, decreasing = TRUE)), ]
+  reviews <- reviews |>
+    dplyr::filter(!is.na(.data$Journal), nzchar(.data$Journal)) |>
+    dplyr::group_by(.data$Journal) |>
+    dplyr::summarise(
+      review_count = dplyr::n(),
+      first_year = min(.data$Year, na.rm = TRUE),
+      latest_year = max(.data$Year, na.rm = TRUE),
+      .groups = "drop"
+    ) |>
+    dplyr::arrange(
+      dplyr::desc(.data$review_count),
+      dplyr::desc(.data$latest_year),
+      .data$Journal
+    ) |>
+    head(5)
   cat(
-    section_heading("Recent peer review", "user-friends")
+    section_heading(
+      "Frequent peer review outlets",
+      "user-friends",
+      alt_group = "service",
+      alt_group_title = "Service",
+      alt_group_icon = "user-friends"
+    )
   )
-
+  reviews$review_label <- ifelse(
+    reviews$review_count == 1,
+    "1 review",
+    paste(reviews$review_count, "reviews")
+  )
+  reviews$review_years <- mapply(
+    year_range,
+    reviews$first_year,
+    reviews$latest_year
+  )
   content <- glue::glue_data(
     reviews,
     "
 
-### {Journal}
+### **{Journal}**
+
+--- {review_label}
 
 N/A
 
-N/A
-
-{Year}
+{review_years}
 
 \n"
   )
@@ -472,18 +634,29 @@ N/A
 ```
 
 ```{r echo = FALSE, results = "asis"}
-content = "Committee membership {data-icon=comments}
---------------------------------------------------------------------------------\n\n
+content = paste0(
+  section_heading(
+    "Committee membership",
+    "comments",
+    concise = TRUE,
+    alt_group = "service",
+    alt_group_title = "Service",
+    alt_group_icon = "user-friends"
+  ),
+  "
 
 ### **Australasian Professional Society of Alcohol and Other Drugs (APSAD)**
 
 Early-Mid Career Researchers Subcommittee
 
+--- Elected Chair in 2020
+
 N/A
 
 2022 - 2019
 
---- Elected Chair in 2020"
+"
+)
 
 if (committees) {
   cat(content)
@@ -494,10 +667,13 @@ if (committees) {
 
 if (conferences) {
   cat(
-    section_heading("Conference contributions", "globe-asia")
+    section_heading("Presentations", "globe-asia")
   )
 
-  conf <- data.table::fread(system.file("db/conference.csv", package = "conig")) |>
+  conf <- data.table::fread(system.file(
+    "db/conference.csv",
+    package = "conig"
+  )) |>
     dplyr::arrange(desc(year))
   conf$author = standardise_authors(conf$author)
 

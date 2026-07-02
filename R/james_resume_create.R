@@ -18,6 +18,98 @@ resume <- function(path = NULL) {
   }
 }
 
+#' update_alt_resume
+#'
+#' Create an alternate HTML resume using the canonical resume content.
+#' @inheritParams update_resume
+#' @return The generated HTML path, invisibly.
+#' @export
+update_alt_resume <- function(
+  education = TRUE,
+  experience = TRUE,
+  professional = TRUE,
+  workshops = FALSE,
+  supervision = TRUE,
+  committees = TRUE,
+  packages = TRUE,
+  n_pubs = Inf,
+  commentaries = TRUE,
+  peer_review = TRUE,
+  preprints = TRUE,
+  conferences = TRUE,
+  grants = TRUE,
+  path = NULL
+) {
+  md <- conig_file(
+    "resume_files/jamesconigrave_resume.rmd",
+    mustWork = TRUE
+  )
+  root <- conig_file("", mustWork = TRUE)
+  docs_dir <- file.path(root, "to_github", "docs")
+  if (!dir.exists(docs_dir)) {
+    dir.create(docs_dir, recursive = TRUE)
+  }
+
+  resume_html <- file.path(docs_dir, "index.html")
+  render_alt_resume(md, resume_html, envir = environment())
+
+  if (!is.null(path)) {
+    file.copy(from = resume_html, to = path, overwrite = TRUE)
+  }
+
+  invisible(resume_html)
+}
+
+alt_resume_format <- function() {
+  rmarkdown::html_document(
+    theme = NULL,
+    self_contained = TRUE,
+    css = conig_file(
+      "resume_files/style-rules-alt.css",
+      mustWork = TRUE
+    ),
+    includes = rmarkdown::includes(
+      after_body = conig_file(
+        "resume_files/resume-alt-script.html",
+        mustWork = TRUE
+      )
+    )
+  )
+}
+
+render_alt_resume <- function(input, output_file, envir) {
+  output_dir <- dirname(output_file)
+  if (!dir.exists(output_dir)) {
+    dir.create(output_dir, recursive = TRUE)
+  }
+
+  rmarkdown::render(
+    input,
+    output_format = alt_resume_format(),
+    output_file = output_file,
+    output_dir = output_dir,
+    envir = envir
+  )
+
+  invisible(output_file)
+}
+
+render_pdf_resume_html <- function(input, output_file, envir) {
+  output_dir <- dirname(output_file)
+  if (!dir.exists(output_dir)) {
+    dir.create(output_dir, recursive = TRUE)
+  }
+
+  rmarkdown::render(
+    input,
+    output_file = output_file,
+    output_dir = output_dir,
+    envir = envir
+  )
+
+  invisible(output_file)
+}
+
 #' website
 #'
 #' open resume
@@ -81,7 +173,7 @@ conig_resume_checkout_dir <- function() {
 #' @param commentaries include commentaries by others
 #' @param peer_review include peer review activity
 #' @param preprints include pre-prints
-#' @param conferences include conference contributions
+#' @param conferences include presentations
 #' @param grants include grants
 #' @param path if included, resume is additionally copied to path specified
 #' @param push if TRUE, changes are pushed to github
@@ -150,15 +242,17 @@ update_resume <- function(
   }
 
   resume_html <- file.path(docs_dir, "index.html")
+  resume_pdf_html <- tempfile("jamesconigrave-resume-print-", fileext = ".html")
   resume_pdf <- if (push) {
     file.path(gh, "jamesconigrave_resume.pdf")
   } else {
     file.path(root, "resume_files", "jamesconigrave_resume.pdf")
   }
 
-  rmarkdown::render(md, output_file = resume_html)
+  render_pdf_resume_html(md, resume_pdf_html, envir = environment())
+  pagedown::chrome_print(input = resume_pdf_html, output = resume_pdf)
 
-  pagedown::chrome_print(input = resume_html, output = resume_pdf)
+  render_alt_resume(md, resume_html, envir = environment())
 
   if (!push) {
     file.copy(
