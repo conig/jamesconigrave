@@ -258,6 +258,13 @@ test_that("alternate resume renders dash-prefixed notes without repeated labels"
 })
 
 test_that("alternate resume links and section states use SC1 accent semantics", {
+  script <- paste(
+    readLines(
+      conig_file("resume_files/resume-alt-script.html", mustWork = TRUE),
+      warn = FALSE
+    ),
+    collapse = "\n"
+  )
   css <- paste(
     readLines(
       conig_file("resume_files/style-rules-alt.css", mustWork = TRUE),
@@ -312,6 +319,8 @@ test_that("alternate resume links and section states use SC1 accent semantics", 
   expect_false(grepl("\\.resume-entry:hover\\s+h3", css))
   expect_false(grepl("\\.citation-record:hover\\s+\\.citation-title", css))
   expect_false(grepl("#metrics\\s*\\{\\s*grid-template-columns:\\s*1fr;", css))
+  expect_match(script, "<span>Senior Research Fellow</span>")
+  expect_false(grepl("<span>Academic CV</span>", script, fixed = TRUE))
 })
 
 test_that("sidebar progress track is bounded by the primary section dots", {

@@ -178,7 +178,7 @@ total_cran_downloads <- sum(CRAN_downloads$dls) |>
 
 <!-- ![James](james_smaller.png){width=100%} -->
 
-## Contact {#contact}
+## Links {#contact}
 
 - <i class="fa fa-globe-asia"></i> [conigrave.com](https://conigrave.com)
 - <i class="fa fa-leaf"></i> [scopus profile](https://www.scopus.com/authid/detail.uri?authorId=57207914919)
