@@ -203,7 +203,7 @@
   function buildHeroAction() {
     var action = document.createElement("a");
     action.className = "hero-download";
-    action.href = "../jamesconigrave_resume.pdf";
+    action.href = "james-h-conigrave-cv.pdf";
     action.textContent = "Download PDF";
     return action;
   }
@@ -244,14 +244,6 @@
       dateParagraph.remove();
     }
 
-    paragraphs = directChildren(entry, "p");
-    paragraphs.forEach(function(p) {
-      var text = p.textContent.trim();
-      if (text.charCodeAt(0) === 8212 || text.indexOf("--") === 0) {
-        p.classList.add("entry-note");
-      }
-    });
-
     var h3 = directChildren(entry, "h3")[0];
     var headingNode = h3;
     if (h3 && citationSectionIds[sectionId]) {
@@ -267,7 +259,11 @@
     body.className = "entry-body";
     if (headingNode) body.appendChild(headingNode);
     directChildren(entry, "p").forEach(function(p) {
-      body.appendChild(p);
+      if (isEntryNoteText(p.textContent.trim())) {
+        appendEntryMeta(body, p);
+      } else {
+        body.appendChild(p);
+      }
     });
 
     var date = document.createElement("div");
@@ -278,6 +274,55 @@
     entry.innerHTML = "";
     entry.appendChild(date);
     entry.appendChild(body);
+  }
+
+  function isEntryNoteText(text) {
+    if (!text) return false;
+    return text.charCodeAt(0) === 8212 || text.indexOf("--") === 0;
+  }
+
+  function stripEntryNotePrefix(p) {
+    var first = p.firstChild;
+    if (first && first.nodeType === Node.TEXT_NODE) {
+      first.nodeValue = first.nodeValue.replace(/^\s*(?:\u2014|--)\s*/, "");
+    } else {
+      p.textContent = p.textContent.replace(/^\s*(?:\u2014|--)\s*/, "");
+    }
+  }
+
+  function entryMetaLabel(text) {
+    if (/^\$[\d,]+/.test(text)) return "Amount";
+    if (/\b(downloads?|citations?|reviews?)\b/i.test(text)) return "Metric";
+    if (/^(Auxiliary|Elected)\b/i.test(text)) return "Role";
+    if (/^Awarded\b/i.test(text)) return "Context";
+    return "Detail";
+  }
+
+  function appendEntryMeta(body, p) {
+    var metaList = body.lastElementChild;
+    if (!metaList || !metaList.classList.contains("entry-meta-list")) {
+      metaList = document.createElement("div");
+      metaList.className = "entry-meta-list";
+      body.appendChild(metaList);
+    }
+
+    stripEntryNotePrefix(p);
+    var text = p.textContent.trim();
+    var meta = document.createElement("div");
+    meta.className = "entry-meta";
+    if (text.length > 72) meta.classList.add("is-long");
+    if (/^\$[\d,]+/.test(text)) meta.classList.add("is-amount");
+
+    var label = document.createElement("span");
+    label.className = "entry-meta-label";
+    label.textContent = entryMetaLabel(text);
+    var value = document.createElement("span");
+    value.className = "entry-meta-value";
+    while (p.firstChild) value.appendChild(p.firstChild);
+
+    meta.appendChild(label);
+    meta.appendChild(value);
+    metaList.appendChild(meta);
   }
 
   function countLabel(count) {
@@ -494,6 +539,12 @@
       itemWrap.insertBefore(heading, entry);
     });
 
+    var empty = document.createElement("div");
+    empty.className = "publication-empty-state";
+    empty.textContent = "No publications match this search.";
+    empty.hidden = true;
+    itemWrap.appendChild(empty);
+
     var tools = document.createElement("div");
     tools.className = "publication-tools";
     var input = document.createElement("input");
@@ -525,6 +576,8 @@
       });
       clear.hidden = !query;
       itemWrap.classList.toggle("is-filtering", Boolean(query));
+      itemWrap.classList.toggle("has-no-filter-results", Boolean(query) && visible === 0);
+      empty.hidden = !query || visible > 0;
       window.dispatchEvent(new CustomEvent("resumePublicationFilterChange"));
     };
 

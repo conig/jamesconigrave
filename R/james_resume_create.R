@@ -100,6 +100,9 @@ render_pdf_resume_html <- function(input, output_file, envir) {
     dir.create(output_dir, recursive = TRUE)
   }
 
+  input <- prepare_pdf_resume_input(input)
+  on.exit(unlink(dirname(input), recursive = TRUE), add = TRUE)
+
   rmarkdown::render(
     input,
     output_file = output_file,
@@ -108,6 +111,25 @@ render_pdf_resume_html <- function(input, output_file, envir) {
   )
 
   invisible(output_file)
+}
+
+prepare_pdf_resume_input <- function(input) {
+  lines <- readLines(input, warn = FALSE)
+  lines <- lines[!grepl("^##\\s+Profile\\b", lines)]
+
+  render_dir <- tempfile("jamesconigrave-resume-pdf-source-")
+  dir.create(render_dir, recursive = TRUE)
+  output <- file.path(render_dir, basename(input))
+  writeLines(lines, output, useBytes = TRUE)
+
+  css_path <- conig_file("resume_files/style-rules.css", mustWork = TRUE)
+  file.copy(
+    from = css_path,
+    to = file.path(render_dir, basename(css_path)),
+    overwrite = TRUE
+  )
+
+  output
 }
 
 #' website
@@ -248,11 +270,23 @@ update_resume <- function(
   } else {
     file.path(root, "resume_files", "jamesconigrave_resume.pdf")
   }
+  public_resume_pdfs <- file.path(
+    docs_dir,
+    c("jamesconigrave_resume.pdf", "james-h-conigrave-cv.pdf")
+  )
 
   render_pdf_resume_html(md, resume_pdf_html, envir = environment())
   pagedown::chrome_print(input = resume_pdf_html, output = resume_pdf)
 
   render_alt_resume(md, resume_html, envir = environment())
+
+  for (public_resume_pdf in public_resume_pdfs) {
+    file.copy(
+      from = resume_pdf,
+      to = public_resume_pdf,
+      overwrite = TRUE
+    )
+  }
 
   if (!push) {
     file.copy(

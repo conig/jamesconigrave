@@ -533,7 +533,7 @@ if (n_pubs > 0) {
       pub_head,
       "file",
       alt_group = "research-outputs",
-      alt_group_title = "Research outputs",
+      alt_group_title = "Publications",
       alt_group_icon = "file"
     )
   )
@@ -548,7 +548,7 @@ if (preprints) {
       "Preprints",
       "file",
       alt_group = "research-outputs",
-      alt_group_title = "Research outputs",
+      alt_group_title = "Publications",
       alt_group_icon = "file"
     )
   )
@@ -565,7 +565,7 @@ if (commentaries) {
       "quote-left",
       concise = TRUE,
       alt_group = "research-outputs",
-      alt_group_title = "Research outputs",
+      alt_group_title = "Publications",
       alt_group_icon = "file"
     )
   )
