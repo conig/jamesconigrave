@@ -2,6 +2,7 @@ local_fake_conig_install <- function() {
   env <- parent.frame()
   root <- tempfile("conig-install-")
   dir.create(root)
+  withr::local_options(list(conig.source_dir = NA), .local_envir = env)
   resume_dir <- file.path(root, "resume_files")
   dir.create(resume_dir, recursive = TRUE)
   writeLines("", file.path(resume_dir, "style-rules.css"))
@@ -493,4 +494,96 @@ test_that("update_resume bootstraps a fresh push checkout before rendering", {
   expect_true(file.exists(file.path(checkout, "jamesconigrave_resume.pdf")))
   expect_true(file.exists(file.path(checkout, "docs", "jamesconigrave_resume.pdf")))
   expect_true(file.exists(file.path(checkout, "docs", "james-h-conigrave-cv.pdf")))
+})
+
+test_that("update_resume push mode refreshes every resume asset copy", {
+  # The publish checkout is not the only durable copy: the package assets are
+  # committed here too, so push mode must not leave them stale.
+  root <- local_fake_conig_install()
+  checkout <- file.path(tempfile("conig-user-data-"), "resume")
+  source_root <- tempfile("conig-source-")
+  dir.create(source_root)
+  writeLines(
+    c(
+      "Package: conig",
+      "Version: 0.0.0"
+    ),
+    file.path(source_root, "DESCRIPTION")
+  )
+  dir.create(file.path(source_root, "inst", "resume_files"), recursive = TRUE)
+  dir.create(file.path(source_root, "inst", "to_github", "docs"), recursive = TRUE)
+
+  stale_files <- c(
+    file.path(root, "to_github", "docs", "index.html"),
+    file.path(root, "resume_files", "jamesconigrave_resume.pdf"),
+    file.path(root, "to_github", "jamesconigrave_resume.pdf"),
+    file.path(root, "to_github", "docs", "jamesconigrave_resume.pdf"),
+    file.path(root, "to_github", "docs", "james-h-conigrave-cv.pdf"),
+    file.path(source_root, "inst", "to_github", "docs", "index.html"),
+    file.path(source_root, "inst", "resume_files", "jamesconigrave_resume.pdf"),
+    file.path(source_root, "inst", "to_github", "jamesconigrave_resume.pdf"),
+    file.path(source_root, "inst", "to_github", "docs", "jamesconigrave_resume.pdf"),
+    file.path(source_root, "inst", "to_github", "docs", "james-h-conigrave-cv.pdf")
+  )
+  for (stale_file in stale_files) {
+    dir.create(dirname(stale_file), recursive = TRUE, showWarnings = FALSE)
+    writeLines("stale", stale_file)
+  }
+
+  withr::local_options(list(conig.source_dir = source_root))
+
+  calls <- local_mock_resume_renderers(
+    root,
+    output_root = checkout,
+    pdf_path = file.path(checkout, "jamesconigrave_resume.pdf")
+  )
+
+  local_mocked_bindings(
+    conig_resume_checkout_dir = function() checkout,
+    .package = "conig"
+  )
+
+  local_mocked_bindings(
+    git_clone = function(url, path, ...) {
+      dir.create(path, recursive = TRUE, showWarnings = FALSE)
+      dir.create(file.path(path, ".git"), recursive = TRUE)
+      invisible(path)
+    },
+    git_add = function(files, repo, ...) invisible(NULL),
+    git_commit = function(repo, message, ...) invisible(NULL),
+    git_push = function(repo, ...) invisible(NULL),
+    .package = "gert"
+  )
+
+  update_resume()
+
+  expect_true(calls$print_rendered())
+  expect_true(calls$web_rendered())
+  expect_true(calls$printed())
+
+  html_files <- c(
+    file.path(checkout, "docs", "index.html"),
+    file.path(root, "to_github", "docs", "index.html"),
+    file.path(source_root, "inst", "to_github", "docs", "index.html")
+  )
+  for (html_file in html_files) {
+    expect_equal(readLines(html_file, warn = FALSE), "<html>alternate resume</html>")
+  }
+
+  pdf_files <- c(
+    file.path(checkout, "jamesconigrave_resume.pdf"),
+    file.path(checkout, "docs", "jamesconigrave_resume.pdf"),
+    file.path(checkout, "docs", "james-h-conigrave-cv.pdf"),
+    file.path(root, "resume_files", "jamesconigrave_resume.pdf"),
+    file.path(root, "to_github", "jamesconigrave_resume.pdf"),
+    file.path(root, "to_github", "docs", "jamesconigrave_resume.pdf"),
+    file.path(root, "to_github", "docs", "james-h-conigrave-cv.pdf"),
+    file.path(source_root, "inst", "resume_files", "jamesconigrave_resume.pdf"),
+    file.path(source_root, "inst", "to_github", "jamesconigrave_resume.pdf"),
+    file.path(source_root, "inst", "to_github", "docs", "jamesconigrave_resume.pdf"),
+    file.path(source_root, "inst", "to_github", "docs", "james-h-conigrave-cv.pdf")
+  )
+  for (pdf_file in pdf_files) {
+    expect_equal(readChar(pdf_file, 8, useBytes = TRUE), "%PDF-1.4")
+  }
 })

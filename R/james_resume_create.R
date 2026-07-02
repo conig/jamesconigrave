@@ -181,6 +181,90 @@ conig_resume_checkout_dir <- function() {
   file.path(tools::R_user_dir("conig", "data"), "resume")
 }
 
+conig_source_checkout_dir <- function(start = getwd()) {
+  source_dir <- getOption("conig.source_dir", NULL)
+  if (identical(source_dir, NA) || identical(source_dir, FALSE)) {
+    return(NULL)
+  }
+  if (!is.null(source_dir)) {
+    if (!nzchar(source_dir)) {
+      return(NULL)
+    }
+    return(normalizePath(source_dir, winslash = "/", mustWork = FALSE))
+  }
+
+  current <- normalizePath(start, winslash = "/", mustWork = FALSE)
+  repeat {
+    description <- file.path(current, "DESCRIPTION")
+    if (file.exists(description) && dir.exists(file.path(current, "inst"))) {
+      package <- tryCatch(
+        read.dcf(description, fields = "Package")[1, "Package"],
+        error = function(e) NA_character_
+      )
+      if (identical(unname(package), "conig")) {
+        return(current)
+      }
+    }
+
+    parent <- dirname(current)
+    if (identical(parent, current)) {
+      return(NULL)
+    }
+    current <- parent
+  }
+}
+
+resume_asset_paths <- function(root) {
+  list(
+    html = file.path(root, "to_github", "docs", "index.html"),
+    pdf = c(
+      file.path(root, "resume_files", "jamesconigrave_resume.pdf"),
+      file.path(root, "to_github", "jamesconigrave_resume.pdf"),
+      file.path(root, "to_github", "docs", "jamesconigrave_resume.pdf"),
+      file.path(root, "to_github", "docs", "james-h-conigrave-cv.pdf")
+    )
+  )
+}
+
+source_resume_asset_paths <- function(source_root) {
+  resume_asset_paths(file.path(source_root, "inst"))
+}
+
+same_path <- function(x, y) {
+  identical(
+    normalizePath(x, winslash = "/", mustWork = FALSE),
+    normalizePath(y, winslash = "/", mustWork = FALSE)
+  )
+}
+
+copy_resume_asset <- function(from, to) {
+  if (same_path(from, to)) {
+    return(invisible(to))
+  }
+  dir.create(dirname(to), recursive = TRUE, showWarnings = FALSE)
+  file.copy(from = from, to = to, overwrite = TRUE)
+  invisible(to)
+}
+
+sync_resume_assets <- function(resume_html, resume_pdf, root) {
+  package_assets <- resume_asset_paths(root)
+  copy_resume_asset(resume_html, package_assets$html)
+  for (pdf in package_assets$pdf) {
+    copy_resume_asset(resume_pdf, pdf)
+  }
+
+  source_root <- conig_source_checkout_dir()
+  if (!is.null(source_root)) {
+    source_assets <- source_resume_asset_paths(source_root)
+    copy_resume_asset(resume_html, source_assets$html)
+    for (pdf in source_assets$pdf) {
+      copy_resume_asset(resume_pdf, pdf)
+    }
+  }
+
+  invisible(NULL)
+}
+
 #' update_resume
 #'
 #' update resume and optionally push changes to github
@@ -295,6 +379,12 @@ update_resume <- function(
       overwrite = TRUE
     )
   }
+
+  sync_resume_assets(
+    resume_html = resume_html,
+    resume_pdf = resume_pdf,
+    root = root
+  )
 
   if (!is.null(path)) {
     if (tools::file_ext(path) == "pdf") {
