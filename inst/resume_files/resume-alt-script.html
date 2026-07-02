@@ -258,17 +258,25 @@
     var body = document.createElement("div");
     body.className = "entry-body";
     if (headingNode) body.appendChild(headingNode);
+    var sidecarItems = [];
     directChildren(entry, "p").forEach(function(p) {
       if (isEntryNoteText(p.textContent.trim())) {
-        appendEntryMeta(body, p);
+        stripEntryNotePrefix(p);
+        var noteText = p.textContent.trim();
+        if (shouldMergeEntryRole(sectionId, noteText, body)) {
+          mergeEntryRole(body, p);
+        } else if (isEntrySidecarText(noteText)) {
+          sidecarItems.push(p);
+        } else {
+          p.classList.add("entry-support-note");
+          body.appendChild(p);
+        }
       } else {
         body.appendChild(p);
       }
     });
 
-    var date = document.createElement("div");
-    date.className = "entry-year";
-    date.textContent = year;
+    var date = buildEntryYear(year, sidecarItems);
 
     entry.classList.add("resume-entry", "resume-reveal");
     entry.innerHTML = "";
@@ -290,39 +298,48 @@
     }
   }
 
-  function entryMetaLabel(text) {
-    if (/^\$[\d,]+/.test(text)) return "Amount";
-    if (/\b(downloads?|citations?|reviews?)\b/i.test(text)) return "Metric";
-    if (/^(Auxiliary|Elected)\b/i.test(text)) return "Role";
-    if (/^Awarded\b/i.test(text)) return "Context";
-    return "Detail";
+  function isEntrySidecarText(text) {
+    return /^\$[\d,]+/.test(text) ||
+      /\b(downloads?|citations?|reviews?)\b/i.test(text);
   }
 
-  function appendEntryMeta(body, p) {
-    var metaList = body.lastElementChild;
-    if (!metaList || !metaList.classList.contains("entry-meta-list")) {
-      metaList = document.createElement("div");
-      metaList.className = "entry-meta-list";
-      body.appendChild(metaList);
+  function shouldMergeEntryRole(sectionId, text, body) {
+    return sectionId === "research-supervision" &&
+      text.length > 0 &&
+      text.length <= 36 &&
+      directChildren(body, "p").length > 0;
+  }
+
+  function mergeEntryRole(body, p) {
+    var paragraphs = directChildren(body, "p");
+    var target = paragraphs[paragraphs.length - 1];
+    target.classList.add("entry-context-line");
+    target.appendChild(document.createTextNode(" · "));
+    while (p.firstChild) target.appendChild(p.firstChild);
+  }
+
+  function buildEntryYear(year, sidecarItems) {
+    var date = document.createElement("div");
+    date.className = "entry-year";
+    var yearValue = document.createElement("span");
+    yearValue.className = "entry-year-value";
+    yearValue.textContent = year;
+    date.appendChild(yearValue);
+
+    if (sidecarItems.length > 0) {
+      var sidecar = document.createElement("div");
+      sidecar.className = "entry-sidecar";
+      sidecarItems.forEach(function(p) {
+        var item = document.createElement("span");
+        item.className = "entry-sidecar-item";
+        if (/^\$[\d,]+/.test(p.textContent.trim())) item.classList.add("is-amount");
+        while (p.firstChild) item.appendChild(p.firstChild);
+        sidecar.appendChild(item);
+      });
+      date.appendChild(sidecar);
     }
 
-    stripEntryNotePrefix(p);
-    var text = p.textContent.trim();
-    var meta = document.createElement("div");
-    meta.className = "entry-meta";
-    if (text.length > 72) meta.classList.add("is-long");
-    if (/^\$[\d,]+/.test(text)) meta.classList.add("is-amount");
-
-    var label = document.createElement("span");
-    label.className = "entry-meta-label";
-    label.textContent = entryMetaLabel(text);
-    var value = document.createElement("span");
-    value.className = "entry-meta-value";
-    while (p.firstChild) value.appendChild(p.firstChild);
-
-    meta.appendChild(label);
-    meta.appendChild(value);
-    metaList.appendChild(meta);
+    return date;
   }
 
   function countLabel(count) {

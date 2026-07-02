@@ -191,7 +191,7 @@ test_that("publication search has an empty state when no records match", {
   expect_match(css, "\\.publication-empty-state")
 })
 
-test_that("alternate resume renders dash-prefixed notes as structured metadata", {
+test_that("alternate resume renders dash-prefixed notes without repeated labels", {
   script <- paste(
     readLines(
       conig_file("resume_files/resume-alt-script.html", mustWork = TRUE),
@@ -209,11 +209,17 @@ test_that("alternate resume renders dash-prefixed notes as structured metadata",
 
   expect_match(script, "isEntryNoteText")
   expect_match(script, "stripEntryNotePrefix")
-  expect_match(script, "entryMetaLabel")
-  expect_match(script, "entry-meta-list")
-  expect_match(css, "\\.entry-meta-list")
-  expect_match(css, "\\.entry-meta-label")
-  expect_match(css, "\\.entry-meta\\.is-amount \\.entry-meta-value")
+  expect_match(script, "isEntrySidecarText")
+  expect_match(script, "buildEntryYear")
+  expect_match(script, "entry-sidecar")
+  expect_match(script, "entry-support-note")
+  expect_match(script, "mergeEntryRole")
+  expect_match(css, "\\.entry-sidecar")
+  expect_match(css, "\\.entry-support-note")
+  expect_match(css, "\\.entry-context-line")
+  expect_false(grepl("entryMetaLabel", script))
+  expect_false(grepl("entry-meta-label", css))
+  expect_false(grepl("entry-meta-list", css))
   expect_false(grepl("\\.resume-entry \\.entry-note", css))
 })
 
