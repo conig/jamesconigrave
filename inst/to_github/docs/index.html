@@ -1267,7 +1267,7 @@ linkage</p>
 <p>Built with <a href="https://github.com/rstudio/pagedown">pagedown</a>
 in R. Google Scholar data retrieved with <a href="https://github.com/jkeirstead/scholar">scholar</a>. Source: <a href="https://github.com/conig/jamesconigrave/">GitHub</a>.</p>
 <p>This document updates daily: <a href="https://conigrave.com/resume">conigrave.com/resume</a>.</p>
-<p>Updated: 2026-07-02 23:29:40 AEDT</p>
+<p>Updated: 2026-07-02 23:32:53 AEDT</p>
 </div>
 </div>
 <div id="main" class="section level1">
@@ -3128,9 +3128,18 @@ self-esteem and negative outcomes. <em>Self Conference</em></h3>
         }
       });
     };
+    var isPublicationSectionActive = function(marker) {
+      var sectionRect = publicationSection.getBoundingClientRect();
+      return sectionRect.top <= marker && sectionRect.bottom > marker;
+    };
     var updatePublicationYear = function() {
       if (!publicationSection || !yearLinks.length) return;
       if (!activeLink || activeLink.getAttribute("href") !== publicationOwnerHref) {
+        setActivePublicationYear("");
+        return;
+      }
+      var marker = Math.min(window.innerHeight * 0.42, 380);
+      if (!isPublicationSectionActive(marker)) {
         setActivePublicationYear("");
         return;
       }
@@ -3141,7 +3150,6 @@ self-esteem and negative outcomes. <em>Self Conference</em></h3>
         setActivePublicationYear("");
         return;
       }
-      var marker = Math.min(window.innerHeight * 0.42, 380);
       var currentEntry = null;
       visibleEntries.forEach(function(entry) {
         var rect = entry.getBoundingClientRect();

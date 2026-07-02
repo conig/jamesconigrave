@@ -882,9 +882,18 @@
         }
       });
     };
+    var isPublicationSectionActive = function(marker) {
+      var sectionRect = publicationSection.getBoundingClientRect();
+      return sectionRect.top <= marker && sectionRect.bottom > marker;
+    };
     var updatePublicationYear = function() {
       if (!publicationSection || !yearLinks.length) return;
       if (!activeLink || activeLink.getAttribute("href") !== publicationOwnerHref) {
+        setActivePublicationYear("");
+        return;
+      }
+      var marker = Math.min(window.innerHeight * 0.42, 380);
+      if (!isPublicationSectionActive(marker)) {
         setActivePublicationYear("");
         return;
       }
@@ -895,7 +904,6 @@
         setActivePublicationYear("");
         return;
       }
-      var marker = Math.min(window.innerHeight * 0.42, 380);
       var currentEntry = null;
       visibleEntries.forEach(function(entry) {
         var rect = entry.getBoundingClientRect();

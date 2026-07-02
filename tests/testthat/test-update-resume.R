@@ -341,6 +341,24 @@ test_that("sidebar progress track is bounded by the primary section dots", {
   expect_false(grepl("inset:\\s*1\\.9rem auto 0 0;", css))
 })
 
+test_that("publication year nav clears after the publication subsection", {
+  # Publications can live inside a broader grouped section. Once scrolling has
+  # moved below the publication subsection but before the next primary section
+  # becomes active, no publication year should remain highlighted.
+  script <- paste(
+    readLines(
+      conig_file("resume_files/resume-alt-script.html", mustWork = TRUE),
+      warn = FALSE
+    ),
+    collapse = "\n"
+  )
+
+  expect_match(script, "isPublicationSectionActive")
+  expect_match(script, "publicationSection\\.getBoundingClientRect\\(\\)")
+  expect_match(script, "sectionRect\\.bottom > marker")
+  expect_match(script, "setActivePublicationYear\\(\"\"\\);\\s*return;")
+})
+
 test_that("research output group is labelled Publications", {
   rmd <- paste(
     readLines(
