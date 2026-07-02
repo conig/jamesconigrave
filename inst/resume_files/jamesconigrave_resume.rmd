@@ -1,5 +1,5 @@
 ---
-title: "James Conigrave's resume"
+title: "James H. Conigrave's resume"
 author: James H. Conigrave
 date: "`r Sys.Date()`"
 output:
@@ -219,9 +219,9 @@ Updated: `r format(Sys.time(), format = "%Y-%m-%d %H:%M:%S")` AEDT
 
 # Main
 
-## JAMES CONIGRAVE {#title}
+## JAMES H. CONIGRAVE {#title}
 
-### **Researcher in motivation, substance use, and public health**
+### **Motivation, substance use, and public health**
 
 ## Profile {data-icon=user}
 

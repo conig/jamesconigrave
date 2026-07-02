@@ -118,7 +118,7 @@ test_that("update_alt_resume renders a separate web-native HTML resume", {
       "",
       "# Main",
       "",
-      "## JAMES CONIGRAVE {#title}",
+      "## JAMES H. CONIGRAVE {#title}",
       "",
       "Same content"
     ),
