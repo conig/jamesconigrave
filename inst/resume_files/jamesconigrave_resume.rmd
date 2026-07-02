@@ -111,7 +111,9 @@ section_heading <- function(
 }
 
 year_range <- function(start, end) {
-  paste(unique(na.omit(c(end, start))), collapse = " - ")
+  years <- as.character(unique(na.omit(c(start, end))))
+  years <- years[nzchar(trimws(years))]
+  paste(years, collapse = "–")
 }
 
 format_citation_person <- function(person) {
@@ -300,7 +302,7 @@ Sydney North Shore and Beaches Medicare Local
 
 Frenchs Forest, NSW
 
-2014 - 2013)"
+2013–2014)"
 )
 
 if (!professional) {
@@ -437,8 +439,13 @@ N/A
 students <- data.table::fread(system.file("db/students.csv", package = "conig"))
 students$year_end[is.na(students$year_end)] <- "Present"
 students <- students[order(-students$year_start), ]
+students$student_year_range <- mapply(
+  year_range,
+  students$year_start,
+  students$year_end
+)
 
-content_header <- section_heading("Research supervision", "users")
+content_header <- section_heading("HDR supervision", "users")
 
 content <- glue::glue_data(
   students,
@@ -450,7 +457,7 @@ content <- glue::glue_data(
 
 N/A
 
-{year_end} - {year_start}
+{student_year_range}
 
 --- {role}
 
@@ -653,7 +660,7 @@ Early-Mid Career Researchers Subcommittee
 
 N/A
 
-2022 - 2019
+2019–2022
 
 "
 )

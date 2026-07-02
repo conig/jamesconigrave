@@ -98,23 +98,23 @@
   }
 
   function isDateText(text) {
-    return /^(Present|\d{4})(\s*-\s*(Present|\d{4}))?$/.test(text.trim());
+    return /^(Present|\d{4})(\s*[-–]\s*(Present|\d{4}))?$/.test(text.trim());
   }
 
   function displayDateText(text) {
     var value = text.trim();
-    var parts = value.split(/\s*-\s*/);
+    var parts = value.split(/\s*[-–]\s*/);
     if (parts.length !== 2) return value;
 
     var first = parts[0];
     var second = parts[1];
-    if (first === "Present") return second + " - Present";
-    if (second === "Present") return value;
+    if (first === "Present") return second + "–Present";
+    if (second === "Present") return first + "–Present";
 
     var firstYear = parseInt(first, 10);
     var secondYear = parseInt(second, 10);
-    if (isFinite(firstYear) && isFinite(secondYear) && firstYear > secondYear) {
-      return second + " - " + first;
+    if (isFinite(firstYear) && isFinite(secondYear)) {
+      return firstYear > secondYear ? second + "–" + first : first + "–" + second;
     }
 
     return value;
@@ -333,13 +333,28 @@
         var item = document.createElement("span");
         item.className = "entry-sidecar-item";
         if (/^\$[\d,]+/.test(p.textContent.trim())) item.classList.add("is-amount");
-        while (p.firstChild) item.appendChild(p.firstChild);
+        appendSidecarItemContent(item, p);
         sidecar.appendChild(item);
       });
       date.appendChild(sidecar);
     }
 
     return date;
+  }
+
+  function appendSidecarItemContent(item, p) {
+    var link = p.querySelector("a[href]");
+    if (link) {
+      var fullLink = document.createElement("a");
+      Array.prototype.slice.call(link.attributes).forEach(function(attr) {
+        fullLink.setAttribute(attr.name, attr.value);
+      });
+      fullLink.textContent = p.textContent.trim();
+      item.appendChild(fullLink);
+      return;
+    }
+
+    while (p.firstChild) item.appendChild(p.firstChild);
   }
 
   function countLabel(count) {
@@ -564,15 +579,22 @@
 
     var tools = document.createElement("div");
     tools.className = "publication-tools";
+    var field = document.createElement("label");
+    field.className = "publication-search-field";
+    var icon = document.createElement("span");
+    icon.className = "publication-search-icon";
+    icon.setAttribute("aria-hidden", "true");
     var input = document.createElement("input");
     input.type = "search";
     input.placeholder = "Search publications";
     input.setAttribute("aria-label", "Search publications");
+    field.appendChild(icon);
+    field.appendChild(input);
     var clear = document.createElement("button");
     clear.type = "button";
     clear.textContent = "Clear";
     clear.hidden = true;
-    tools.appendChild(input);
+    tools.appendChild(field);
     tools.appendChild(clear);
     headingDepth.appendChild(tools);
 
@@ -592,6 +614,7 @@
         heading.classList.toggle("is-filtered-out", !anyVisible);
       });
       clear.hidden = !query;
+      tools.classList.toggle("has-query", Boolean(query));
       itemWrap.classList.toggle("is-filtering", Boolean(query));
       itemWrap.classList.toggle("has-no-filter-results", Boolean(query) && visible === 0);
       empty.hidden = !query || visible > 0;
@@ -819,7 +842,10 @@
   }
 
   function activateNav(main) {
+    var nav = document.querySelector(".resume-nav");
     var links = Array.prototype.slice.call(document.querySelectorAll(".resume-nav > a"));
+    var progressBar = document.querySelector(".resume-progress span");
+    var progressTrack = progressBar ? progressBar.parentElement : null;
     var byId = {};
     links.forEach(function(link) {
       byId[link.getAttribute("href").slice(1)] = link;
@@ -828,13 +854,14 @@
       return Boolean(byId[section.id]);
     });
     var activeLink = null;
+    var requestProgressRefresh = function() {};
     var setActiveLink = function(link) {
       if (!link || link === activeLink) return;
       links.forEach(function(item) { item.classList.remove("is-active"); });
       activeLink = link;
       activeLink.classList.add("is-active");
+      requestProgressRefresh(20);
     };
-    setActiveLink(links[0] || null);
     var publicationSection = document.getElementById("peer-reviewed-publications");
     var publicationOwner = publicationSection ?
       publicationSection.closest(".resume-section") :
@@ -886,15 +913,66 @@
         setActivePublicationYear(link.dataset.year);
       });
     });
-    var progressBar = document.querySelector(".resume-progress span");
+
+    var parsePixel = function(value, fallback) {
+      var parsed = parseFloat(value);
+      return isFinite(parsed) ? parsed : fallback;
+    };
+
+    var navDotCenter = function(link) {
+      if (!link) return 0;
+      var linkRect = link.getBoundingClientRect();
+      var dotStyle = window.getComputedStyle ?
+        window.getComputedStyle(link, "::before") :
+        null;
+      if (!dotStyle) return linkRect.top + 13.5;
+
+      var dotTop = parsePixel(dotStyle.top, 13.5);
+      var dotHeight = parsePixel(dotStyle.height, 0);
+      if (!dotHeight) return linkRect.top + dotTop;
+      return linkRect.top + dotTop + dotHeight / 2;
+    };
+
+    var setProgressTrack = function() {
+      if (!nav || !progressTrack || !links.length) return 0;
+
+      var navRect = nav.getBoundingClientRect();
+      var firstCenter = navDotCenter(links[0]);
+      var lastCenter = navDotCenter(links[links.length - 1]);
+      var top = Math.max(0, firstCenter - navRect.top);
+      var trackHeight = Math.max(0, lastCenter - firstCenter);
+
+      progressTrack.style.top = top.toFixed(2) + "px";
+      progressTrack.style.height = trackHeight.toFixed(2) + "px";
+      return trackHeight;
+    };
+
     var updateProgress = function() {
       if (!progressBar || !activeLink) return;
-      var progressRect = progressBar.parentElement.getBoundingClientRect();
-      var linkRect = activeLink.getBoundingClientRect();
-      var dotCenter = linkRect.top + 13.5;
-      var height = Math.max(0, dotCenter - progressRect.top);
-      progressBar.style.height = height + "px";
+      var trackHeight = setProgressTrack();
+      var progressRect = progressTrack.getBoundingClientRect();
+      var dotCenter = navDotCenter(activeLink);
+      var height = Math.min(trackHeight, Math.max(0, dotCenter - progressRect.top));
+      progressBar.style.height = height.toFixed(2) + "px";
       updatePublicationYear();
+    };
+
+    var progressRefreshFrame = null;
+    var progressRefreshFrames = 0;
+    requestProgressRefresh = function(frameCount) {
+      progressRefreshFrames = Math.max(progressRefreshFrames, frameCount || 1);
+      if (progressRefreshFrame) return;
+
+      var step = function() {
+        progressRefreshFrame = null;
+        updateProgress();
+        progressRefreshFrames -= 1;
+        if (progressRefreshFrames > 0) {
+          progressRefreshFrame = window.requestAnimationFrame(step);
+        }
+      };
+
+      progressRefreshFrame = window.requestAnimationFrame(step);
     };
 
     var updateActiveSection = function() {
@@ -918,6 +996,25 @@
     window.addEventListener("resize", updateActiveSection);
     window.addEventListener("scroll", updateActiveSection, { passive: true });
     window.addEventListener("resumePublicationFilterChange", updateActiveSection);
+
+    document.querySelectorAll(".publication-year-nav").forEach(function(yearNav) {
+      yearNav.addEventListener("transitionrun", function() {
+        requestProgressRefresh(20);
+      });
+      yearNav.addEventListener("transitionstart", function() {
+        requestProgressRefresh(20);
+      });
+      yearNav.addEventListener("transitionend", function() {
+        requestProgressRefresh(3);
+      });
+    });
+
+    if ("ResizeObserver" in window && nav) {
+      var navObserver = new ResizeObserver(function() {
+        requestProgressRefresh(2);
+      });
+      navObserver.observe(nav);
+    }
   }
 
   onReady(function() {

@@ -446,8 +446,11 @@ u {
 
 .resume-progress {
   position: absolute;
-  inset: 1.9rem auto 0 0;
+  top: 1.9rem;
+  left: 0;
   width: 2px;
+  height: 0;
+  overflow: hidden;
   background: var(--section-accent-faint);
 }
 
@@ -965,41 +968,103 @@ u {
 }
 
 .publication-tools {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 0.28rem 0.75rem;
-  align-items: end;
+  display: flex;
+  gap: 0.35rem 0.75rem;
+  align-items: flex-end;
   margin-top: clamp(1.2rem, 2.4vw, 2rem);
   padding-top: 0.95rem;
   border-top: 1px solid var(--line);
 }
 
+.publication-search-field {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1rem minmax(0, 1fr);
+  flex: 0 1 13rem;
+  gap: 0.55rem;
+  align-items: center;
+  max-width: 100%;
+  padding: 0.34rem 0 0.48rem;
+  color: var(--muted);
+  cursor: text;
+  transition: flex-basis 220ms ease, color 160ms ease;
+}
+
+.publication-search-field::before,
+.publication-search-field::after {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 1px;
+  content: "";
+}
+
+.publication-search-field::before {
+  background: var(--section-accent-line);
+}
+
+.publication-search-field::after {
+  height: 2px;
+  background: var(--section-accent);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 220ms ease;
+}
+
+.publication-tools:focus-within .publication-search-field,
+.publication-tools.has-query .publication-search-field {
+  flex: 1 1 16rem;
+  color: var(--section-accent);
+}
+
+.publication-tools:focus-within .publication-search-field::after,
+.publication-tools.has-query .publication-search-field::after {
+  transform: scaleX(1);
+}
+
+.publication-search-icon {
+  position: relative;
+  width: 0.78rem;
+  height: 0.78rem;
+  border: 2px solid currentColor;
+  border-radius: 999px;
+  opacity: 0.72;
+}
+
+.publication-search-icon::after {
+  position: absolute;
+  right: -0.34rem;
+  bottom: -0.25rem;
+  width: 0.42rem;
+  height: 2px;
+  background: currentColor;
+  border-radius: 999px;
+  transform: rotate(45deg);
+  transform-origin: left center;
+  content: "";
+}
+
 .publication-tools input {
   min-width: 0;
   width: 100%;
-  padding: 0.35rem 0 0.48rem;
+  padding: 0;
   color: var(--ink);
   background: transparent;
   border: 0;
-  border-bottom: 1px solid var(--section-accent-line);
   border-radius: 0;
   font: inherit;
   font-size: 0.95rem;
   outline: none;
-  transition: border-color 160ms ease, box-shadow 160ms ease;
 }
 
 .publication-tools input::placeholder {
   color: rgba(101, 113, 122, 0.82);
 }
 
-.publication-tools input:focus {
-  border-bottom-color: var(--section-accent);
-  box-shadow: 0 1px 0 var(--section-accent);
-}
-
 .publication-tools button {
-  padding: 0.35rem 0 0.48rem;
+  flex: 0 0 auto;
+  padding: 0.34rem 0 0.48rem;
   color: var(--muted);
   background: transparent;
   border: 0;
@@ -1009,6 +1074,7 @@ u {
   font-weight: 900;
   text-transform: uppercase;
   cursor: pointer;
+  transition: color 160ms ease, border-color 160ms ease;
 }
 
 .publication-tools button:hover {
@@ -1205,10 +1271,6 @@ u {
     font-size: 1.08rem;
   }
 
-  #metrics {
-    grid-template-columns: 1fr;
-  }
-
   .resume-section {
     padding: 2.6rem 0;
   }
@@ -1218,7 +1280,12 @@ u {
   }
 
   .publication-tools {
-    grid-template-columns: 1fr auto;
+    flex-wrap: wrap;
+  }
+
+  .publication-tools:focus-within .publication-search-field,
+  .publication-tools.has-query .publication-search-field {
+    flex-basis: 100%;
   }
 
 }

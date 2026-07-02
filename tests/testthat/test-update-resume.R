@@ -191,6 +191,37 @@ test_that("publication search has an empty state when no records match", {
   expect_match(css, "\\.publication-empty-state")
 })
 
+test_that("publication search uses an expanding material line field", {
+  script <- paste(
+    readLines(
+      conig_file("resume_files/resume-alt-script.html", mustWork = TRUE),
+      warn = FALSE
+    ),
+    collapse = "\n"
+  )
+  css <- paste(
+    readLines(
+      conig_file("resume_files/style-rules-alt.css", mustWork = TRUE),
+      warn = FALSE
+    ),
+    collapse = "\n"
+  )
+
+  expect_match(script, 'field\\.className = "publication-search-field";')
+  expect_match(script, 'icon\\.className = "publication-search-icon";')
+  expect_match(
+    script,
+    'tools\\.classList\\.toggle\\("has-query", Boolean\\(query\\)\\);'
+  )
+  expect_match(css, "\\.publication-search-field::after")
+  expect_match(css, "\\.publication-tools:focus-within \\.publication-search-field")
+  expect_match(css, "\\.publication-tools\\.has-query \\.publication-search-field")
+  expect_match(css, "transform:\\s*scaleX\\(1\\);")
+  expect_match(css, "flex:\\s*1 1 16rem;")
+  expect_false(grepl("\\.publication-tools input:focus", css))
+  expect_false(grepl("grid-template-columns:\\s*1fr auto", css))
+})
+
 test_that("alternate resume renders dash-prefixed notes without repeated labels", {
   script <- paste(
     readLines(
@@ -211,6 +242,8 @@ test_that("alternate resume renders dash-prefixed notes without repeated labels"
   expect_match(script, "stripEntryNotePrefix")
   expect_match(script, "isEntrySidecarText")
   expect_match(script, "buildEntryYear")
+  expect_match(script, "appendSidecarItemContent")
+  expect_match(script, "fullLink\\.textContent = p\\.textContent\\.trim\\(\\)")
   expect_match(script, "entry-sidecar")
   expect_match(script, "entry-support-note")
   expect_match(script, "mergeEntryRole")
@@ -277,6 +310,34 @@ test_that("alternate resume links and section states use SC1 accent semantics", 
   expect_false(grepl("background-image:\\s*linear-gradient\\(var\\(--link-hover\\)", css))
   expect_false(grepl("\\.resume-entry:hover\\s+h3", css))
   expect_false(grepl("\\.citation-record:hover\\s+\\.citation-title", css))
+  expect_false(grepl("#metrics\\s*\\{\\s*grid-template-columns:\\s*1fr;", css))
+})
+
+test_that("sidebar progress track is bounded by the primary section dots", {
+  # When the publication year tree collapses while scrolling, the rail fill must
+  # not keep an old height beyond the final section dot. The base track should
+  # also end at the last primary section node rather than at the nav bottom.
+  script <- paste(
+    readLines(
+      conig_file("resume_files/resume-alt-script.html", mustWork = TRUE),
+      warn = FALSE
+    ),
+    collapse = "\n"
+  )
+  css <- paste(
+    readLines(
+      conig_file("resume_files/style-rules-alt.css", mustWork = TRUE),
+      warn = FALSE
+    ),
+    collapse = "\n"
+  )
+
+  expect_match(script, "navDotCenter")
+  expect_match(script, "setProgressTrack")
+  expect_match(script, "requestProgressRefresh")
+  expect_match(script, "Math\\.min\\(trackHeight, Math\\.max\\(0,")
+  expect_match(css, "\\.resume-progress \\{[^}]*overflow:\\s*hidden;")
+  expect_false(grepl("inset:\\s*1\\.9rem auto 0 0;", css))
 })
 
 test_that("research output group is labelled Publications", {
@@ -290,6 +351,32 @@ test_that("research output group is labelled Publications", {
 
   expect_match(rmd, 'alt_group_title = "Publications"')
   expect_false(grepl('alt_group_title = "Research outputs"', rmd, fixed = TRUE))
+})
+
+test_that("date ranges are ordered and rendered with en dashes", {
+  rmd <- paste(
+    readLines(
+      conig_file("resume_files/jamesconigrave_resume.rmd", mustWork = TRUE),
+      warn = FALSE
+    ),
+    collapse = "\n"
+  )
+  script <- paste(
+    readLines(
+      conig_file("resume_files/resume-alt-script.html", mustWork = TRUE),
+      warn = FALSE
+    ),
+    collapse = "\n"
+  )
+
+  expect_match(rmd, 'paste\\(years, collapse = "–"\\)')
+  expect_match(rmd, "student_year_range")
+  expect_false(grepl('collapse = " - "', rmd, fixed = TRUE))
+  expect_false(grepl("{year_end} - {year_start}", rmd, fixed = TRUE))
+  expect_false(grepl("\\b\\d{4} - \\d{4}\\b", rmd))
+  expect_match(script, "split\\(/\\\\s\\*\\[-–\\]\\\\s\\*/\\)")
+  expect_match(script, 'firstYear > secondYear \\? second \\+ "–" \\+ first')
+  expect_false(grepl('" - Present"', script, fixed = TRUE))
 })
 
 test_that("PDF render source excludes the web-only profile heading", {
