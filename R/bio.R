@@ -4,7 +4,7 @@
 #' @export
 
 bio = function(){
-  glue::glue("I am a Research Fellow at the Centre for Alcohol Policy Research (CAPR), La Trobe University, with a background in psychology. I am interested in what helps people make better decisions about their health, particularly in understanding motivation for behaviour change and risk taking. I have focused on building skills in biostatistics and programming, and have supported the ongoing development of the Grog Survey App."
+  glue::glue("Research Fellow at the Centre for Alcohol Policy Research (CAPR), La Trobe University, with a background in psychology. My work examines motivation, behaviour change, and health risk, with a focus on substance use, public health, and practical digital tools such as the Grog Survey App. I combine psychology, biostatistics, and programming to build reproducible evidence for policy and practice."
     )
 }
 

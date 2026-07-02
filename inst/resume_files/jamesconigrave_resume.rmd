@@ -65,6 +65,17 @@ fix_grammar <- function(x) {
   x
 }
 
+section_heading <- function(title, icon) {
+  glue::glue("{title} {{data-icon={icon}}}
+--------------------------------------------------------------------------------
+
+")
+}
+
+year_range <- function(start, end) {
+  paste(unique(na.omit(c(end, start))), collapse = " - ")
+}
+
 # regex interpretation. Match two dots and replace with one, if there's not an extra dot before, or after the two (three dots in a row).
 
 publications <- fix_grammar(glue::glue(pattern, .envir = as.environment(pubs)))
@@ -74,7 +85,7 @@ pre_prints <- fix_grammar(glue::glue(
 ))
 
 comm <- data.table::fread(
-  "https://raw.githubusercontent.com/conig/jamesconigrave/master/inst/db/commentaries.csv",
+  system.file("db/commentaries.csv", package = "conig"),
   encoding = "Latin-1"
 )
 
@@ -111,28 +122,26 @@ total_cran_downloads <- sum(CRAN_downloads$dls) |>
 
 <!-- ![James](james_smaller.png){width=100%} -->
 
-## Contact Info {#contact}
+## Contact {#contact}
 
 - <i class="fa fa-globe-asia"></i> [conigrave.com](https://conigrave.com)
 - <i class="fa fa-leaf"></i> [scopus profile](https://www.scopus.com/authid/detail.uri?authorId=57207914919)
 - <i class="fa fa-google"></i> [google scholar](https://scholar.google.com/citations?user=m0d4TKcAAAAJ&hl=en)
 - <i class="fa fa-github"></i> [github.com/conig](https://github.com/conig)
 
-## Skills {#skills}
+## Focus {#skills}
 
-Statistical analysis, data-manipulation, dashboards, writing, public speaking
+Research: motivation, behaviour change, substance use, Indigenous health, public health
 
-Programming: R, Julia, Python, lua
+Analysis: biostatistics, reproducible workflows, dashboards, data linkage
 
-Document creation: LaTeX, Markdown, HTML, CSS
+Programming: R, Julia, Python, Lua
 
-Plugin creation: R, neovim
+Writing: manuscripts, grants, reports, technical documentation
 
-Adobe suite: Indesign, Photoshop, After effects
+## Metrics {#metrics}
 
-## Academic metrics {#metrics}
-
-Grant funding: `r round(sum(grnt$amount)/1000000, 1) |> paste0("M")`
+Funding: `r total_grant_funding`
 
 Publications: `r pubs.number`
 
@@ -146,9 +155,9 @@ if (!is.null(h_index)) {
 }
 ```
 
-## Disclaimer {#docinfo}
+## Document {#docinfo}
 
-This HTML document was created using [pagedown](https://github.com/rstudio/pagedown) in R. Google Scholar data retrieved using the [scholar](https://github.com/jkeirstead/scholar) library. [Check out the code on GitHub](https://github.com/conig/jamesconigrave/).
+Built with [pagedown](https://github.com/rstudio/pagedown) in R. Google Scholar data retrieved with [scholar](https://github.com/jkeirstead/scholar). Source: [GitHub](https://github.com/conig/jamesconigrave/).
 
 This document updates daily: [conigrave.com/resume](https://conigrave.com/resume).
 
@@ -158,7 +167,10 @@ Updated: `r format(Sys.time(), format = "%Y-%m-%d %H:%M:%S")` AEDT
 
 ## JAMES CONIGRAVE {#title}
 
-### **Researcher --- Motivation, substance use and public health**
+### **Researcher in motivation, substance use, and public health**
+
+Profile {data-icon=user}
+--------------------------------------------------------------------------------
 
 ```{r echo=FALSE, results = "asis"}
 cat(conig::bio())
@@ -177,12 +189,9 @@ if (experience > 0) {
   }
 
   exp$exp_year_range <- sapply(1:nrow(exp), function(i) {
-    start <- exp$start[i]
-    end <- exp$end[i]
-    start_end <- unique(na.omit(c(end, start)))
-    paste(start_end, collapse = " - ")
+    year_range(exp$start[i], exp$end[i])
   })
-  exp_header <- r"(Academic Experience {data-icon=laptop}
+  exp_header <- r"(Academic appointments {data-icon=laptop}
 --------------------------------------------------------------------------------)"
   exp_content <- glue::glue_data(
     exp,
@@ -206,7 +215,7 @@ if (experience > 0) {
 
 # add professional experience
 
-professional_content <- r"(Professional Experience {data-icon=suitcase}
+professional_content <- r"(Earlier professional roles {data-icon=suitcase}
 --------------------------------------------------------------------------------
 
 ### **Health Promotion Officer**
@@ -249,10 +258,7 @@ if (education > 0) {
   }
 
   edu_data$edu_range <- sapply(seq_len(nrow(edu_data)), function(i) {
-    start <- edu_data$start[i]
-    end <- edu_data$end[i]
-    start_end <- na.omit(c(end, start))
-    paste(start_end, collapse = " - ")
+    year_range(edu_data$start[i], edu_data$end[i])
   })
 
   edu_content_header <- r"(Education {data-icon=graduation-cap data-concise=true}
@@ -309,8 +315,7 @@ if (workshops) {
 
 if (grants) {
   cat(
-    "Select Grants {data-icon=file-invoice-dollar}
---------------------------------------------------------------------------------\n\n"
+    section_heading("Selected funding", "file-invoice-dollar")
   )
   grnt <- grnt[grnt$amount >= 1e6, ]
   grnt$author <- standardise_authors(grnt$author)
@@ -332,14 +337,11 @@ N/A
 ```
 
 ```{r echo = FALSE, results = "asis"}
-students <- data.table::fread(
-  "https://raw.githubusercontent.com/conig/jamesconigrave/master/inst/db/students.csv"
-)
+students <- data.table::fread(system.file("db/students.csv", package = "conig"))
 students$year_end[is.na(students$year_end)] <- "Present"
 students <- students[order(-students$year_start), ]
 
-content_header = "Supervision {data-icon=users}
---------------------------------------------------------------------------------\n\n"
+content_header <- section_heading("Research supervision", "users")
 
 content <- glue::glue_data(
   students,
@@ -365,8 +367,7 @@ if (supervision) {
 ```
 
 ```{r echo = FALSE, results = "asis"}
-header = "R packages {data-icon=keyboard}
---------------------------------------------------------------------------------\n\n"
+header = section_heading("Software", "keyboard")
 content = r"(
 
 ### <u>JH Conigrave</u> (2025). revise: Dynamic Revision Letters for 'Rmarkdown' Manuscripts *CRAN*. https://github.com/conig/revise
@@ -403,9 +404,9 @@ if (packages) {
 ```{r results = "asis", echo = FALSE, message = FALSE }
 if (n_pubs > 0) {
   if (is.finite(n_pubs)) {
-    pub_head = "Select publications"
+    pub_head = "Selected publications"
   } else {
-    pub_head = "Publications"
+    pub_head = "Peer-reviewed publications"
   }
 
   cat(glue::glue(
@@ -422,8 +423,7 @@ if (n_pubs > 0) {
 
 if (commentaries) {
   cat(
-    "Commentaries on work {data-icon=quote-left}
---------------------------------------------------------------------------------\n\n"
+    section_heading("Research translation", "quote-left")
   )
 
   commentaries_other
@@ -433,8 +433,7 @@ if (commentaries) {
 ```{r results = "asis", echo = FALSE, message = FALSE }
 if (preprints) {
   cat(
-    "Pre-prints {data-icon=file}
---------------------------------------------------------------------------------\n\n"
+    section_heading("Preprints", "file")
   )
 
   pre_prints
@@ -443,14 +442,14 @@ if (preprints) {
 
 ```{r results = "asis", echo = FALSE, message = FALSE}
 if (peer_review) {
-  reviews <- data.table::fread(
-    "https://raw.githubusercontent.com/conig/jamesconigrave/master/inst/db/peer%20review.csv"
-  )
+  reviews <- data.table::fread(system.file(
+    "db/peer review.csv",
+    package = "conig"
+  ))
   reviews <- reviews[reviews$IF >= 2 & !is.na(reviews$IF), ][1:5, ]
   reviews <- reviews[with(reviews, order(Year, IF, decreasing = TRUE)), ]
   cat(
-    "Recent peer review {data-icon=user-friends}
--------------------------------------------------------------------------------\n\n"
+    section_heading("Recent peer review", "user-friends")
   )
 
   content <- glue::glue_data(
@@ -495,13 +494,10 @@ if (committees) {
 
 if (conferences) {
   cat(
-    "Conference contributions {data-icon=globe-asia}
---------------------------------------------------------------------------------\n\n"
+    section_heading("Conference contributions", "globe-asia")
   )
 
-  conf <- data.table::fread(
-    "https://raw.githubusercontent.com/conig/jamesconigrave/master/inst/db/conference.csv"
-  ) |>
+  conf <- data.table::fread(system.file("db/conference.csv", package = "conig")) |>
     dplyr::arrange(desc(year))
   conf$author = standardise_authors(conf$author)
 
